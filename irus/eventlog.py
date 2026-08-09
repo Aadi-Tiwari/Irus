@@ -72,6 +72,34 @@ class EventLog:
                 pass
         return event
 
+    def append_raw(self, event: dict[str, Any]) -> dict[str, Any]:
+        """Append a previously recorded event, keeping its own timestamp.
+
+        Replay needs this: a recording is only faithful if the events keep the
+        times they actually happened at. It is still an append. `seq` is always
+        reassigned by the log, so a replayed event cannot claim a position it
+        did not earn, and nothing is ever rewritten or removed.
+        """
+        if not isinstance(event, dict) or "kind" not in event:
+            raise AppendOnlyViolation("a raw event must be a dict carrying a kind")
+        record = {k: v for k, v in event.items() if k != "seq"}
+        record.setdefault("t", round(time.time(), 3))
+        with self._lock:
+            record["seq"] = len(self._events) + 1
+            self._events.append(record)
+            if self.path:
+                self.path.parent.mkdir(parents=True, exist_ok=True)
+                with self.path.open("a", encoding="utf-8") as fh:
+                    fh.write(canonical(record) + "\n")
+                    fh.flush()
+            subs = list(self._subs)
+        for q in subs:
+            try:
+                q.put_nowait(record)
+            except queue.Full:
+                pass
+        return record
+
     # ---- reading ---------------------------------------------------------
     def _load(self) -> None:
         assert self.path is not None

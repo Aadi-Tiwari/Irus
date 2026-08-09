@@ -20,8 +20,18 @@ flag combination that makes a synthetic fixture look like a real finding.
 
 from __future__ import annotations
 
+import sys
+# Windows consoles default to cp1252 and this banner is not cp1252, which
+# crashed the tool on the one platform it was most likely to be demoed on.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding='utf-8', errors='replace')
+    except (AttributeError, ValueError):
+        pass
+
 import argparse
 import json
+import threading
 import shutil
 import sys
 import time
@@ -30,8 +40,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from irus.events import EventLog                    # noqa: E402
-from irus.server import BIND_HOST, serve            # noqa: E402
+from irus.eventlog import EventLog                  # noqa: E402
+from irus.web import serve                          # noqa: E402
+
+BIND_HOST = "127.0.0.1"
 
 BANNER = """
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -69,7 +81,15 @@ def play(source: Path, target: Path, *, speed: float, port: int, open_browser: b
     target.parent.mkdir(parents=True, exist_ok=True)
     target.touch()
 
-    httpd = serve(target, port=port)
+    # The merged server serves rooms out of a data directory rather than a
+    # single log path, so point the default room at the replay target.
+    from irus import web
+
+    web.DATA_DIR = target.parent
+    web._rooms.clear()
+    web._rooms["default"] = EventLog(target)
+    httpd = serve(port=port, host=BIND_HOST)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
     url = f"http://{BIND_HOST}:{port}/"
     print(f"demo: serving {url}")
     print("demo: canvas is empty. Press Enter to begin the replay.")
@@ -80,7 +100,7 @@ def play(source: Path, target: Path, *, speed: float, port: int, open_browser: b
     except (EOFError, KeyboardInterrupt):
         pass
 
-    log = EventLog(target)
+    log = web._rooms["default"]
     base = events[0]["t"]
     previous = 0.0
     try:

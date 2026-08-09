@@ -1,0 +1,48 @@
+{
+ "repo": "gate-a-app",
+ "module": "app.main",
+ "clean_boots": true,
+ "clean_detail": "",
+ "results": [
+  {
+   "name": "unwired_route",
+   "description": "new route file written, not yet mounted",
+   "expectation": "boots: an unimported module cannot break the app",
+   "booted": true,
+   "detail": "",
+   "applied": true
+  },
+  {
+   "name": "missing_import",
+   "description": "route imports a schema module not written yet",
+   "expectation": "does not boot: the import fails at startup",
+   "booted": false,
+   "detail": "ModuleNotFoundError: No module named 'app.schemas'",
+   "applied": true
+  },
+  {
+   "name": "undefined_name",
+   "description": "handler calls a helper that does not exist yet",
+   "expectation": "boots: the name is resolved only when the route is called",
+   "booted": true,
+   "detail": "",
+   "applied": true
+  },
+  {
+   "name": "truncated_edit",
+   "description": "a write cut off mid-statement",
+   "expectation": "does not boot: syntax error",
+   "booted": false,
+   "detail": "SyntaxError: '(' was never closed",
+   "applied": true
+  },
+  {
+   "name": "widened_model",
+   "description": "a field added to a schema",
+   "expectation": "boots: it is a valid edit",
+   "booted": true,
+   "detail": "",
+   "applied": true
+  }
+ ]
+}

@@ -15,13 +15,22 @@ byte comparison.
 from __future__ import annotations
 
 import sys
+# Windows consoles default to cp1252 and this banner is not cp1252, which
+# crashed the tool on the one platform it was most likely to be demoed on.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding='utf-8', errors='replace')
+    except (AttributeError, ValueError):
+        pass
+
+import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from irus.check import sweep                       # noqa: E402
-from irus.events import EventLog                   # noqa: E402
-from irus.prove import tier1                       # noqa: E402
+from irus.scan import scan as sweep                # noqa: E402
+from irus.eventlog import EventLog                 # noqa: E402
+from irus.prove import prove_schema as tier1       # noqa: E402
 
 # A fixed epoch so regenerating the fixture is a no-op when nothing changed.
 T0 = 1723190400.0
