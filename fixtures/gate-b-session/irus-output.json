@@ -1,0 +1,31 @@
+{
+  "root": "C:\\Users\\tiwar\\Projects\\Irus\\fixtures\\gate-b-session",
+  "baseline": {
+    "sha": "",
+    "how": "baseline disabled",
+    "suppressed": 0
+  },
+  "suppressed_by_rule": [],
+  "findings": [
+    {
+      "kind": "missing_required_field",
+      "seam": "PUT /profile",
+      "detail": "server requires `marketing_emails` (bool); client sends ['display_name', 'marketing_opt_in']",
+      "confidence": "high",
+      "producer_loc": "backend/app/routers/profile.py:11",
+      "consumer_loc": "frontend/src/api/profile.ts:16",
+      "subject": "marketing_emails",
+      "key": "f-f5e849c18587"
+    },
+    {
+      "kind": "unexpected_field",
+      "seam": "PUT /profile",
+      "detail": "client sends `marketing_opt_in`; server declares no such field",
+      "confidence": "medium",
+      "producer_loc": "backend/app/routers/profile.py:11",
+      "consumer_loc": "frontend/src/api/profile.ts:16",
+      "subject": "marketing_opt_in",
+      "key": "f-e2bdec30772b"
+    }
+  ]
+}

@@ -195,6 +195,15 @@ class _Collector(ast.NodeVisitor):
     visit_AsyncFunctionDef = visit_FunctionDef  # type: ignore[assignment]
 
 
+def _with_models(col: "_Collector", models: dict) -> "_Collector":
+    """A shallow view of the collector with a wider model registry."""
+    import copy
+
+    view = copy.copy(col)
+    view.models = models
+    return view
+
+
 def _body_from_signature(
     func: ast.FunctionDef | ast.AsyncFunctionDef, models: dict[str, tuple[Field, ...]]
 ) -> tuple[str, tuple[Field, ...]]:
@@ -297,8 +306,19 @@ def surfaces_from(
     rel: str,
     included: set[str] | None = None,
     include_prefix: dict[str, str] | None = None,
+    models: dict[str, tuple] | None = None,
 ) -> list[Surface]:
-    """Resolve routes from an already-parsed collector. No I/O, no parsing."""
+    """Resolve routes from an already-parsed collector. No I/O, no parsing.
+
+    `models` is the project-wide Pydantic registry. Any real FastAPI project
+    keeps its schemas in their own module and its routes in another, so a
+    per-file registry never resolves the request body and every endpoint looks
+    like it takes nothing at all.
+    """
+    if models:
+        merged = dict(models)
+        merged.update(col.models)
+        col = _with_models(col, merged)
     if included:
         col.included |= included
     if include_prefix:
