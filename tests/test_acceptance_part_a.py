@@ -673,3 +673,37 @@ def test_receipt_explains_a_fail_line_that_is_not_a_finding(tmp_path):
     assert result.findings == [], "a health route is not a finding"
     text = receipts_mod.render(receipts_mod.build(result), only_failing=True)
     assert "externally" in text, "an unexplained FAIL beside zero findings is misleading"
+
+
+def test_append_raw_preserves_a_recorded_timestamp_but_not_its_sequence(tmp_path):
+    """Replay must be faithful to when things happened, without letting a
+    replayed event claim a position in the log it did not earn."""
+    from irus.eventlog import AppendOnlyViolation, EventLog
+
+    log = EventLog(tmp_path / "e.jsonl")
+    log.append("finding", id="live")
+    written = log.append_raw({"t": 1723190400.0, "kind": "finding", "id": "recorded", "seq": 99})
+
+    assert written["t"] == 1723190400.0, "a recorded time must survive replay"
+    assert written["seq"] == 2, "seq is assigned by the log, never by the caller"
+    assert [e["seq"] for e in EventLog(tmp_path / "e.jsonl").replay()] == [1, 2]
+
+    with pytest.raises(AppendOnlyViolation):
+        log.append_raw({"no": "kind"})
+
+
+def test_demo_replays_a_recorded_session_faithfully(tmp_path):
+    """tools/demo.py is the demo. A broken replay is a dead demo."""
+    from irus.eventlog import EventLog
+
+    source = Path(__file__).resolve().parents[1] / "fixtures" / "session.jsonl"
+    recorded = [json.loads(l) for l in source.read_text("utf-8").splitlines() if l.strip()]
+
+    log = EventLog(tmp_path / "replay.jsonl")
+    for event in recorded:
+        log.append_raw(event)
+
+    replayed = EventLog(tmp_path / "replay.jsonl").replay()
+    assert len(replayed) == len(recorded)
+    assert [e["kind"] for e in replayed] == [e["kind"] for e in recorded]
+    assert [e["seq"] for e in replayed] == list(range(1, len(recorded) + 1))
