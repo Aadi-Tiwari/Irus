@@ -18,6 +18,10 @@ Three guards, because the result is worthless without them:
     a surprising result is visible as a surprise rather than rationalised after.
 
 Run: python tools/gate_a.py <repo> <module> [subdir] [interpreter]
+
+`subdir` is where the application lives inside the repository. Worktrees are
+always created from the repository root, so the subject can be vendored in a
+fixtures/ directory rather than needing a repository of its own.
 """
 
 from __future__ import annotations
@@ -245,7 +249,10 @@ def run(repo: Path, module: str, extra_path: str = "") -> GateA:
                    str(work), "HEAD").returncode != 0:
                 continue
             try:
-                touched = state.edit(work)
+                # Edits apply where the application actually lives, which is a
+                # subdirectory when the subject is vendored inside a larger
+                # repository. try_boot already resolves the same path.
+                touched = state.edit(work / extra_path if extra_path else work)
                 if touched is None:
                     out.results.append(Result(
                         state.name, state.description, state.expectation,
