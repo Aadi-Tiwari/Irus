@@ -341,11 +341,11 @@ export default function InstallCompareSection() {
               View on GitHub
             </a>
             <span className="inline-flex items-center gap-2 text-[12.5px] text-white/40">
-              then run
+              or
               <code className="rounded-md border border-emerald-400/20 bg-emerald-400/[0.07] px-1.5 py-0.5 font-mono text-[12px] text-emerald-200/90">
-                irus watch
+                irus check --prove
               </code>
-              for the live map
+              to run the suspect seams
             </span>
           </motion.div>
         </motion.div>

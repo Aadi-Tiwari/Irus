@@ -18,6 +18,17 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+/* The ambient glows are large-radius blurs sitting above a video that never
+   stops moving. Without their own compositing layer they are re-blurred every
+   time anything above them repaints, which is what makes a section cost most on
+   the frame it first scrolls into view. `will-change` promotes them without
+   touching the transform utilities that position them. */
+[class*="blur-["],
+.blur-3xl,
+.blur-2xl {
+  will-change: transform;
+}
+
 /* Windows paints an opaque light scrollbar inside dark overflow panels, which
    reads as a seam in the layout rather than a control. */
 * {

@@ -53,35 +53,7 @@ const MOVES = [
   },
 ];
 
-// The canonical transcript, verbatim from the tool's own output. Static rather
-// than typed out: it is here to be read, not performed.
-// Detail text sits on its own indented line so the block fits the card without
-// a horizontal scrollbar; the checks and verdicts are otherwise verbatim.
-const TRANSCRIPT: { t: "cmd" | "dim" | "pass" | "fail" | "det" | "sum"; s: string }[] = [
-  { t: "cmd", s: "$ irus check" },
-  { t: "dim", s: "POST /api/checkout" },
-  { t: "pass", s: "  endpoint exists        PASS" },
-  { t: "pass", s: "  route mounted          PASS" },
-  { t: "pass", s: "  client calls it        PASS" },
-  { t: "fail", s: "  encoding matches       FAIL" },
-  { t: "det", s: "      client sends multipart, server expects json" },
-  { t: "fail", s: "  payload shape matches  FAIL" },
-  { t: "det", s: "      server requires `amount` (int); `email` (str)" },
-  { t: "sum", s: "5 finding(s) introduced this session (3 high)" },
-  { t: "sum", s: "baseline acab5370f983 suppressed 1 pre-existing" },
-  { t: "cmd", s: "$ echo $?" },
-  { t: "dim", s: "1" },
-];
-
-const TONE: Record<string, string> = {
-  cmd: "text-emerald-200/90",
-  dim: "text-white/45",
-  pass: "text-emerald-300/70",
-  fail: "text-rose-300/85",
-  det: "text-rose-200/50",
-  sum: "text-white/50",
-};
-
+// What holds across all three moves, stated once rather than as its own beat.
 const GUARANTEES = [
   "no model in the verification path",
   "nothing leaves localhost",
@@ -117,12 +89,11 @@ export default function HowItWorksSection() {
       />
 
       <div className="relative z-[5] mx-auto flex w-full max-w-7xl flex-col gap-12 px-8 md:px-14">
-        <div className="grid items-center gap-10 md:grid-cols-[0.95fr_1.05fr] md:gap-14">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative flex flex-col gap-4"
+          className="relative flex max-w-3xl flex-col gap-4"
         >
           {/* scrim so the heading stays readable over the moving plate */}
           <div
@@ -146,32 +117,6 @@ export default function HowItWorksSection() {
             high-confidence finding, so it works as a merge gate and a CI step.
           </p>
         </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-          transition={{ duration: 0.8, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-          className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#080a09]/95 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md"
-        >
-          <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
-            <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-            <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/50" />
-            <span className="ml-3 font-mono text-[11px] tracking-wide text-white/30">
-              irus · check
-            </span>
-          </div>
-          <div className="overflow-x-auto px-4 py-4">
-            <pre className="font-mono text-[11.5px] leading-[1.75] md:text-[12.5px]">
-              {TRANSCRIPT.map((l, i) => (
-                <div key={i} className={TONE[l.t]}>
-                  {l.s}
-                </div>
-              ))}
-            </pre>
-          </div>
-        </motion.div>
-        </div>
 
         <div className="grid gap-5 md:grid-cols-3">
           {MOVES.map((m, i) => (

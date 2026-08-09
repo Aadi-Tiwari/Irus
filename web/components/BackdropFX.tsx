@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 /**
  * BackdropFX — the one backdrop the whole site sits on.
  *
@@ -11,24 +15,65 @@
  */
 
 export default function BackdropFX() {
+  // The hero card covers almost all of this layer while it is on screen, so the
+  // plate does not need to compete with the hero's own download during first
+  // paint. It starts once the page has loaded, or after a beat if load is slow.
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [src, setSrc] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    let done = false;
+    const start = () => {
+      if (done) return;
+      done = true;
+      setSrc("/backdrop-plate.mp4");
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    const t = setTimeout(start, 1200);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("load", start);
+      clearTimeout(t);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (src) videoRef.current?.play().catch(() => {});
+  }, [src]);
+
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-50 overflow-hidden">
       {/* deep base */}
       <div className="absolute inset-0 bg-[#070908]" />
 
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{
-          filter: "brightness(0.9) saturate(1.15) contrast(1.08) blur(3px)",
-          transform: "scale(1.06)",
-        }}
-        src="/hero-plate.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      />
+      {/* This layer is blurred, upscaled and sitting under a scrim, so it plays a
+          540p cut of the plate instead of the 1080p one: a quarter of the pixels
+          to decode, every frame, for the whole visit.
+
+          It is also rendered at half size and scaled back up, so the blur costs a
+          quarter of the pixels for the same result, since a 1.5px blur on a
+          half-size layer reads as 3px once the layer is doubled. The half-size box
+          has the same aspect ratio as the full one, so the object-cover crop is
+          unchanged. */}
+      <div className="absolute inset-0 overflow-hidden" style={{ transform: "scale(1.06)" }}>
+        <video
+          className="absolute left-0 top-0 h-1/2 w-1/2 object-cover"
+          style={{
+            filter: "brightness(0.9) saturate(1.15) contrast(1.08) blur(1.5px)",
+            transform: "scale(2)",
+            transformOrigin: "top left",
+            willChange: "transform",
+          }}
+          ref={videoRef}
+          src={src}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+        />
+      </div>
 
       {/* legibility scrim — UNIFORM so there are no top/bottom dark bands as you
           scroll; just an even veil that keeps text readable over the footage */}
