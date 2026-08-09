@@ -707,3 +707,40 @@ def test_demo_replays_a_recorded_session_faithfully(tmp_path):
     assert len(replayed) == len(recorded)
     assert [e["kind"] for e in replayed] == [e["kind"] for e in recorded]
     assert [e["seq"] for e in replayed] == list(range(1, len(recorded) + 1))
+
+
+def test_a_route_named_by_a_literal_anywhere_is_not_an_orphan(tmp_path):
+    """A Python client, a test client and a generated client all reference a
+    route the same way: its path, in quotes. Ignoring that made orphan_endpoint
+    12% precise across five third-party repositories."""
+    write(tmp_path, "api.py", """
+        from fastapi import FastAPI
+        app = FastAPI()
+
+        @app.post("/api/reports")
+        async def make_report():
+            return {}
+    """)
+    assert any(f.kind == "orphan_endpoint" for f in scan(tmp_path).findings)
+
+    write(tmp_path, "client.py", """
+        import httpx
+        def make():
+            return httpx.post("/api/reports", json={})
+    """)
+    assert [f for f in scan(tmp_path).findings if f.kind == "orphan_endpoint"] == []
+
+
+def test_orphan_endpoint_never_fails_the_gate(tmp_path):
+    """Measured at 14% precision, so it is reported and never blocks a merge."""
+    write(tmp_path, "api.py", """
+        from fastapi import FastAPI
+        app = FastAPI()
+
+        @app.post("/api/reports")
+        async def make_report():
+            return {}
+    """)
+    found = [f for f in scan(tmp_path).findings if f.kind == "orphan_endpoint"]
+    assert found and all(f.confidence == LOW for f in found)
+    assert main(["check", str(tmp_path), "--no-baseline"]) == 0

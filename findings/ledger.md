@@ -18,13 +18,13 @@ callers live outside the repository is the common case there.
 
 ## Totals
 
-**473 findings across 5 repositories nobody on this project wrote.**
+**314 findings across 5 repositories nobody on this project wrote.**
 
 - judged true: **163**
-- judged false: **97**
-- unlabelled: **213**
+- judged false: **63**
+- unlabelled: **88**
 
-**Precision over the 260 judged findings: 62.7%.**
+**Precision over the 226 judged findings: 72.1%.**
 
 That number is published because it is the honest one, not because it
 flatters the tool. The false positives are listed below alongside the
@@ -34,7 +34,7 @@ true ones.
 
 | kind | n | true | false | unlabelled | precision |
 |---|---|---|---|---|---|
-| `orphan_endpoint` | 314 | 12 | 89 | 213 | 12% |
+| `orphan_endpoint` | 155 | 12 | 55 | 88 | 18% |
 | `orphan_component` | 89 | 83 | 6 | 0 | 93% |
 | `env_unset` | 70 | 68 | 2 | 0 | 97% |
 
@@ -48,32 +48,32 @@ failed a merge gate, because only high-confidence findings do.
 
 ## dispatch
 
-877 source files scanned, 900 files searched for adjudication. 308 findings: 29 true, 66 false, 213 unlabelled (precision 31%).
+877 source files scanned, 900 files searched for adjudication. 154 findings: 29 true, 37 false, 88 unlabelled (precision 44%).
 
-False positives (66 total, first 20 shown):
+False positives (37 total, first 20 shown):
 
 | conf | kind | seam | where | why it is wrong |
 |---|---|---|---|---|
 | low | `orphan_endpoint` | `DELETE /filters/{}` | `src/dispatch/signal/views.py:268` | the path appears in tests/signal/test_signal_service.py |
-| low | `orphan_endpoint` | `DELETE /instances/{}` | `src/dispatch/plugin/views.py:95` | the path appears in src/dispatch/cli.py |
-| low | `orphan_endpoint` | `DELETE /{}/event/{}` | `src/dispatch/case/views.py:579` | the path appears in tests/factories.py |
-| low | `orphan_endpoint` | `DELETE /{}/event/{}` | `src/dispatch/incident/views.py:508` | the path appears in tests/factories.py |
-| low | `orphan_endpoint` | `DELETE /{}/remove/{}` | `src/dispatch/case/views.py:444` | the path appears in src/dispatch/enums.py |
-| low | `orphan_endpoint` | `DELETE /{}/remove/{}` | `src/dispatch/incident/views.py:301` | the path appears in src/dispatch/enums.py |
 | low | `orphan_endpoint` | `GET /defaults` | `src/dispatch/ai/prompt/views.py:42` | the path appears in playwright.config.ts |
 | low | `orphan_endpoint` | `GET /engagements` | `src/dispatch/signal/views.py:139` | the path appears in src/dispatch/signal/models.py |
 | low | `orphan_endpoint` | `GET /engagements/{}` | `src/dispatch/signal/views.py:145` | the path appears in src/dispatch/signal/models.py |
 | low | `orphan_endpoint` | `GET /externalids` | `src/dispatch/service/views.py:29` | the path appears in src/dispatch/static/dispatch/src/service/api.js |
 | low | `orphan_endpoint` | `GET /filters` | `src/dispatch/signal/views.py:133` | the path appears in tests/signal/test_signal_service.py |
 | low | `orphan_endpoint` | `GET /genai-types` | `src/dispatch/ai/prompt/views.py:36` | the path appears in src/dispatch/static/dispatch/src/prompt/store.js |
-| low | `orphan_endpoint` | `GET /instances` | `src/dispatch/plugin/views.py:32` | the path appears in src/dispatch/cli.py |
-| low | `orphan_endpoint` | `GET /instances` | `src/dispatch/signal/views.py:65` | the path appears in src/dispatch/cli.py |
-| low | `orphan_endpoint` | `GET /instances/{}` | `src/dispatch/plugin/views.py:42` | the path appears in src/dispatch/cli.py |
-| low | `orphan_endpoint` | `GET /instances/{}` | `src/dispatch/workflow/views.py:49` | the path appears in src/dispatch/cli.py |
 | low | `orphan_endpoint` | `GET /metric/forecast` | `src/dispatch/incident/views.py:535` | the path appears in src/dispatch/static/dispatch/src/incident/api.js |
 | low | `orphan_endpoint` | `GET /minimal` | `src/dispatch/case/views.py:153` | the path appears in tests/signal/test_signal_flow.py |
 | low | `orphan_endpoint` | `GET /plugin_events` | `src/dispatch/plugin/views.py:110` | the path appears in src/dispatch/static/dispatch/src/plugin/api.js |
 | low | `orphan_endpoint` | `GET /stats` | `src/dispatch/signal/views.py:286` | the path appears in tests/signal/test_signal_stats_service.py |
+| low | `orphan_endpoint` | `GET /{}/auth/me` | `src/dispatch/auth/views.py:283` | the path appears in tests/static/e2e/pages/auth-page.ts |
+| low | `orphan_endpoint` | `GET /{}/auth/me/settings` | `src/dispatch/auth/views.py:418` | the path appears in src/dispatch/static/dispatch/src/auth/api.js |
+| low | `orphan_endpoint` | `GET /{}/auth/myrole` | `src/dispatch/auth/views.py:305` | the path appears in src/dispatch/static/dispatch/src/auth/api.js |
+| low | `orphan_endpoint` | `GET /{}/participants` | `src/dispatch/case/views.py:112` | the path appears in tests/plugins/test_dispatch_slack_incident_interactive.py |
+| low | `orphan_endpoint` | `GET /{}/regenerate` | `src/dispatch/incident/views.py:601` | the path appears in src/dispatch/static/dispatch/src/incident/api.js |
+| low | `orphan_endpoint` | `GET /{}/report/tactical/generate` | `src/dispatch/incident/views.py:370` | the path appears in src/dispatch/static/dispatch/src/incident/api.js |
+| low | `orphan_endpoint` | `GET /{}/signal_instances/{}` | `src/dispatch/entity/views.py:78` | the path appears in src/dispatch/cli.py |
+| low | `orphan_endpoint` | `GET /{}/stats` | `src/dispatch/signal/views.py:303` | the path appears in tests/signal/test_signal_stats_service.py |
+| low | `orphan_endpoint` | `POST /completed/{}` | `src/dispatch/forms/views.py:44` | the path appears in tests/factories.py |
 
 Confirmed (29 total, first 10 shown):
 
@@ -107,32 +107,30 @@ Confirmed (6 total, first 6 shown):
 
 ## full-stack-fastapi-template
 
-148 source files scanned, 180 files searched for adjudication. 80 findings: 57 true, 23 false, 0 unlabelled (precision 71%).
+148 source files scanned, 180 files searched for adjudication. 75 findings: 57 true, 18 false, 0 unlabelled (precision 76%).
 
-False positives (23 total, first 20 shown):
+False positives (18 total, first 18 shown):
 
 | conf | kind | seam | where | why it is wrong |
 |---|---|---|---|---|
 | low | `orphan_endpoint` | `DELETE /items/{}` | `backend/app/api/routes/items.py:100` | the path appears in frontend/src/routeTree.gen.ts |
 | low | `orphan_endpoint` | `DELETE /users/me` | `backend/app/api/routes/users.py:133` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `DELETE /users/{}` | `backend/app/api/routes/users.py:215` | the path appears in frontend/tests/admin.spec.ts |
-| low | `orphan_endpoint` | `GET /items` | `backend/app/api/routes/items.py:14` | the path appears in frontend/src/routeTree.gen.ts |
 | low | `orphan_endpoint` | `GET /items/{}` | `backend/app/api/routes/items.py:49` | the path appears in frontend/src/routeTree.gen.ts |
-| low | `orphan_endpoint` | `GET /users` | `backend/app/api/routes/users.py:37` | the path appears in frontend/tests/admin.spec.ts |
 | low | `orphan_endpoint` | `GET /users/me` | `backend/app/api/routes/users.py:125` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `GET /users/{}` | `backend/app/api/routes/users.py:163` | the path appears in frontend/tests/admin.spec.ts |
 | low | `orphan_endpoint` | `GET /utils/health-check` | `backend/app/api/routes/utils.py:30` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `PATCH /users/me` | `backend/app/api/routes/users.py:82` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `PATCH /users/me/password` | `backend/app/api/routes/users.py:104` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `PATCH /users/{}` | `backend/app/api/routes/users.py:187` | the path appears in frontend/tests/admin.spec.ts |
-| low | `orphan_endpoint` | `POST /items` | `backend/app/api/routes/items.py:62` | the path appears in frontend/src/routeTree.gen.ts |
 | low | `orphan_endpoint` | `POST /login/access-token` | `backend/app/api/routes/login.py:24` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `POST /login/test-token` | `backend/app/api/routes/login.py:46` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `POST /password-recovery-html-content/{}` | `backend/app/api/routes/login.py:105` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `POST /password-recovery/{}` | `backend/app/api/routes/login.py:54` | the path appears in frontend/src/client/sdk.gen.ts |
 | low | `orphan_endpoint` | `POST /private/users` | `backend/app/api/routes/private.py:24` | the path appears in frontend/src/client/sdk.gen.ts |
-| low | `orphan_endpoint` | `POST /reset-password` | `backend/app/api/routes/login.py:78` | the path appears in frontend/src/routeTree.gen.ts |
-| low | `orphan_endpoint` | `POST /users` | `backend/app/api/routes/users.py:57` | the path appears in frontend/tests/admin.spec.ts |
+| low | `orphan_endpoint` | `POST /users/signup` | `backend/app/api/routes/users.py:147` | the path appears in frontend/src/client/sdk.gen.ts |
+| low | `orphan_endpoint` | `POST /utils/test-email` | `backend/app/api/routes/utils.py:16` | the path appears in frontend/src/client/sdk.gen.ts |
+| low | `orphan_endpoint` | `PUT /items/{}` | `backend/app/api/routes/items.py:76` | the path appears in frontend/src/routeTree.gen.ts |
 
 Confirmed (57 total, first 10 shown):
 
