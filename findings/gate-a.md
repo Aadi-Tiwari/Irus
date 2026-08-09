@@ -1,6 +1,6 @@
 # Gate A: do mid-build worktrees boot?
 
-Subject: `gate-a-app`, importing `app.main`.
+Subject: `Irus`, importing `app.main`.
 
 The clean worktree boots, so the control holds and these results mean
 something.
