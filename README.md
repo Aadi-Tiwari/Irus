@@ -134,15 +134,49 @@ On this machine, against a synthetic 500-file project:
 | Full sweep, 500 source files | 0.28s best, 0.51s median | 2.0s |
 | Incremental re-check after one edit | 83ms best, 105ms median | 200ms |
 
-96 tests pass. Run them with `pytest`.
+164 tests pass. Run them with `pytest`.
+
+**Precision, measured against five repositories nobody here wrote** (dispatch,
+flower, full-stack-fastapi-template, redash, reflex): **72.1% over 226 judged
+findings.** Every finding, including the wrong ones, is published in
+`findings/ledger.md`.
+
+| check | n | precision |
+|---|---|---|
+| `env_unset` | 70 | 97% |
+| `orphan_component` | 89 | 93% |
+| `orphan_endpoint` | 155 | 18% |
+
+Labels come from a different method than the one that produced the findings:
+the scanner works from parsed syntax, `tools/adjudicate.py` works from raw text
+search. `orphan_endpoint` is weak, is reported at low confidence because of it,
+and is deliberately not tuned further, since the remaining improvement available
+is to match paths the way the adjudicator judges them, which would drive the
+published number toward 100% by construction and measure nothing.
+
+**Both gates are answered**, in `findings/gate-a.md` and
+`findings/reproduced.md`. Three of five realistic mid-build worktree states
+still boot, so execution is sometimes available and sometimes not, which is why
+there are two stages. And two agents given one half each of a prose spec, in
+separate worktrees with no knowledge of each other, produced a real mismatch
+that git merged clean: one wrote `marketing_emails`, the other
+`marketing_opt_in`. That session is committed under `fixtures/gate-b-session/`.
 
 ## Honestly unverified
 
-Irus has not been run against a repository the author did not write, so the
-real-world false-positive rate is unmeasured. That is what `irus ledger` is for,
-and until it is filled in, no accuracy number here should be believed.
+**One mismatch, from one session, over three features.** Enough to show the tool
+catches something real, nowhere near enough to estimate a rate. Two of the three
+features matched exactly.
 
-The TypeScript scanner reads literal request construction. Bodies built through
-indirection it cannot follow are reported as unknown rather than guessed at, so
-recall on heavily abstracted client code is lower than on direct `fetch` calls,
-and that gap has not been quantified.
+**Both agents were Claude subagents on one machine**, not two vendors on two
+laptops. The mechanism is faithfully reproduced; the vendor diversity is not.
+
+**The premise is weaker than the pitch says.** The frontend agent did not report
+unqualified success: it flagged that it had invented the whole contract and
+asked for a shared one. The mismatch still survived the merge and every other
+check, but "neither agent suspects anything" is not what happened.
+
+**Client indirection is followed one hop only.** A body assembled through a
+chain the scanner cannot follow is reported as unknown rather than guessed at,
+so recall on heavily abstracted client code is lower than on a direct call, and
+that gap is not quantified.
