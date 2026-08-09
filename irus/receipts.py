@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 
+from .compare import looks_external
 from .model import Finding, Receipt, ReceiptLine, Surface
 from .scan import ScanResult
 
@@ -60,7 +61,16 @@ def build(
             ReceiptLine(
                 "client calls it",
                 c is not None,
-                "" if c else "no client in this repository calls it",
+                ""
+                if c
+                # A receipt that shows FAIL while the run reports zero findings
+                # reads as a contradiction. Say which one it is.
+                else (
+                    "no client here calls it, and this route looks externally "
+                    "called, so it is not reported as a finding"
+                    if p is not None and looks_external(p.path)
+                    else "no client in this repository calls it"
+                ),
             ),
         ]
 
