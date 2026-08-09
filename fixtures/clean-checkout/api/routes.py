@@ -1,0 +1,22 @@
+"""The same application with both sides agreeing. Zero findings expected."""
+
+from fastapi import APIRouter
+from pydantic import BaseModel
+
+router = APIRouter(prefix="/api")
+
+
+class CheckoutRequest(BaseModel):
+    email: str
+    amount: int
+    note: str = ""
+
+
+@router.post("/checkout")
+async def checkout(payload: CheckoutRequest):
+    return {"ok": True, "charged": payload.amount}
+
+
+@router.get("/health")
+async def health():
+    return {"status": "up"}
