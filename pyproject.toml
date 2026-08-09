@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "irus"
+version = "0.1.0"
+description = "Catch the bug that happens between two AI coding agents."
+requires-python = ">=3.11"
+# No runtime dependencies, deliberately. B-R5 requires the tool to function with
+# no network connection; the surest way to mean that is to need nothing fetched.
+dependencies = []
+
+[project.optional-dependencies]
+# Stage 2 tier 2 only. Stage 1 never imports these.
+prove = ["fastapi>=0.110", "httpx>=0.27"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+irus = "irus.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["irus*"]
+
+[tool.setuptools.package-data]
+irus = ["page/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

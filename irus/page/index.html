@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>irus</title>
+<!--
+  One self-contained file (B-R6). No CDN, no build step, no external request of
+  any kind (B-R5). Everything below is inline on purpose.
+
+  Visual contract is PRD-B section 3.2 and is not up for improvisation:
+    healthy      #898781, no colour, small
+    broken       #d03b3b both themes
+    orphan       #c98500 dark / #eda100 light
+    active now   #3987e5 dark / #2a78d6 light
+    baseline     dim, thin edges, no labels, pure context
+    session      full size, colour, labels, drawn on top
+    missing      dashed red arc, endpoints pulled apart so the gap is legible
+    node size    blast radius
+    identity     a ring or a filter, never the fill colour
+-->
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f6f4;
+    --surface: #ffffff;
+    --ink: #1c1b19;
+    --ink-dim: #6b6862;
+    --rule: #dedbd5;
+    --healthy: #898781;
+    --broken: #d03b3b;
+    --orphan: #eda100;      /* light-mode amber */
+    --active: #2a78d6;      /* light-mode blue */
+    --baseline: #b9b6b0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14130f;
+      --surface: #1c1b17;
+      --ink: #eceae4;
+      --ink-dim: #898781;
+      --rule: #2e2c27;
+      --healthy: #898781;
+      --broken: #d03b3b;
+      --orphan: #c98500;    /* dark-mode amber */
+      --active: #3987e5;    /* dark-mode blue */
+      --baseline: #3a3833;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: grid; grid-template-rows: auto 1fr auto; height: 100vh; overflow: hidden;
+  }
+  header {
+    display: flex; align-items: baseline; gap: 1.5rem; flex-wrap: wrap;
+    padding: .9rem 1.4rem; border-bottom: 1px solid var(--rule); background: var(--surface);
+  }
+  h1 { margin: 0; font-size: 1.05rem; letter-spacing: .18em; text-transform: uppercase; font-weight: 650; }
+  .meta { color: var(--ink-dim); font-size: .82rem; font-variant-numeric: tabular-nums; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  #stage { position: relative; overflow: hidden; }
+  svg { width: 100%; height: 100%; display: block; }
+
+  /* Baseline layer: context only. Thin, dim, unlabelled. */
+  .baseline-edge { stroke: var(--baseline); stroke-width: 1; fill: none; opacity: .55; }
+  .baseline-node { fill: var(--baseline); opacity: .5; }
+
+  /* Session layer: full size, colour, labels, on top. */
+  .edge { stroke: var(--healthy); stroke-width: 2.5; fill: none; opacity: .8; }
+  .edge.broken { stroke: var(--broken); stroke-width: 3.5; stroke-dasharray: 10 8; opacity: 1; }
+  .node { stroke-width: 0; }
+  .node.healthy { fill: var(--healthy); }
+  .node.broken  { fill: var(--broken); }
+  .node.orphan  { fill: var(--orphan); }
+  .node.active  { fill: var(--active); }
+  /* Identity is a ring, never the fill (section 3.2, last row). */
+  .ring { fill: none; stroke-width: 2.5; opacity: .9; }
+  .label {
+    font: 600 13px ui-monospace, "SF Mono", Menlo, monospace;
+    fill: var(--ink); paint-order: stroke; stroke: var(--bg); stroke-width: 4px;
+  }
+  .label.small { font-size: 11px; font-weight: 500; fill: var(--ink-dim); }
+  .gap-label {
+    font: 700 12px ui-sans-serif, sans-serif; fill: var(--broken);
+    paint-order: stroke; stroke: var(--bg); stroke-width: 4px; text-transform: uppercase; letter-spacing: .08em;
+  }
+
+  footer {
+    border-top: 1px solid var(--rule); background: var(--surface);
+    padding: .7rem 1.4rem; display: flex; gap: 1.6rem; align-items: center; flex-wrap: wrap;
+    font-size: .8rem; color: var(--ink-dim);
+  }
+  .key { display: flex; align-items: center; gap: .45rem; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dash { width: 22px; height: 0; border-top: 3px dashed var(--broken); display: inline-block; }
+  /* Light-mode amber is below 3:1 against the surface, so it always carries a
+     visible label rather than relying on the colour alone (section 3.2). */
+  .key.amber b { color: var(--ink); }
+  #status { margin-left: auto; }
+  #status.live::before { content: "●"; color: var(--active); margin-right: .4rem; }
+  #status.stale::before { content: "○"; color: var(--ink-dim); margin-right: .4rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>irus</h1>
+  <span class="meta">baseline <b id="sha">—</b> <span id="anchor"></span></span>
+  <span class="meta"><b id="n-session">0</b> this session · <b id="n-baseline">0</b> pre-existing</span>
+  <span class="meta"><b id="n-high">0</b> high-confidence</span>
+</header>
+
+<div id="stage"><svg id="map" role="img" aria-label="Seam map"></svg></div>
+
+<footer>
+  <span class="key"><i class="dot" style="background:var(--healthy)"></i> healthy</span>
+  <span class="key"><i class="dot" style="background:var(--broken)"></i> broken seam</span>
+  <span class="key amber"><i class="dot" style="background:var(--orphan)"></i> <b>orphan</b></span>
+  <span class="key"><i class="dot" style="background:var(--active)"></i> active now</span>
+  <span class="key"><i class="dash"></i> missing connection</span>
+  <span class="key">ring = agent</span>
+  <span id="status" class="stale">connecting</span>
+</footer>
+
+<script>
+"use strict";
+
+// ---------------------------------------------------------------- reducer
+// Mirrors irus/events.py::replay. Unknown kinds are ignored, never fatal
+// (B-R22). Replaying from the first event reconstructs identical state, so a
+// refresh is idempotent (B-R4) — there is no incremental-only path here.
+
+function emptyState() {
+  return {
+    baselineSha: null, baselineFindings: 0,
+    claims: {}, surfaces: {}, findings: {}, proofs: {}, active: {},
+  };
+}
+
+function reduce(state, e) {
+  switch (e.kind) {
+    case "baseline":
+      state.baselineSha = e.sha; state.baselineFindings = e.findings | 0; break;
+    case "claim":
+      if (e.target) { state.claims[e.target] = e.agent || "unknown"; state.active[e.target] = e.t; }
+      break;
+    case "release":
+      delete state.claims[e.target]; delete state.active[e.target]; break;
+    case "surface":
+      state.surfaces[e.id + "|" + e.side] = e; state.active[e.id] = e.t; break;
+    case "finding":
+      if (e.id) state.findings[e.id] = e; break;
+    case "proof":
+      if (e.id) state.proofs[e.id] = e; break;
+    default: break;   // forward compatibility, by contract
+  }
+  return state;
+}
+
+// ------------------------------------------------------------------ layout
+// B-R2: positions are seeded from node identity, so the same codebase renders
+// identically every session. A hash of the id — not the node's index — is the
+// seed, so adding a node never reshuffles the ones already on screen.
+
+function hash32(str) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return h >>> 0;
+}
+function unit(str, salt) { return (hash32(str + "#" + salt) % 100000) / 100000; }
+
+// Producers left, consumers right, env below. Within a band the position is a
+// pure function of the id, then relaxed by a fixed number of deterministic
+// passes to stop labels colliding. Fixed count, no randomness, no clock.
+function layout(nodes, w, h) {
+  const bands = { producer: 0.26, consumer: 0.74, env: 0.5 };
+  const placed = nodes.map((n) => {
+    const bx = bands[n.band] !== undefined ? bands[n.band] : 0.5;
+    const jitter = (unit(n.id, "x") - 0.5) * 0.10;
+    const y = n.band === "env" ? 0.80 + (unit(n.id, "y") - 0.5) * 0.16
+                               : 0.12 + unit(n.id, "y") * 0.62;
+    return Object.assign({}, n, { x: (bx + jitter) * w, y: y * h });
+  });
+  for (let pass = 0; pass < 60; pass++) {
+    for (let i = 0; i < placed.length; i++) {
+      for (let j = i + 1; j < placed.length; j++) {
+        const a = placed[i], b = placed[j];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const min = a.r + b.r + 34;
+        const d = Math.hypot(dx, dy) || 0.001;
+        if (d < min) {
+          const push = (min - d) / 2 / d;
+          a.x -= dx * push; a.y -= dy * push;
+          b.x += dx * push; b.y += dy * push;
+        }
+      }
+    }
+  }
+  const pad = 60;
+  placed.forEach((n) => {
+    n.x = Math.max(pad, Math.min(w - pad, n.x));
+    n.y = Math.max(pad, Math.min(h - pad, n.y));
+  });
+  return placed;
+}
+
+// ------------------------------------------------------------------- model
+// Turn state into nodes and edges. A seam that has both sides and no finding is
+// a healthy edge; a seam with a high-confidence finding is the dashed red arc,
+// and its endpoints are pulled apart so the absence is legible rather than
+// implied.
+
+const AGENT_RING = ["#3987e5", "#7c5cd6", "#2f9e78", "#c98500"];
+
+function buildGraph(state) {
+  const nodes = new Map();
+  const edges = [];
+
+  function node(id, band, label, extra) {
+    if (!nodes.has(id)) {
+      nodes.set(id, Object.assign({ id, band, label, status: "healthy", blast: 1, agent: null }, extra || {}));
+    }
+    return nodes.get(id);
+  }
+
+  Object.values(state.surfaces).forEach((s) => {
+    const band = s.side === "producer" ? "producer" : "consumer";
+    node(s.id + "|" + s.side, band, s.id, { seam: s.id, side: s.side });
+  });
+
+  // Pair the two sides of each seam.
+  const seams = new Set(Object.values(state.surfaces).map((s) => s.id));
+  seams.forEach((seam) => {
+    const p = nodes.get(seam + "|producer");
+    const c = nodes.get(seam + "|consumer");
+    if (p && c) { edges.push({ from: c, to: p, seam, broken: false }); p.blast += 1; }
+  });
+
+  Object.values(state.findings).forEach((f) => {
+    const isHigh = f.confidence === "high";
+    const p = nodes.get(f.seam + "|producer");
+    const c = nodes.get(f.seam + "|consumer");
+    if (f.class === "env_unset") {
+      const n = node("env|" + f.seam, "env", f.seam, { seam: f.seam });
+      n.status = "orphan"; n.finding = f;
+      return;
+    }
+    if (f.class === "orphan_endpoint") {
+      const target = p || node(f.seam + "|producer", "producer", f.seam, { seam: f.seam });
+      target.status = "orphan"; target.finding = f;
+      return;
+    }
+    // payload_mismatch / no_route: the seam itself is what is broken.
+    const from = c || node(f.seam + "|consumer", "consumer", f.seam, { seam: f.seam });
+    const to = p || node(f.seam + "|producer", "producer", f.seam, { seam: f.seam });
+    if (isHigh) { from.status = "broken"; to.status = "broken"; }
+    const existing = edges.find((e) => e.seam === f.seam);
+    if (existing) { existing.broken = isHigh; existing.finding = f; }
+    else edges.push({ from, to, seam: f.seam, broken: isHigh, finding: f });
+  });
+
+  Object.entries(state.claims).forEach(([target, agent]) => {
+    nodes.forEach((n) => {
+      if (n.seam === target || n.label === target) {
+        n.agent = agent;
+        if (n.status === "healthy") n.status = "active";
+      }
+    });
+  });
+
+  return { nodes: Array.from(nodes.values()), edges };
+}
+
+// ------------------------------------------------------------------ render
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+function el(name, attrs, text) {
+  const node = document.createElementNS(SVG_NS, name);
+  for (const k in attrs) node.setAttribute(k, attrs[k]);
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function render(state) {
+  const svg = document.getElementById("map");
+  const stage = document.getElementById("stage");
+  const w = stage.clientWidth, h = stage.clientHeight;
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const baselineLayer = el("g", { class: "layer-baseline" });
+  const edgeLayer = el("g", { class: "layer-edges" });
+  const nodeLayer = el("g", { class: "layer-nodes" });
+  svg.appendChild(baselineLayer); svg.appendChild(edgeLayer); svg.appendChild(nodeLayer);
+
+  // Baseline layer: dim, thin, unlabelled context. Drawn from the baseline
+  // count alone — we deliberately do not know or show what those findings were.
+  const ghosts = Math.min(state.baselineFindings, 60);
+  for (let i = 0; i < ghosts; i++) {
+    const gx = (unit("ghost" + i, "x")) * w;
+    const gy = (unit("ghost" + i, "y")) * h;
+    baselineLayer.appendChild(el("circle", { cx: gx, cy: gy, r: 4, class: "baseline-node" }));
+    if (i > 0) {
+      const px = (unit("ghost" + (i - 1), "x")) * w;
+      const py = (unit("ghost" + (i - 1), "y")) * h;
+      baselineLayer.appendChild(el("path", { d: `M${px},${py} L${gx},${gy}`, class: "baseline-edge" }));
+    }
+  }
+
+  const graph = buildGraph(state);
+  // Node size is blast radius: how many things depend on it (section 3.2).
+  graph.nodes.forEach((n) => { n.r = 9 + Math.min(26, Math.sqrt(n.blast) * 8); });
+  const placed = layout(graph.nodes, w, h);
+  const byId = new Map(placed.map((n) => [n.id, n]));
+
+  graph.edges.forEach((e) => {
+    const a = byId.get(e.from.id), b = byId.get(e.to.id);
+    if (!a || !b) return;
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    if (!e.broken) {
+      edgeLayer.appendChild(el("path", { d: `M${a.x},${a.y} Q${mx},${my - 40} ${b.x},${b.y}`, class: "edge" }));
+      return;
+    }
+    // The missing connection. Endpoints are pulled back from each node so the
+    // arc visibly fails to arrive — the gap is the product (PRD-A 5.2).
+    const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1;
+    const ux = dx / d, uy = dy / d;
+    const gap = Math.min(70, d * 0.22);
+    const ax = a.x + ux * (a.r + gap), ay = a.y + uy * (a.r + gap);
+    const bx = b.x - ux * (b.r + gap), by = b.y - uy * (b.r + gap);
+    const cx = (ax + bx) / 2, cy = (ay + by) / 2 - 70;
+    edgeLayer.appendChild(el("path", { d: `M${ax},${ay} Q${cx},${cy} ${bx},${by}`, class: "edge broken" }));
+    edgeLayer.appendChild(el("text", { x: cx, y: cy - 6, "text-anchor": "middle", class: "gap-label" }, "not connected"));
+  });
+
+  placed.forEach((n) => {
+    nodeLayer.appendChild(el("circle", { cx: n.x, cy: n.y, r: n.r, class: "node " + n.status }));
+    if (n.agent) {
+      const colour = AGENT_RING[hash32(n.agent) % AGENT_RING.length];
+      nodeLayer.appendChild(el("circle", {
+        cx: n.x, cy: n.y, r: n.r + 7, class: "ring", stroke: colour,
+      }));
+    }
+    nodeLayer.appendChild(el("text", {
+      x: n.x, y: n.y + n.r + 19, "text-anchor": "middle", class: "label",
+    }, n.label));
+    nodeLayer.appendChild(el("text", {
+      x: n.x, y: n.y + n.r + 34, "text-anchor": "middle", class: "label small",
+    }, n.side || (n.band === "env" ? "env" : "")));
+  });
+
+  const findings = Object.values(state.findings);
+  document.getElementById("sha").textContent = state.baselineSha ? state.baselineSha.slice(0, 7) : "—";
+  document.getElementById("n-session").textContent = findings.length;
+  document.getElementById("n-baseline").textContent = state.baselineFindings;
+  document.getElementById("n-high").textContent = findings.filter((f) => f.confidence === "high").length;
+}
+
+// -------------------------------------------------------------- connection
+// The server replays the entire log on connect, so this always rebuilds from
+// an empty state. That is what makes a refresh — and a laptop lid closing —
+// reproduce identical state rather than a partial one (B-R4).
+
+let state = emptyState();
+const status = document.getElementById("status");
+
+function connect() {
+  const source = new EventSource("/events");
+  source.onopen = () => { status.className = "live"; status.textContent = "live"; };
+  source.onmessage = (message) => {
+    let event;
+    try { event = JSON.parse(message.data); } catch (_) { return; }
+    if (event.kind === "__replay_start") { state = emptyState(); return; }
+    if (event.kind === "__replay_end") { render(state); return; }
+    reduce(state, event);
+    render(state);
+  };
+  source.onerror = () => {
+    status.className = "stale"; status.textContent = "reconnecting";
+    // EventSource retries on its own; nothing to do but say so honestly.
+  };
+}
+
+window.addEventListener("resize", () => render(state));
+render(state);
+connect();
+</script>
+</body>
+</html>
