@@ -97,6 +97,34 @@ red arc with the two ends pulled apart.
   rather than the code's defect. A spread (`...rest`) suppresses missing-field
   checks for that seam instead of guessing.
 
+## As an MCP server
+
+Agents read the map as text, never as a picture. Register it with any MCP client:
+
+```json
+{
+  "mcpServers": {
+    "irus": {
+      "command": "irus-mcp",
+      "args": ["/path/to/your/repo"]
+    }
+  }
+}
+```
+
+The path argument is optional; without it the server uses its working directory,
+and every tool also accepts a `path` so one server can serve any repository.
+
+Four tools: `status` (seams that disagree, routes nobody calls, environment
+variables read but never set), `next` (claim one unclaimed piece of work),
+`claim` and `release`.
+
+JSON-RPC 2.0 over stdio, standard library only, no network. Protocol versions
+2024-11-05, 2025-03-26 and 2025-06-18 are all accepted and the client's choice
+is echoed back. 15 conformance tests drive it as a subprocess exactly as a
+client would, including stdout purity, launching from an unrelated working
+directory, keepalive pings, malformed input, and tool failures.
+
 ## Measured
 
 On this machine, against a synthetic 500-file project:
