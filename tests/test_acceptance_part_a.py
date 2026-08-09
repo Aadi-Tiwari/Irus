@@ -744,3 +744,124 @@ def test_orphan_endpoint_never_fails_the_gate(tmp_path):
     found = [f for f in scan(tmp_path).findings if f.kind == "orphan_endpoint"]
     assert found and all(f.confidence == LOW for f in found)
     assert main(["check", str(tmp_path), "--no-baseline"]) == 0
+
+
+# ===================== REGRESSIONS FOUND BY GATE B, ON REAL AGENT OUTPUT
+GATE_B = Path(__file__).resolve().parents[1] / "fixtures" / "gate-b-session"
+
+
+def test_gate_b_session_still_reproduces_the_mismatch():
+    """The recorded session of two agents. If this stops firing, the tool has
+    regressed on the only evidence it has that it catches something real."""
+    findings = scan(GATE_B).findings
+    high = [f for f in findings if f.confidence == HIGH]
+    assert len(high) == 1, f"expected exactly one high finding, got {[f.kind for f in high]}"
+    f = high[0]
+    assert f.kind == "missing_required_field"
+    assert f.seam == "PUT /profile"
+    assert f.subject == "marketing_emails"
+    assert "marketing_opt_in" in f.detail
+    assert f.producer_loc and f.consumer_loc, "a finding must name both sides"
+
+
+def test_gate_b_the_two_agreeing_seams_stay_quiet():
+    """Two of three features matched. Reporting them would be a false positive."""
+    seams = {f.seam for f in scan(GATE_B).findings}
+    assert "POST /orders" not in seams
+    assert "POST /orders/{}/receipt" not in seams
+
+
+def test_wrapper_call_is_resolved_one_hop(tmp_path):
+    """Agents route every request through a shared helper, so the contract lives
+    at the call site and a scanner reading only `fetch(` sees nothing."""
+    write(tmp_path, "api.py", """
+        from fastapi import FastAPI
+        from pydantic import BaseModel
+
+        app = FastAPI()
+
+        class Body(BaseModel):
+            email: str
+
+        @app.put("/profile")
+        async def update(payload: Body):
+            return {}
+    """)
+    write(tmp_path, "client.ts", """
+        export async function sendJson<T>(method: string, path: string, body: unknown): Promise<T> {
+          const response = await fetch(path, {
+            method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          return response.json() as Promise<T>;
+        }
+    """)
+    write(tmp_path, "profile.ts", """
+        import { sendJson } from "./client";
+
+        export interface UpdateProfileRequest {
+          mail: string;
+        }
+
+        export function updateProfile(request: UpdateProfileRequest) {
+          return sendJson("PUT", "/profile", request);
+        }
+    """)
+    result = scan(tmp_path)
+    assert any(c.seam == "PUT /profile" for c in result.consumers), "wrapper call not resolved"
+    assert any(
+        f.kind == "missing_required_field" and f.subject == "email"
+        for f in result.findings
+    )
+
+
+def test_shorthand_method_is_not_read_as_get(tmp_path):
+    """`fetch(url, { method, headers })` is shorthand, not a GET."""
+    write(tmp_path, "client.ts", """
+        export async function send<T>(method: string, path: string, body: unknown): Promise<T> {
+          const r = await fetch(path, { method, body: JSON.stringify(body) });
+          return r.json() as Promise<T>;
+        }
+    """)
+    write(tmp_path, "use.ts", """
+        import { send } from "./client";
+        export function go() {
+          return send("POST", "/api/thing", { a: 1 });
+        }
+    """)
+    methods = {c.method for c in scan(tmp_path).consumers if c.path == "/api/thing"}
+    assert methods == {"POST"}, f"expected POST, got {methods}"
+
+
+def test_pydantic_model_in_another_module_is_resolved(tmp_path):
+    """Real projects keep schemas in schemas.py and routes in routers/."""
+    write(tmp_path, "app/__init__.py", "")
+    write(tmp_path, "app/schemas.py", """
+        from pydantic import BaseModel
+
+        class ProfileUpdate(BaseModel):
+            display_name: str
+            marketing_emails: bool
+    """)
+    write(tmp_path, "app/routers/__init__.py", "")
+    write(tmp_path, "app/routers/profile.py", """
+        from fastapi import APIRouter
+        from app.schemas import ProfileUpdate
+
+        router = APIRouter()
+
+        @router.put("/profile")
+        async def update(payload: ProfileUpdate):
+            return {}
+    """)
+    write(tmp_path, "app/main.py", """
+        from fastapi import FastAPI
+        from app.routers import profile
+
+        app = FastAPI()
+        app.include_router(profile.router)
+    """)
+    surface = next(p for p in scan(tmp_path).producers if p.seam == "PUT /profile")
+    assert surface.encoding == "json", "cross-module model never resolved"
+    assert {f.name for f in surface.fields} == {"display_name", "marketing_emails"}

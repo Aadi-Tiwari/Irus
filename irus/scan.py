@@ -19,7 +19,7 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from .compare import compare, orphan_endpoints
-from .extract import envvars, py_fastapi, ts_components, ts_express, ts_fetch
+from .extract import envvars, py_fastapi, ts_components, ts_express, ts_fetch, ts_wrapper
 from .model import HIGH, LOW, MEDIUM, Component, EnvRead, Finding, PathRef, Surface
 
 IGNORE_DIRS = {
@@ -122,6 +122,8 @@ class FileExtract:
     used: frozenset[str] = frozenset()
     env_reads: tuple[EnvRead, ...] = ()
     path_refs: tuple[PathRef, ...] = ()
+    src: str = ""
+    masked: str = ""
 
 
 class ScanCache:
@@ -277,6 +279,7 @@ class ParsedPy:
     include_prefix: tuple[tuple[str, str], ...] = ()
     unresolved_prefix: frozenset[str] = frozenset()
     aliases: tuple[tuple[str, str], ...] = ()
+    models: tuple[tuple[str, tuple], ...] = ()
 
 
 def _parse_py(path: Path, root: Path, src: str) -> ParsedPy | None:
@@ -295,6 +298,7 @@ def _parse_py(path: Path, root: Path, src: str) -> ParsedPy | None:
         include_prefix=tuple(sorted(col.include_prefix.items())),
         unresolved_prefix=frozenset(getattr(col, "unresolved_prefix", set())),
         aliases=tuple(sorted(getattr(col, "aliases", {}).items())),
+        models=tuple(sorted(col.models.items())),
     )
 
 
@@ -308,6 +312,8 @@ def _extract_ts(path: Path, root: Path, src: str) -> FileExtract:
         used=frozenset(ts_components.used_names(path, src)),
         env_reads=tuple(envvars.js_reads_from_source(src, rel)),
         path_refs=tuple(envvars.path_literals(src, rel)),
+        src=src,
+        masked=masked,
     )
 
 
@@ -330,6 +336,7 @@ def scan(root: Path, cache: ScanCache | None = None) -> ScanResult:
     include_prefix: dict[str, str] = {}
     unresolved: set[str] = set()
     aliases: dict[str, str] = {}
+    models: dict[str, tuple] = {}
 
     for path in files:
         digest = ScanCache.digest(path) if cache is not None else ""
@@ -359,6 +366,7 @@ def scan(root: Path, cache: ScanCache | None = None) -> ScanResult:
             include_prefix.update(dict(value.include_prefix))
             unresolved |= set(value.unresolved_prefix)
             aliases.update(dict(value.aliases))
+            models.update(dict(value.models))
         elif isinstance(value, FileExtract):
             ts_extracts[path] = value
 
@@ -369,10 +377,24 @@ def scan(root: Path, cache: ScanCache | None = None) -> ScanResult:
         if unresolved:
             setattr(parsed.collector, "unresolved_prefix", unresolved)
         result.producers += py_fastapi.surfaces_from(
-            parsed.collector, parsed.rel, included, include_prefix
+            parsed.collector, parsed.rel, included, include_prefix, models
         )
         result.env_reads += list(parsed.env_reads)
         result.path_refs += list(parsed.path_refs)
+
+    # Real agent code routes every request through a shared helper, so the
+    # contract lives at the call site rather than at the fetch. Discover those
+    # helpers first, then read the calls to them (found by Gate B).
+    wrappers: dict[str, ts_wrapper.Wrapper] = {}
+    for extract in ts_extracts.values():
+        if extract.src:
+            wrappers.update(ts_wrapper.find_wrappers(extract.src, extract.masked))
+    if wrappers:
+        for path, extract in ts_extracts.items():
+            if extract.src:
+                result.consumers += ts_wrapper.extract_calls(
+                    path, root, wrappers, extract.src, extract.masked
+                )
 
     used_components: set[str] = set()
     declared_components: dict[str, Component] = {}
