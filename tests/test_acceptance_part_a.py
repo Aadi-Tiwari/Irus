@@ -657,3 +657,19 @@ def test_router_mounted_under_an_import_alias_is_not_unmounted(tmp_path):
         api_router.include_router(case_router, prefix="/cases")
     """)
     assert [f for f in scan(tmp_path).findings if f.kind == "unmounted_route"] == []
+
+
+def test_receipt_explains_a_fail_line_that_is_not_a_finding(tmp_path):
+    """A FAIL line beside "0 findings" reads as a contradiction unless it says why."""
+    write(tmp_path, "api.py", """
+        from fastapi import FastAPI
+        app = FastAPI()
+
+        @app.get("/api/health")
+        async def health():
+            return {}
+    """)
+    result = scan(tmp_path)
+    assert result.findings == [], "a health route is not a finding"
+    text = receipts_mod.render(receipts_mod.build(result), only_failing=True)
+    assert "externally" in text, "an unexplained FAIL beside zero findings is misleading"
