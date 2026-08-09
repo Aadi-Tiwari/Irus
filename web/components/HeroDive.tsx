@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate } from "motion/react";
 
 // Measured on this machine against a synthetic 500-file project. The two zeros are
@@ -33,12 +33,35 @@ export default function HeroDive() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0, 0.25], [0, -40]);
 
+  // Two full-resolution decoders running at once is the page's largest fixed
+  // cost, and this one is invisible past the dive. Stop it when it leaves the
+  // viewport and restart it on the way back up.
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = videoRef.current;
+    const host = ref.current;
+    if (!el || !host) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) void el.play().catch(() => {});
+        else el.pause();
+      },
+      { rootMargin: "100px" },
+    );
+    io.observe(host);
+    return () => io.disconnect();
+  }, []);
+
+  // 200vh, not 320: the dive is keyed to scroll progress, so a shorter section
+  // plays the same arc over less travel. At 320vh a wheel notch moved the plate
+  // so little that the zoom read as stuck rather than deliberate.
   return (
-    <section ref={ref} className="relative h-[320vh] bg-[#0a0a0a]">
+    <section ref={ref} className="relative h-[200vh] bg-[#0a0a0a]">
       <div className="sticky top-0 h-screen w-full p-3 md:p-4">
         <div className="relative h-full w-full overflow-hidden rounded-[28px] md:rounded-[36px]">
           {/* Backdrop plate — zooms on scroll */}
           <motion.video
+            ref={videoRef}
             style={{ scale, filter: videoFilter }}
             className="absolute inset-0 h-full w-full object-cover"
             src="/hero-plate.mp4"
@@ -46,6 +69,8 @@ export default function HeroDive() {
             muted
             loop
             playsInline
+            preload="auto"
+            disablePictureInPicture
           />
 
           {/* Soft atmospheric grade */}
