@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.irus/
+.venv/
+venv/
+node_modules/
+.pytest_cache/
+*.egg-info/
+
+# The landing site under web/ is a separate workstream; its build output and
+# dependencies must never enter this repository.
+web/.next/
+web/node_modules/
+*.tsbuildinfo
+findings-live/

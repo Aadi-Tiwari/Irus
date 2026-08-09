@@ -1,0 +1,12 @@
+# Irus core and the coordination server are stdlib-only, on purpose:
+# no install step, no CDN, no network, and nothing to break offline.
+#
+# Optional, and only for the checks that genuinely need them:
+#   PyYAML  - richer parsing of docker-compose and GitHub Actions env blocks.
+#             envvars.py falls back to a regex scan when it is absent.
+#   httpx   - required by fastapi.testclient for stage-2 execution proof.
+#             Not needed by the hosted server or by stage-1 detection.
+#
+# Neither is imported at server start, so a Render deploy works with this file
+# empty. They are listed because the merge-gate path uses them.
+PyYAML>=6.0

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>irus</title>
+<style>
+  /* A-R20: baseline drawn as dim context, this session at full colour,
+     missing connections as dashed red arcs with the ends pulled apart.
+     Light is the base; dark is selected, not an automatic inversion. */
+  :root {
+    color-scheme: light;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --hairline: #e1e0d9;
+    --broken: #d03b3b;
+    --orphan: #eda100;
+    --active: #2a78d6;
+    --healthy: #898781;
+    --ghost: #c3c2b7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --hairline: #2c2c2a;
+      --broken: #d03b3b;
+      --orphan: #c98500;
+      --active: #3987e5;
+      --ghost: #383835;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--surface); color: var(--ink);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  header {
+    display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+    padding: 14px 20px; border-bottom: 1px solid var(--hairline);
+  }
+  h1 { font-size: 15px; margin: 0; font-weight: 600; letter-spacing: .02em; }
+  .counts { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+  .legend { margin-left: auto; display: flex; gap: 14px; color: var(--ink-2); font-size: 12px; }
+  main { display: grid; grid-template-columns: minmax(0,1fr) 340px; min-height: calc(100vh - 53px); }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  #canvas { width: 100%; height: 100%; min-height: 60vh; display: block; }
+  aside { border-left: 1px solid var(--hairline); overflow-y: auto; max-height: calc(100vh - 53px); }
+  @media (max-width: 860px) { aside { border-left: 0; border-top: 1px solid var(--hairline); } }
+  .finding { padding: 10px 16px; border-bottom: 1px solid var(--hairline); }
+  .finding b { font-weight: 600; }
+  .finding .seam { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  .finding .why { color: var(--ink-2); font-size: 12px; margin-top: 3px; }
+  .tag { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 5px;
+         border-radius: 3px; border: 1px solid currentColor; }
+  .empty { padding: 28px 16px; color: var(--muted); }
+  text { font: 11px system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<header>
+  <h1>irus</h1>
+  <span class="counts" id="counts">connecting</span>
+  <span class="legend">
+    <span><i class="dot" style="background:var(--broken)"></i>broken seam</span>
+    <span><i class="dot" style="background:var(--orphan)"></i>orphan</span>
+    <span><i class="dot" style="background:var(--active)"></i>active</span>
+    <span><i class="dot" style="background:var(--ghost)"></i>baseline</span>
+  </span>
+</header>
+<main>
+  <svg id="canvas" role="img" aria-label="integration map"></svg>
+  <aside id="list"><p class="empty">Waiting for events. Nothing is wrong yet.</p></aside>
+</main>
+
+<script>
+"use strict";
+const SVG = "http://www.w3.org/2000/svg";
+const canvas = document.getElementById("canvas");
+const listEl = document.getElementById("list");
+const countsEl = document.getElementById("counts");
+
+const state = { surfaces: new Map(), findings: new Map(), claims: new Map(), baselineSeams: new Set() };
+
+// Deterministic layout: position comes from the node's identity, so the same
+// codebase looks the same every session and spatial memory survives a restart.
+function hash(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return (h >>> 0) / 4294967295;
+}
+
+function apply(ev) {
+  if (ev.kind === "surface") {
+    const key = ev.side + "|" + ev.id;
+    state.surfaces.set(key, { id: ev.id, side: ev.side, file: ev.file, encoding: ev.encoding,
+                             shape: ev.shape || {}, mounted: ev.mounted !== false });
+  } else if (ev.kind === "finding") {
+    state.findings.set(ev.id, ev);
+  } else if (ev.kind === "claim") {
+    state.claims.set(ev.target, ev.agent);
+  } else if (ev.kind === "release") {
+    state.claims.delete(ev.target);
+  } else if (ev.kind === "baseline") {
+    state.baselineSeams = new Set(ev.seams || []);
+  }
+}
+
+function seamState(seam) {
+  let broken = false, orphan = false;
+  for (const f of state.findings.values()) {
+    if (f.seam !== seam) continue;
+    if (f.confidence === "high") broken = true;
+    else if ((f.class || "").startsWith("orphan")) orphan = true;
+  }
+  if (broken) return "broken";
+  if (orphan) return "orphan";
+  if (state.claims.has(seam)) return "active";
+  return "healthy";
+}
+
+function render() {
+  const w = canvas.clientWidth || 800, h = Math.max(canvas.clientHeight || 0, 420);
+  canvas.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  while (canvas.firstChild) canvas.removeChild(canvas.firstChild);
+
+  const producers = [...state.surfaces.values()].filter(s => s.side === "producer");
+  const consumers = [...state.surfaces.values()].filter(s => s.side === "consumer");
+  const seams = [...new Set([...producers, ...consumers].map(s => s.id))].sort();
+
+  // Blast radius: how many other surfaces share this path.
+  const radius = new Map();
+  for (const s of [...producers, ...consumers]) {
+    radius.set(s.id, (radius.get(s.id) || 0) + 1);
+  }
+
+  const place = (list, xBase, spread) => {
+    const map = new Map();
+    list.forEach(s => {
+      const jitter = hash(s.side + s.id);
+      const idx = seams.indexOf(s.id);
+      const y = 60 + ((idx + 0.5) / Math.max(seams.length, 1)) * (h - 120) + (jitter - 0.5) * 26;
+      map.set(s.id, { x: xBase + (jitter - 0.5) * spread, y, s });
+    });
+    return map;
+  };
+  const pl = place(producers, w * 0.26, w * 0.10);
+  const cl = place(consumers, w * 0.74, w * 0.10);
+
+  const add = (tag, attrs, parent) => {
+    const el = document.createElementNS(SVG, tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    (parent || canvas).appendChild(el);
+    return el;
+  };
+
+  add("text", { x: w * 0.26, y: 34, "text-anchor": "middle", fill: "var(--muted)" }).textContent = "server";
+  add("text", { x: w * 0.74, y: 34, "text-anchor": "middle", fill: "var(--muted)" }).textContent = "client";
+
+  // Edges first, so nodes sit on top of them.
+  for (const seam of seams) {
+    const p = pl.get(seam), c = cl.get(seam);
+    const st = seamState(seam);
+    const isBaseline = state.baselineSeams.has(seam);
+
+    if (p && c) {
+      if (st === "broken") {
+        // Absence is drawn explicitly: the ends are pulled apart so the gap
+        // itself is visible, because a connection that is missing is invisible
+        // by default and that gap is the entire product.
+        const dx = c.x - p.x, dy = c.y - p.y, len = Math.hypot(dx, dy) || 1;
+        const ux = dx / len, uy = dy / len, gap = Math.min(46, len * 0.24);
+        const ax = p.x + ux * (len / 2 - gap / 2), ay = p.y + uy * (len / 2 - gap / 2);
+        const bx = p.x + ux * (len / 2 + gap / 2), by = p.y + uy * (len / 2 + gap / 2);
+        add("path", { d: `M${p.x},${p.y} L${ax},${ay}`, stroke: "var(--broken)",
+                      "stroke-width": 2, "stroke-dasharray": "5 4", fill: "none" });
+        add("path", { d: `M${bx},${by} L${c.x},${c.y}`, stroke: "var(--broken)",
+                      "stroke-width": 2, "stroke-dasharray": "5 4", fill: "none" });
+        add("circle", { cx: (ax + bx) / 2, cy: (ay + by) / 2, r: 3.5, fill: "var(--broken)" });
+      } else {
+        add("path", { d: `M${p.x},${p.y} L${c.x},${c.y}`,
+                      stroke: isBaseline ? "var(--ghost)" : "var(--hairline)",
+                      "stroke-width": isBaseline ? 1 : 1.5, fill: "none" });
+      }
+    }
+  }
+
+  const drawNode = (pos, seam) => {
+    const st = seamState(seam);
+    const isBaseline = state.baselineSeams.has(seam);
+    const size = 5 + Math.min(7, (radius.get(seam) || 1) * 2);
+    const colour = st === "broken" ? "var(--broken)"
+                 : st === "orphan" ? "var(--orphan)"
+                 : st === "active" ? "var(--active)"
+                 : isBaseline ? "var(--ghost)" : "var(--healthy)";
+    const g = add("g", {});
+    const node = add("circle", { cx: pos.x, cy: pos.y, r: isBaseline ? size * 0.6 : size,
+                                 fill: colour, opacity: isBaseline ? 0.5 : 1 }, g);
+    node.appendChild(document.createElementNS(SVG, "title")).textContent =
+      `${seam}\n${pos.s.file || ""}`;
+    if (!isBaseline && st !== "healthy") {
+      const t = add("text", { x: pos.x, y: pos.y - size - 6, "text-anchor": "middle",
+                              fill: "var(--ink-2)" }, g);
+      t.textContent = seam;
+    }
+  };
+  for (const [seam, pos] of pl) drawNode(pos, seam);
+  for (const [seam, pos] of cl) drawNode(pos, seam);
+
+  if (!seams.length) {
+    add("text", { x: w / 2, y: h / 2, "text-anchor": "middle", fill: "var(--muted)" })
+      .textContent = "no surfaces yet";
+  }
+
+  // Side list
+  const findings = [...state.findings.values()]
+    .sort((a, b) => (a.confidence === "high" ? 0 : 1) - (b.confidence === "high" ? 0 : 1));
+  const high = findings.filter(f => f.confidence === "high").length;
+  countsEl.textContent = `${findings.length} finding(s), ${high} high | ${seams.length} seam(s)`;
+
+  listEl.innerHTML = "";
+  if (!findings.length) {
+    const p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "Nothing introduced this session.";
+    listEl.appendChild(p);
+    return;
+  }
+  for (const f of findings) {
+    const div = document.createElement("div");
+    div.className = "finding";
+    const colour = f.confidence === "high" ? "var(--broken)" : "var(--orphan)";
+    div.innerHTML =
+      `<span class="tag" style="color:${colour}">${f.confidence}</span> ` +
+      `<b>${escape(f.class || "")}</b><div class="seam">${escape(f.seam || "")}</div>` +
+      `<div class="why">${escape(f.detail || "")}</div>`;
+    listEl.appendChild(div);
+  }
+}
+
+function escape(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+let frame = null;
+function scheduleRender() {
+  if (frame) return;
+  frame = requestAnimationFrame(() => { frame = null; render(); });
+}
+
+// Replay-then-follow. A refresh rebuilds identical state, so a dropped
+// connection is recoverable with no server-side session.
+const room = new URLSearchParams(location.search).get("room") || "default";
+const source = new EventSource(`/events?room=${encodeURIComponent(room)}`);
+source.onmessage = e => {
+  let ev; try { ev = JSON.parse(e.data); } catch { return; }
+  if (ev.kind === "ping") return;
+  apply(ev);
+  scheduleRender();
+};
+source.onerror = () => { countsEl.textContent = "disconnected, retrying"; };
+window.addEventListener("resize", scheduleRender);
+render();
+</script>
+</body>
+</html>

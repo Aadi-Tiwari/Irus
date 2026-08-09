@@ -1,0 +1,4769 @@
+{
+ "repos": [
+  {
+   "repo": "dispatch",
+   "files": 877,
+   "corpus_files": 900,
+   "entries": [
+    {
+     "key": "f-b2a3e60a57dd",
+     "kind": "env_unset",
+     "seam": "env DATABASE_NAME",
+     "subject": "DATABASE_NAME",
+     "confidence": "high",
+     "location": "tests/conftest.py:12",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-f6f7be905350",
+     "kind": "env_unset",
+     "seam": "env DISPATCH_BUILD",
+     "subject": "DISPATCH_BUILD",
+     "confidence": "high",
+     "location": "src/dispatch/__init__.py:106",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-e08e297e2e60",
+     "kind": "env_unset",
+     "seam": "env ENV",
+     "subject": "ENV",
+     "confidence": "high",
+     "location": "tests/conftest.py:16",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-140e89545011",
+     "kind": "env_unset",
+     "seam": "env FORMKIT_ENTERPRISE_TOKEN",
+     "subject": "FORMKIT_ENTERPRISE_TOKEN",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/preinstall.js:9",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-c1a55b88a441",
+     "kind": "env_unset",
+     "seam": "env JWKS_URL",
+     "subject": "JWKS_URL",
+     "confidence": "high",
+     "location": "tests/conftest.py:17",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-2319e1427003",
+     "kind": "env_unset",
+     "seam": "env METRIC_PROVIDERS",
+     "subject": "METRIC_PROVIDERS",
+     "confidence": "high",
+     "location": "tests/conftest.py:18",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-d746a20ffca2",
+     "kind": "env_unset",
+     "seam": "env OAUTHLIB_INSECURE_TRANSPORT",
+     "subject": "OAUTHLIB_INSECURE_TRANSPORT",
+     "confidence": "high",
+     "location": "src/dispatch/cli.py:15",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-a4506bd19903",
+     "kind": "env_unset",
+     "seam": "env SECRET_PROVIDER",
+     "subject": "SECRET_PROVIDER",
+     "confidence": "high",
+     "location": "tests/conftest.py:19",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-20cb1baa69be",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_AUTHENTICATION_PROVIDER_PKCE_CLIENT_ID",
+     "subject": "VITE_DISPATCH_AUTHENTICATION_PROVIDER_PKCE_CLIENT_ID",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/auth/pkceAuthProvider.js:17",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-d0aa0217a183",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_AUTHENTICATION_PROVIDER_USE_ID_TOKEN",
+     "subject": "VITE_DISPATCH_AUTHENTICATION_PROVIDER_USE_ID_TOKEN",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/auth/pkceAuthProvider.js:21",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-902f56a7b6ee",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_AUTH_REGISTRATION_ENABLED",
+     "subject": "VITE_DISPATCH_AUTH_REGISTRATION_ENABLED",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/router/config.js:4",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-e15d9f1107a3",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_AVATAR_TEMPLATE",
+     "subject": "VITE_DISPATCH_AVATAR_TEMPLATE",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/auth/store.js:19",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-9ea73296a747",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_COMMIT_DATE",
+     "subject": "VITE_DISPATCH_COMMIT_DATE",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/app/store.js:13",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-0d2628c13113",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_COMMIT_HASH",
+     "subject": "VITE_DISPATCH_COMMIT_HASH",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/app/store.js:11",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-dd5c1efccda9",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_COMMIT_MESSAGE",
+     "subject": "VITE_DISPATCH_COMMIT_MESSAGE",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/app/store.js:12",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-c30a49c4db2f",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_SENTRY_DSN",
+     "subject": "VITE_DISPATCH_SENTRY_DSN",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/main.js:24",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-3a814a2ebbc0",
+     "kind": "env_unset",
+     "seam": "env VITE_DISPATCH_SENTRY_ENABLED",
+     "subject": "VITE_DISPATCH_SENTRY_ENABLED",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/main.js:23",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-f7508bd0a568",
+     "kind": "env_unset",
+     "seam": "env VITE_FORMKIT_PRO_PROJECT_KEY",
+     "subject": "VITE_FORMKIT_PRO_PROJECT_KEY",
+     "confidence": "high",
+     "location": "src/dispatch/static/dispatch/src/forms/store.js:10",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-dd8609e5d4fc",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /filters/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:268",
+     "label": "false",
+     "reason": "the path appears in tests/signal/test_signal_service.py"
+    },
+    {
+     "key": "f-80d5e6e7b8c9",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /instances/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugin/views.py:95",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/ai/prompt/views.py:132",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:390",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost/views.py:79",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost_type/views.py:86",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/cost_model/views.py:64",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/alert/views.py:47",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/query/views.py:55",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/data_format/views.py:65",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/environment/views.py:67",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/status/views.py:61",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/transport/views.py:63",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/type/views.py:61",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/views.py:55",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/definition/views.py:69",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/document/views.py:51",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/email_templates/views.py:110",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity/views.py:56",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity_type/views.py:192",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/feedback/incident/views.py:58",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:225",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost/views.py:79",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost_type/views.py:86",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/individual/views.py:108",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/notification/views.py:77",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/project/views.py:116",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/search_filter/views.py:106",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/service/views.py:107",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:449",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag/views.py:57",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag_type/views.py:94",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/task/views.py:127",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/team/views.py:72",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/term/views.py:63",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-7730d584425d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/workflow/views.py:104",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-8eb120c79ddf",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}/event/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:579",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-8eb120c79ddf",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}/event/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:508",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-80bfae6b1ab9",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}/remove/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:444",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/enums.py"
+    },
+    {
+     "key": "f-80bfae6b1ab9",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}/remove/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:301",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/enums.py"
+    },
+    {
+     "key": "f-f11a00e0fb1d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/feedback/service/views.py:50",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f11a00e0fb1d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/type/views.py:99",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f11a00e0fb1d",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /{}/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/views.py:130",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/ai/prompt/views.py:30",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/priority/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/severity/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/type/views.py:16",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:127",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost_type/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/cost_model/views.py:24",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/query/views.py:19",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/data_format/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/environment/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/status/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/transport/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/type/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/views.py:19",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/definition/views.py:20",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/document/views.py:14",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/email_templates/views.py:29",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity/views.py:20",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity_type/views.py:28",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/feedback/incident/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/feedback/service/views.py:24",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/type/views.py:24",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/views.py:26",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/priority/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/severity/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/type/views.py:16",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:77",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost_type/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/individual/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/notification/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/organization/views.py:33",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugin/views.py:23",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/project/views.py:29",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/search/views.py:19",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/search_filter/views.py:26",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/service/views.py:23",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:280",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag_type/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/task/views.py:28",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/team/views.py:20",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/term/views.py:15",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-f8544ae47a71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/workflow/views.py:25",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-51b323e3ff6c",
+     "kind": "orphan_endpoint",
+     "seam": "GET /defaults",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/ai/prompt/views.py:42",
+     "label": "false",
+     "reason": "the path appears in playwright.config.ts"
+    },
+    {
+     "key": "f-dcb060659afd",
+     "kind": "orphan_endpoint",
+     "seam": "GET /engagements",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:139",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/signal/models.py"
+    },
+    {
+     "key": "f-69a56f981821",
+     "kind": "orphan_endpoint",
+     "seam": "GET /engagements/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:145",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/signal/models.py"
+    },
+    {
+     "key": "f-518d2d597cae",
+     "kind": "orphan_endpoint",
+     "seam": "GET /externalids",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/service/views.py:29",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/service/api.js"
+    },
+    {
+     "key": "f-4458a0546665",
+     "kind": "orphan_endpoint",
+     "seam": "GET /filters",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:133",
+     "label": "false",
+     "reason": "the path appears in tests/signal/test_signal_service.py"
+    },
+    {
+     "key": "f-495146eb35ff",
+     "kind": "orphan_endpoint",
+     "seam": "GET /genai-types",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/ai/prompt/views.py:36",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/prompt/store.js"
+    },
+    {
+     "key": "f-2a218db39ff8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /healthcheck",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/api.py:257",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-b6adfba49459",
+     "kind": "orphan_endpoint",
+     "seam": "GET /instances",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugin/views.py:32",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-b6adfba49459",
+     "kind": "orphan_endpoint",
+     "seam": "GET /instances",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:65",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-cfd5c3d5687d",
+     "kind": "orphan_endpoint",
+     "seam": "GET /instances/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugin/views.py:42",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-cfd5c3d5687d",
+     "kind": "orphan_endpoint",
+     "seam": "GET /instances/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/workflow/views.py:49",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-9f188dd7de6c",
+     "kind": "orphan_endpoint",
+     "seam": "GET /metric/forecast",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:535",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/incident/api.js"
+    },
+    {
+     "key": "f-4a6f908dc062",
+     "kind": "orphan_endpoint",
+     "seam": "GET /minimal",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:153",
+     "label": "false",
+     "reason": "the path appears in tests/signal/test_signal_flow.py"
+    },
+    {
+     "key": "f-cc2edefc10d9",
+     "kind": "orphan_endpoint",
+     "seam": "GET /plugin_events",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugin/views.py:110",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/plugin/api.js"
+    },
+    {
+     "key": "f-2e2b8c956bfa",
+     "kind": "orphan_endpoint",
+     "seam": "GET /recommendations/{}/case/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag/views.py:71",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-13445b1e9128",
+     "kind": "orphan_endpoint",
+     "seam": "GET /recommendations/{}/incident/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag/views.py:81",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-9bc17809d8cf",
+     "kind": "orphan_endpoint",
+     "seam": "GET /stats",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:286",
+     "label": "false",
+     "reason": "the path appears in tests/signal/test_signal_stats_service.py"
+    },
+    {
+     "key": "f-55c44d3d81de",
+     "kind": "orphan_endpoint",
+     "seam": "GET /users",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:67",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/api.py"
+    },
+    {
+     "key": "f-e6d4e13bf8c5",
+     "kind": "orphan_endpoint",
+     "seam": "GET /users/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:141",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/api.py"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/ai/prompt/views.py:51",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/priority/views.py:68",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/severity/views.py:69",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/type/views.py:57",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:84",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost_type/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/alert/views.py:17",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/query/views.py:25",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/data_format/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/environment/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/status/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/transport/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/type/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/views.py:25",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/definition/views.py:26",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/document/views.py:20",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/email_templates/views.py:35",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity/views.py:26",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity_type/views.py:34",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/feedback/incident/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/feedback/service/views.py:34",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/type/views.py:30",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/views.py:32",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/priority/views.py:67",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/severity/views.py:67",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/type/views.py:60",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:108",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost_type/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_role/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/individual/views.py:26",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/notification/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/organization/views.py:96",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/project/views.py:79",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/search_filter/views.py:32",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/service/views.py:95",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:336",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag_type/views.py:27",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/team/views.py:44",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/term/views.py:38",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-c19312837ab8",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/workflow/views.py:34",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-259847df11f2",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/auth/me",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:283",
+     "label": "false",
+     "reason": "the path appears in tests/static/e2e/pages/auth-page.ts"
+    },
+    {
+     "key": "f-7a921e745a34",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/auth/me/settings",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:418",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/auth/api.js"
+    },
+    {
+     "key": "f-4d16bd4722e9",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/auth/myrole",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:305",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/auth/api.js"
+    },
+    {
+     "key": "f-7172f5ec1e88",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/cases/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity/views.py:68",
+     "label": "false",
+     "reason": "the path appears in tests/ai/test_ai_service.py"
+    },
+    {
+     "key": "f-5f3c8b979698",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/participants",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:112",
+     "label": "false",
+     "reason": "the path appears in tests/plugins/test_dispatch_slack_incident_interactive.py"
+    },
+    {
+     "key": "f-9bc876b08b71",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/participants/minimal",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:99",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-24629f5d0536",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/regenerate",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:601",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/incident/api.js"
+    },
+    {
+     "key": "f-78de8eff5e97",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/report/tactical/generate",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:370",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/incident/api.js"
+    },
+    {
+     "key": "f-326df192832b",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/signal_instances/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity/views.py:78",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-7047b106d3f4",
+     "kind": "orphan_endpoint",
+     "seam": "GET /{}/stats",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:303",
+     "label": "false",
+     "reason": "the path appears in tests/signal/test_signal_stats_service.py"
+    },
+    {
+     "key": "f-8489ddaa06ba",
+     "kind": "orphan_endpoint",
+     "seam": "PATCH /{}/event",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:518",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-8489ddaa06ba",
+     "kind": "orphan_endpoint",
+     "seam": "PATCH /{}/event",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:447",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/ai/prompt/views.py:67",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/priority/views.py:31",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/severity/views.py:31",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/type/views.py:26",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:163",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost/views.py:43",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost_type/views.py:43",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/cost_model/views.py:35",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/alert/views.py:29",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/query/views.py:37",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/data_format/views.py:39",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/environment/views.py:39",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/status/views.py:39",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/transport/views.py:39",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/type/views.py:39",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/views.py:37",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/definition/views.py:38",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/document/views.py:32",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/email_templates/views.py:51",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity/views.py:38",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity_type/views.py:46",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/feedback/incident/views.py:39",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/type/views.py:42",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/views.py:60",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/priority/views.py:31",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/severity/views.py:31",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/type/views.py:26",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:118",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost/views.py:43",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost_type/views.py:43",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/individual/views.py:51",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/notification/views.py:43",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/organization/views.py:42",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/project/views.py:40",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/search_filter/views.py:47",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/service/views.py:38",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:355",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag/views.py:39",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag_type/views.py:46",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/task/views.py:53",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/team/views.py:26",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/term/views.py:21",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2ac3672242ee",
+     "kind": "orphan_endpoint",
+     "seam": "POST /",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/workflow/views.py:65",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-3da6f9608556",
+     "kind": "orphan_endpoint",
+     "seam": "POST /completed/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/views.py:44",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-50fa13adcbcc",
+     "kind": "orphan_endpoint",
+     "seam": "POST /engagements",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:162",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/signal/models.py"
+    },
+    {
+     "key": "f-21d07e35d983",
+     "kind": "orphan_endpoint",
+     "seam": "POST /export",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/views.py:84",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/enums.py"
+    },
+    {
+     "key": "f-2d29cab0051b",
+     "kind": "orphan_endpoint",
+     "seam": "POST /filters",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:215",
+     "label": "false",
+     "reason": "the path appears in tests/signal/test_signal_service.py"
+    },
+    {
+     "key": "f-8a76d8b13544",
+     "kind": "orphan_endpoint",
+     "seam": "POST /instances",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugin/views.py:58",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-8a76d8b13544",
+     "kind": "orphan_endpoint",
+     "seam": "POST /instances",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:72",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-4dc11cac6457",
+     "kind": "orphan_endpoint",
+     "seam": "POST /slack/action",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugins/dispatch_slack/endpoints.py:133",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-98c9b1434837",
+     "kind": "orphan_endpoint",
+     "seam": "POST /slack/command",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugins/dispatch_slack/endpoints.py:107",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-f89753f315f2",
+     "kind": "orphan_endpoint",
+     "seam": "POST /slack/event",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugins/dispatch_slack/endpoints.py:82",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-1d81469d0ee8",
+     "kind": "orphan_endpoint",
+     "seam": "POST /slack/menu",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugins/dispatch_slack/endpoints.py:142",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-1e2afd663211",
+     "kind": "orphan_endpoint",
+     "seam": "POST /ticket/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/task/views.py:78",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-1e8d6230809a",
+     "kind": "orphan_endpoint",
+     "seam": "POST /users",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:95",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/api.py"
+    },
+    {
+     "key": "f-fadade97b6d6",
+     "kind": "orphan_endpoint",
+     "seam": "POST /users/{}/change-password",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:204",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-9854861613bb",
+     "kind": "orphan_endpoint",
+     "seam": "POST /users/{}/reset-password",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:248",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-6c05a7da9eae",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity_type/views.py:63",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-11aaf9b2d5a5",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/add/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:467",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-11aaf9b2d5a5",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/add/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:324",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-3bb12ee184aa",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/auth/login",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:315",
+     "label": "false",
+     "reason": "the path appears in tests/static/e2e/routes.ts"
+    },
+    {
+     "key": "f-5ff991430d7f",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/auth/mfa",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:375",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/auth/api.js"
+    },
+    {
+     "key": "f-b47d3ab2347b",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/event",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:491",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-b47d3ab2347b",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/event",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:422",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-5f98791564c7",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/exportTimeline",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:550",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/incident/views.py"
+    },
+    {
+     "key": "f-5f98791564c7",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/exportTimeline",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:479",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/case/views.py"
+    },
+    {
+     "key": "f-a94fd9693e90",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/join",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:422",
+     "label": "false",
+     "reason": "the path appears in tests/entity/test_entity_service.py"
+    },
+    {
+     "key": "f-a94fd9693e90",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/join",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:257",
+     "label": "false",
+     "reason": "the path appears in tests/entity/test_entity_service.py"
+    },
+    {
+     "key": "f-4f8b7707f81e",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/report/executive",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:398",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    },
+    {
+     "key": "f-5952c0d16a9f",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/report/tactical",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:347",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/incident/api.js"
+    },
+    {
+     "key": "f-5b250a3ee429",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/resources",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:265",
+     "label": "false",
+     "reason": "the path appears in tests/plugins/test_dispatch_slack_incident_interactive.py"
+    },
+    {
+     "key": "f-5b250a3ee429",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/resources",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:169",
+     "label": "false",
+     "reason": "the path appears in tests/plugins/test_dispatch_slack_incident_interactive.py"
+    },
+    {
+     "key": "f-39863b7d980e",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/resources/conversation",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:241",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/case/api.js"
+    },
+    {
+     "key": "f-885d2dc01e84",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/run",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/workflow/views.py:119",
+     "label": "false",
+     "reason": "the path appears in tests/conftest.py"
+    },
+    {
+     "key": "f-de792b92105c",
+     "kind": "orphan_endpoint",
+     "seam": "POST /{}/subscribe",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:279",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/conversation/enums.py"
+    },
+    {
+     "key": "f-493a1cd3796a",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /engagements/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:184",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/signal/models.py"
+    },
+    {
+     "key": "f-278ab4aa2fe9",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /filters/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:237",
+     "label": "false",
+     "reason": "the path appears in tests/signal/test_signal_service.py"
+    },
+    {
+     "key": "f-eb703d750c58",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /instances/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/plugin/views.py:68",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-3526b3b96498",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /recalculate/{}/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity_type/views.py:82",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/entity_type/api.js"
+    },
+    {
+     "key": "f-e2c8536d9802",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /update/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:428",
+     "label": "false",
+     "reason": "the path appears in utils/github_utils.py"
+    },
+    {
+     "key": "f-fc20b473f99e",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /users/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:157",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/api.py"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/ai/prompt/views.py:94",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/priority/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/severity/views.py:46",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/type/views.py:40",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:292",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost/views.py:54",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case_cost_type/views.py:54",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/cost_model/views.py:49",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/alert/views.py:35",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/query/views.py:43",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/data_format/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/environment/views.py:47",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/status/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/transport/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/type/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/data/source/views.py:43",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/definition/views.py:53",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/document/views.py:38",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/email_templates/views.py:75",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity/views.py:44",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity_type/views.py:132",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/feedback/incident/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/priority/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/severity/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/type/views.py:40",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident/views.py:189",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost/views.py:54",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_cost_type/views.py:54",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/incident_role/views.py:39",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/individual/views.py:76",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/notification/views.py:54",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/organization/views.py:112",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/project/views.py:95",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/search_filter/views.py:73",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/service/views.py:70",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/signal/views.py:407",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag/views.py:45",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/tag_type/views.py:63",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/task/views.py:95",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/team/views.py:56",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/term/views.py:50",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-2d1c54621761",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/workflow/views.py:88",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-58a5d5840d9b",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}/auth/me/settings",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/auth/views.py:429",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/static/dispatch/src/auth/api.js"
+    },
+    {
+     "key": "f-d1a44f6794fc",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}/escalate",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/case/views.py:345",
+     "label": "false",
+     "reason": "the path appears in tests/factories.py"
+    },
+    {
+     "key": "f-f84962208fa5",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}/process",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/entity_type/views.py:162",
+     "label": "false",
+     "reason": "the path appears in src/dispatch/cli.py"
+    },
+    {
+     "key": "f-ca20845dd54c",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/type/views.py:66",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    },
+    {
+     "key": "f-ca20845dd54c",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /{}/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "src/dispatch/forms/views.py:97",
+     "label": "unlabelled",
+     "reason": "route path is entirely parameters; not decidable by search"
+    }
+   ]
+  },
+  {
+   "repo": "flower",
+   "files": 58,
+   "corpus_files": 86,
+   "entries": [
+    {
+     "key": "f-277db129c826",
+     "kind": "env_unset",
+     "seam": "env FLOWER_OAUTH2_KEY",
+     "subject": "FLOWER_OAUTH2_KEY",
+     "confidence": "high",
+     "location": "flower/command.py:134",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-39fed1ccf486",
+     "kind": "env_unset",
+     "seam": "env FLOWER_OAUTH2_OKTA_BASE_URL",
+     "subject": "FLOWER_OAUTH2_OKTA_BASE_URL",
+     "confidence": "high",
+     "location": "flower/views/auth.py:269",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-95950f97522d",
+     "kind": "env_unset",
+     "seam": "env FLOWER_OAUTH2_REDIRECT_URI",
+     "subject": "FLOWER_OAUTH2_REDIRECT_URI",
+     "confidence": "high",
+     "location": "flower/command.py:136",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-dcf91354e0ea",
+     "kind": "env_unset",
+     "seam": "env FLOWER_OAUTH2_SECRET",
+     "subject": "FLOWER_OAUTH2_SECRET",
+     "confidence": "high",
+     "location": "flower/command.py:135",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-d0ce41e1f936",
+     "kind": "env_unset",
+     "seam": "env FLOWER_UNAUTHENTICATED_API",
+     "subject": "FLOWER_UNAUTHENTICATED_API",
+     "confidence": "high",
+     "location": "flower/api/__init__.py:11",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-4f3b233cf5ad",
+     "kind": "env_unset",
+     "seam": "env PWD",
+     "subject": "PWD",
+     "confidence": "high",
+     "location": "flower/utils/__init__.py:34",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    }
+   ]
+  },
+  {
+   "repo": "full-stack-fastapi-template",
+   "files": 148,
+   "corpus_files": 180,
+   "entries": [
+    {
+     "key": "f-20e30516abc4",
+     "kind": "orphan_component",
+     "seam": "component Admin",
+     "subject": "Admin",
+     "confidence": "low",
+     "location": "frontend/src/routes/_layout/admin.tsx:58",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-6281d234268d",
+     "kind": "orphan_component",
+     "seam": "component Alert",
+     "subject": "Alert",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/alert.tsx:21",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-0b285fb3e17b",
+     "kind": "orphan_component",
+     "seam": "component AlertDescription",
+     "subject": "AlertDescription",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/alert.tsx:49",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-4fbb5ed68788",
+     "kind": "orphan_component",
+     "seam": "component AlertTitle",
+     "subject": "AlertTitle",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/alert.tsx:36",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-e1d247c94e77",
+     "kind": "orphan_component",
+     "seam": "component AvatarImage",
+     "subject": "AvatarImage",
+     "confidence": "medium",
+     "location": "frontend/src/components/ui/avatar.tsx:21",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-4153bc26948c",
+     "kind": "orphan_component",
+     "seam": "component ButtonGroup",
+     "subject": "ButtonGroup",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/button-group.tsx:23",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-e41b94b022da",
+     "kind": "orphan_component",
+     "seam": "component ButtonGroupSeparator",
+     "subject": "ButtonGroupSeparator",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/button-group.tsx:59",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-fcccfd66a16c",
+     "kind": "orphan_component",
+     "seam": "component ButtonGroupText",
+     "subject": "ButtonGroupText",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/button-group.tsx:39",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-a07d1c8c9c61",
+     "kind": "orphan_component",
+     "seam": "component Card",
+     "subject": "Card",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/card.tsx:4",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-82c13fb9fe35",
+     "kind": "orphan_component",
+     "seam": "component CardAction",
+     "subject": "CardAction",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/card.tsx:50",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-6635ca62ff71",
+     "kind": "orphan_component",
+     "seam": "component CardContent",
+     "subject": "CardContent",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/card.tsx:63",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-41afb14a75af",
+     "kind": "orphan_component",
+     "seam": "component CardDescription",
+     "subject": "CardDescription",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/card.tsx:40",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-dacd719ce4ad",
+     "kind": "orphan_component",
+     "seam": "component CardFooter",
+     "subject": "CardFooter",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/card.tsx:73",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-16aafab0ec47",
+     "kind": "orphan_component",
+     "seam": "component CardHeader",
+     "subject": "CardHeader",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/card.tsx:17",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-311d4eba418b",
+     "kind": "orphan_component",
+     "seam": "component CardTitle",
+     "subject": "CardTitle",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/card.tsx:30",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-2bb6f3a72bec",
+     "kind": "orphan_component",
+     "seam": "component Dashboard",
+     "subject": "Dashboard",
+     "confidence": "low",
+     "location": "frontend/src/routes/_layout/index.tsx:15",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-82b3f65d5546",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuCheckboxItem",
+     "subject": "DropdownMenuCheckboxItem",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:84",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-c9e5a38a9921",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuGroup",
+     "subject": "DropdownMenuGroup",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:53",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-cc955ba54c78",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuPortal",
+     "subject": "DropdownMenuPortal",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:14",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-06fe958717e6",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuRadioGroup",
+     "subject": "DropdownMenuRadioGroup",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:110",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-6578e14c4b5e",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuRadioItem",
+     "subject": "DropdownMenuRadioItem",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:121",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-f8f0c47a5949",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuShortcut",
+     "subject": "DropdownMenuShortcut",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:178",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-05dca105b69b",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuSub",
+     "subject": "DropdownMenuSub",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:194",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-7734797b7ec5",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuSubContent",
+     "subject": "DropdownMenuSubContent",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:224",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-77dd16fe8c33",
+     "kind": "orphan_component",
+     "seam": "component DropdownMenuSubTrigger",
+     "subject": "DropdownMenuSubTrigger",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/dropdown-menu.tsx:200",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-af556e91a7a1",
+     "kind": "orphan_component",
+     "seam": "component FormDescription",
+     "subject": "FormDescription",
+     "confidence": "medium",
+     "location": "frontend/src/components/ui/form.tsx:122",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-2f1b68cd5dd5",
+     "kind": "orphan_component",
+     "seam": "component Layout",
+     "subject": "Layout",
+     "confidence": "low",
+     "location": "frontend/src/routes/_layout.tsx:22",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-d24e44e9e40f",
+     "kind": "orphan_component",
+     "seam": "component Login",
+     "subject": "Login",
+     "confidence": "low",
+     "location": "frontend/src/routes/login.tsx:52",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-baa14b452cad",
+     "kind": "orphan_component",
+     "seam": "component Pagination",
+     "subject": "Pagination",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/pagination.tsx:10",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-b8a03d285ccf",
+     "kind": "orphan_component",
+     "seam": "component PaginationContent",
+     "subject": "PaginationContent",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/pagination.tsx:22",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-ba51a066546a",
+     "kind": "orphan_component",
+     "seam": "component PaginationEllipsis",
+     "subject": "PaginationEllipsis",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/pagination.tsx:101",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-a644ff0d7d26",
+     "kind": "orphan_component",
+     "seam": "component PaginationItem",
+     "subject": "PaginationItem",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/pagination.tsx:35",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-a9e8bcdd0d45",
+     "kind": "orphan_component",
+     "seam": "component PaginationNext",
+     "subject": "PaginationNext",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/pagination.tsx:84",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-3dabf157757e",
+     "kind": "orphan_component",
+     "seam": "component PaginationPrevious",
+     "subject": "PaginationPrevious",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/pagination.tsx:67",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-6da987390998",
+     "kind": "orphan_component",
+     "seam": "component RecoverPassword",
+     "subject": "RecoverPassword",
+     "confidence": "low",
+     "location": "frontend/src/routes/recover-password.tsx:50",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-b87fbb7c9f80",
+     "kind": "orphan_component",
+     "seam": "component ResetPassword",
+     "subject": "ResetPassword",
+     "confidence": "low",
+     "location": "frontend/src/routes/reset-password.tsx:68",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-04eb694a5471",
+     "kind": "orphan_component",
+     "seam": "component SelectGroup",
+     "subject": "SelectGroup",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/select.tsx:12",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-3b20ad490444",
+     "kind": "orphan_component",
+     "seam": "component SelectLabel",
+     "subject": "SelectLabel",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/select.tsx:87",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-0293674cc08f",
+     "kind": "orphan_component",
+     "seam": "component SelectSeparator",
+     "subject": "SelectSeparator",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/select.tsx:124",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-2f63ceab05c9",
+     "kind": "orphan_component",
+     "seam": "component SheetClose",
+     "subject": "SheetClose",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sheet.tsx:18",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-57ff05ea6e8d",
+     "kind": "orphan_component",
+     "seam": "component SheetFooter",
+     "subject": "SheetFooter",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sheet.tsx:93",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-cccc0f92f50b",
+     "kind": "orphan_component",
+     "seam": "component SheetTrigger",
+     "subject": "SheetTrigger",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sheet.tsx:12",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-0f311aa38f8e",
+     "kind": "orphan_component",
+     "seam": "component SidebarGroupAction",
+     "subject": "SidebarGroupAction",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:427",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-34da78f2c844",
+     "kind": "orphan_component",
+     "seam": "component SidebarGroupLabel",
+     "subject": "SidebarGroupLabel",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:406",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-d2ca1bb7d6f6",
+     "kind": "orphan_component",
+     "seam": "component SidebarInput",
+     "subject": "SidebarInput",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:331",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-30c78f8af1bd",
+     "kind": "orphan_component",
+     "seam": "component SidebarMenuAction",
+     "subject": "SidebarMenuAction",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:558",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-2244db508f99",
+     "kind": "orphan_component",
+     "seam": "component SidebarMenuBadge",
+     "subject": "SidebarMenuBadge",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:590",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-8a5e06634a1a",
+     "kind": "orphan_component",
+     "seam": "component SidebarMenuSkeleton",
+     "subject": "SidebarMenuSkeleton",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:612",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-735318bea638",
+     "kind": "orphan_component",
+     "seam": "component SidebarMenuSub",
+     "subject": "SidebarMenuSub",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:650",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-87685cbea201",
+     "kind": "orphan_component",
+     "seam": "component SidebarMenuSubButton",
+     "subject": "SidebarMenuSubButton",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:679",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-1bfebe4ae43d",
+     "kind": "orphan_component",
+     "seam": "component SidebarMenuSubItem",
+     "subject": "SidebarMenuSubItem",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:665",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-ffa9a285f94b",
+     "kind": "orphan_component",
+     "seam": "component SidebarRail",
+     "subject": "SidebarRail",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:292",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-022fa3155634",
+     "kind": "orphan_component",
+     "seam": "component SidebarSeparator",
+     "subject": "SidebarSeparator",
+     "confidence": "low",
+     "location": "frontend/src/components/ui/sidebar.tsx:367",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-65fa29aef4f2",
+     "kind": "orphan_component",
+     "seam": "component SignUp",
+     "subject": "SignUp",
+     "confidence": "low",
+     "location": "frontend/src/routes/signup.tsx:59",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-800a53e141fe",
+     "kind": "orphan_component",
+     "seam": "component TableCaption",
+     "subject": "TableCaption",
+     "confidence": "medium",
+     "location": "frontend/src/components/ui/table.tsx:91",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-7b779b9cb357",
+     "kind": "orphan_component",
+     "seam": "component TableFooter",
+     "subject": "TableFooter",
+     "confidence": "medium",
+     "location": "frontend/src/components/ui/table.tsx:39",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-471c504c2e8a",
+     "kind": "orphan_component",
+     "seam": "component UserSettings",
+     "subject": "UserSettings",
+     "confidence": "low",
+     "location": "frontend/src/routes/_layout/settings.tsx:25",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-2c0d0741a8c6",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /items/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/items.py:100",
+     "label": "false",
+     "reason": "the path appears in frontend/src/routeTree.gen.ts"
+    },
+    {
+     "key": "f-31139bfbc581",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /users/me",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:133",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-e3529bbe42fc",
+     "kind": "orphan_endpoint",
+     "seam": "DELETE /users/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:215",
+     "label": "false",
+     "reason": "the path appears in frontend/tests/admin.spec.ts"
+    },
+    {
+     "key": "f-50619f5a5d0f",
+     "kind": "orphan_endpoint",
+     "seam": "GET /items",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/items.py:14",
+     "label": "false",
+     "reason": "the path appears in frontend/src/routeTree.gen.ts"
+    },
+    {
+     "key": "f-d4bddb910321",
+     "kind": "orphan_endpoint",
+     "seam": "GET /items/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/items.py:49",
+     "label": "false",
+     "reason": "the path appears in frontend/src/routeTree.gen.ts"
+    },
+    {
+     "key": "f-55c44d3d81de",
+     "kind": "orphan_endpoint",
+     "seam": "GET /users",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:37",
+     "label": "false",
+     "reason": "the path appears in frontend/tests/admin.spec.ts"
+    },
+    {
+     "key": "f-071558f5d9d2",
+     "kind": "orphan_endpoint",
+     "seam": "GET /users/me",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:125",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-e6d4e13bf8c5",
+     "kind": "orphan_endpoint",
+     "seam": "GET /users/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:163",
+     "label": "false",
+     "reason": "the path appears in frontend/tests/admin.spec.ts"
+    },
+    {
+     "key": "f-73eea0aafccf",
+     "kind": "orphan_endpoint",
+     "seam": "GET /utils/health-check",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/utils.py:30",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-d6c8a7605f9b",
+     "kind": "orphan_endpoint",
+     "seam": "PATCH /users/me",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:82",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-1a7457733989",
+     "kind": "orphan_endpoint",
+     "seam": "PATCH /users/me/password",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:104",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-2a9ffc7029d7",
+     "kind": "orphan_endpoint",
+     "seam": "PATCH /users/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:187",
+     "label": "false",
+     "reason": "the path appears in frontend/tests/admin.spec.ts"
+    },
+    {
+     "key": "f-bbe7e5309d6c",
+     "kind": "orphan_endpoint",
+     "seam": "POST /items",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/items.py:62",
+     "label": "false",
+     "reason": "the path appears in frontend/src/routeTree.gen.ts"
+    },
+    {
+     "key": "f-cdf51706f7ab",
+     "kind": "orphan_endpoint",
+     "seam": "POST /login/access-token",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/login.py:24",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-5befd8a535fe",
+     "kind": "orphan_endpoint",
+     "seam": "POST /login/test-token",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/login.py:46",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-063e91d3ee50",
+     "kind": "orphan_endpoint",
+     "seam": "POST /password-recovery-html-content/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/login.py:105",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-9b41d676bf6d",
+     "kind": "orphan_endpoint",
+     "seam": "POST /password-recovery/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/login.py:54",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-10c8967a2cbb",
+     "kind": "orphan_endpoint",
+     "seam": "POST /private/users",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/private.py:24",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-9c94e2693b1f",
+     "kind": "orphan_endpoint",
+     "seam": "POST /reset-password",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/login.py:78",
+     "label": "false",
+     "reason": "the path appears in frontend/src/routeTree.gen.ts"
+    },
+    {
+     "key": "f-1e8d6230809a",
+     "kind": "orphan_endpoint",
+     "seam": "POST /users",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:57",
+     "label": "false",
+     "reason": "the path appears in frontend/tests/admin.spec.ts"
+    },
+    {
+     "key": "f-d550e683ff3d",
+     "kind": "orphan_endpoint",
+     "seam": "POST /users/signup",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/users.py:147",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-cdff89378abd",
+     "kind": "orphan_endpoint",
+     "seam": "POST /utils/test-email",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/utils.py:16",
+     "label": "false",
+     "reason": "the path appears in frontend/src/client/sdk.gen.ts"
+    },
+    {
+     "key": "f-c00d75fa38d2",
+     "kind": "orphan_endpoint",
+     "seam": "PUT /items/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "backend/app/api/routes/items.py:76",
+     "label": "false",
+     "reason": "the path appears in frontend/src/routeTree.gen.ts"
+    }
+   ]
+  },
+  {
+   "repo": "redash",
+   "files": 861,
+   "corpus_files": 949,
+   "entries": [
+    {
+     "key": "f-29e559d13dfa",
+     "kind": "env_unset",
+     "seam": "env BUNDLE_ANALYZER",
+     "subject": "BUNDLE_ANALYZER",
+     "confidence": "high",
+     "location": "webpack.config.js:314",
+     "label": "false",
+     "reason": "assigned in package.json"
+    },
+    {
+     "key": "f-f952cf3d468e",
+     "kind": "env_unset",
+     "seam": "env CYPRESS_OPTIONS",
+     "subject": "CYPRESS_OPTIONS",
+     "confidence": "high",
+     "location": "client/cypress/cypress.js:67",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-42abaf15ae17",
+     "kind": "env_unset",
+     "seam": "env DATABRICKS_ROW_LIMIT",
+     "subject": "DATABRICKS_ROW_LIMIT",
+     "confidence": "high",
+     "location": "redash/query_runner/databricks.py:36",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-0ef75161edf2",
+     "kind": "env_unset",
+     "seam": "env DEV_SERVER_HOST",
+     "subject": "DEV_SERVER_HOST",
+     "confidence": "high",
+     "location": "webpack.config.js:310",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-05f2c057c233",
+     "kind": "env_unset",
+     "seam": "env HOT_RELOAD",
+     "subject": "HOT_RELOAD",
+     "confidence": "high",
+     "location": "webpack.config.js:36",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-6edfee92876d",
+     "kind": "env_unset",
+     "seam": "env NLS_LANG",
+     "subject": "NLS_LANG",
+     "confidence": "high",
+     "location": "redash/query_runner/oracle.py:139",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-6a2df12d6814",
+     "kind": "env_unset",
+     "seam": "env NODE_ENV",
+     "subject": "NODE_ENV",
+     "confidence": "high",
+     "location": "client/.eslintrc.js:24",
+     "label": "false",
+     "reason": "assigned in package.json"
+    },
+    {
+     "key": "f-9b7c7d7d8328",
+     "kind": "env_unset",
+     "seam": "env REDASH_GOOGLE_CLIENT_ID",
+     "subject": "REDASH_GOOGLE_CLIENT_ID",
+     "confidence": "high",
+     "location": "tests/__init__.py:12",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-2e7f5a041c9f",
+     "kind": "env_unset",
+     "seam": "env REDASH_GOOGLE_CLIENT_SECRET",
+     "subject": "REDASH_GOOGLE_CLIENT_SECRET",
+     "confidence": "high",
+     "location": "tests/__init__.py:13",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-e7c18e3a3cce",
+     "kind": "env_unset",
+     "seam": "env REDASH_HSTS_ENABLED",
+     "subject": "REDASH_HSTS_ENABLED",
+     "confidence": "high",
+     "location": "redash/settings/__init__.py:104",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-13c65230cf6b",
+     "kind": "env_unset",
+     "seam": "env REDASH_MULTI_ORG",
+     "subject": "REDASH_MULTI_ORG",
+     "confidence": "high",
+     "location": "tests/__init__.py:14",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-19da4c9a8ab7",
+     "kind": "env_unset",
+     "seam": "env REDASH_REMEMBER_COOKIE_SECURE",
+     "subject": "REDASH_REMEMBER_COOKIE_SECURE",
+     "confidence": "high",
+     "location": "redash/settings/__init__.py:88",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-256526a7afd9",
+     "kind": "env_unset",
+     "seam": "env REDASH_SAML_LOCAL_METADATA_PATH",
+     "subject": "REDASH_SAML_LOCAL_METADATA_PATH",
+     "confidence": "high",
+     "location": "redash/settings/organization.py:5",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-6a5382507b9d",
+     "kind": "env_unset",
+     "seam": "env REDASH_SEARCH_DN",
+     "subject": "REDASH_SEARCH_DN",
+     "confidence": "high",
+     "location": "redash/settings/__init__.py:208",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-2f22bd33ba09",
+     "kind": "env_unset",
+     "seam": "env REDASH_SENTRY_ENVIRONMENT",
+     "subject": "REDASH_SENTRY_ENVIRONMENT",
+     "confidence": "high",
+     "location": "redash/settings/__init__.py:395",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-e18e1774a3b9",
+     "kind": "env_unset",
+     "seam": "env REDASH_SESSION_COOKIE_SECURE",
+     "subject": "REDASH_SESSION_COOKIE_SECURE",
+     "confidence": "high",
+     "location": "redash/settings/__init__.py:81",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-19c8f3db4d39",
+     "kind": "env_unset",
+     "seam": "env REMOTE_DEBUG",
+     "subject": "REMOTE_DEBUG",
+     "confidence": "high",
+     "location": "redash/__init__.py:20",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-af2db20222f8",
+     "kind": "env_unset",
+     "seam": "env RQ_REDIS_URL",
+     "subject": "RQ_REDIS_URL",
+     "confidence": "high",
+     "location": "tests/__init__.py:9",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-1819029602e1",
+     "kind": "env_unset",
+     "seam": "env SQLALCHEMY_MAX_OVERFLOW",
+     "subject": "SQLALCHEMY_MAX_OVERFLOW",
+     "confidence": "high",
+     "location": "redash/settings/__init__.py:34",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-4c488125b133",
+     "kind": "env_unset",
+     "seam": "env SQLALCHEMY_POOL_SIZE",
+     "subject": "SQLALCHEMY_POOL_SIZE",
+     "confidence": "high",
+     "location": "redash/settings/__init__.py:35",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-cf24f8ee36ed",
+     "kind": "orphan_component",
+     "seam": "component Content",
+     "subject": "Content",
+     "confidence": "low",
+     "location": "client/app/components/layouts/ContentWithSidebar.jsx:29",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-eb708b8f3847",
+     "kind": "orphan_component",
+     "seam": "component ControlWrapper",
+     "subject": "ControlWrapper",
+     "confidence": "medium",
+     "location": "viz-lib/src/components/visualizations/editor/withControlLabel.tsx:62",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-108bee0ad5b8",
+     "kind": "orphan_component",
+     "seam": "component DashboardControl",
+     "subject": "DashboardControl",
+     "confidence": "low",
+     "location": "client/app/pages/dashboards/components/DashboardHeader.jsx:182",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-3ff808331892",
+     "kind": "orphan_component",
+     "seam": "component DashboardEditControl",
+     "subject": "DashboardEditControl",
+     "confidence": "low",
+     "location": "client/app/pages/dashboards/components/DashboardHeader.jsx:252",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-cc72cc25c065",
+     "kind": "orphan_component",
+     "seam": "component DashboardList",
+     "subject": "DashboardList",
+     "confidence": "low",
+     "location": "client/app/pages/dashboards/DashboardList.jsx:82",
+     "label": "false",
+     "reason": "imported by name in client/app/pages/index.js"
+    },
+    {
+     "key": "f-ca219e8112cb",
+     "kind": "orphan_component",
+     "seam": "component DashboardListExtraActions",
+     "subject": "DashboardListExtraActions",
+     "confidence": "low",
+     "location": "client/app/pages/dashboards/DashboardList.jsx:78",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-d4093969da26",
+     "kind": "orphan_component",
+     "seam": "component DataSourcesListComponent",
+     "subject": "DataSourcesListComponent",
+     "confidence": "low",
+     "location": "client/app/pages/data-sources/DataSourcesList.jsx:21",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-5ae618189292",
+     "kind": "orphan_component",
+     "seam": "component DatabaseMetrics",
+     "subject": "DatabaseMetrics",
+     "confidence": "low",
+     "location": "client/app/components/admin/StatusBlock.jsx:31",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-92cbd6b3dd2a",
+     "kind": "orphan_component",
+     "seam": "component DateTimeFormatSpecs",
+     "subject": "DateTimeFormatSpecs",
+     "confidence": "low",
+     "location": "viz-lib/src/components/visualizations/editor/ContextHelp.tsx:45",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-486780c358d6",
+     "kind": "orphan_component",
+     "seam": "component DefaultButtonLinkComponent",
+     "subject": "DefaultButtonLinkComponent",
+     "confidence": "low",
+     "location": "client/app/components/Link.tsx:43",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-141777b9511e",
+     "kind": "orphan_component",
+     "seam": "component DefaultLinkComponent",
+     "subject": "DefaultLinkComponent",
+     "confidence": "low",
+     "location": "client/app/components/Link.tsx:3",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-34298b7386cb",
+     "kind": "orphan_component",
+     "seam": "component ExternalLink",
+     "subject": "ExternalLink",
+     "confidence": "low",
+     "location": "client/app/components/Link.tsx:33",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-ae4fffadd94a",
+     "kind": "orphan_component",
+     "seam": "component FilterType",
+     "subject": "FilterType",
+     "confidence": "low",
+     "location": "client/app/components/Filters.jsx:11",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-ec9cff857039",
+     "kind": "orphan_component",
+     "seam": "component General",
+     "subject": "General",
+     "confidence": "low",
+     "location": "client/app/components/admin/StatusBlock.jsx:12",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-7dfcc4c56e00",
+     "kind": "orphan_component",
+     "seam": "component LinkWithIcon",
+     "subject": "LinkWithIcon",
+     "confidence": "low",
+     "location": "client/app/components/Link.tsx:23",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-1b021067c69c",
+     "kind": "orphan_component",
+     "seam": "component Manager",
+     "subject": "Manager",
+     "confidence": "low",
+     "location": "client/app/components/admin/StatusBlock.jsx:68",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-43aebab00ad1",
+     "kind": "orphan_component",
+     "seam": "component MenuIcon",
+     "subject": "MenuIcon",
+     "confidence": "low",
+     "location": "client/app/components/items-list/components/Sidebar.jsx:109",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-997b0f822bf8",
+     "kind": "orphan_component",
+     "seam": "component ModelTagsControl",
+     "subject": "ModelTagsControl",
+     "confidence": "low",
+     "location": "client/app/components/tags-control/TagsControl.jsx:79",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-e57b7947bfd5",
+     "kind": "orphan_component",
+     "seam": "component NumberFormatSpecs",
+     "subject": "NumberFormatSpecs",
+     "confidence": "low",
+     "location": "viz-lib/src/components/visualizations/editor/ContextHelp.tsx:31",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-5ce3dc285cc8",
+     "kind": "orphan_component",
+     "seam": "component ProfileImage",
+     "subject": "ProfileImage",
+     "confidence": "low",
+     "location": "client/app/components/items-list/components/Sidebar.jsx:125",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-e1b7ff3c4b9b",
+     "kind": "orphan_component",
+     "seam": "component QueriesList",
+     "subject": "QueriesList",
+     "confidence": "low",
+     "location": "client/app/pages/queries-list/QueriesList.jsx:93",
+     "label": "false",
+     "reason": "imported by name in client/app/pages/index.js"
+    },
+    {
+     "key": "f-98d4a4fae53e",
+     "kind": "orphan_component",
+     "seam": "component QueriesListExtraActions",
+     "subject": "QueriesListExtraActions",
+     "confidence": "low",
+     "location": "client/app/pages/queries-list/QueriesList.jsx:89",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-c12b4a5dfd7d",
+     "kind": "orphan_component",
+     "seam": "component QueryPageWrapper",
+     "subject": "QueryPageWrapper",
+     "confidence": "low",
+     "location": "client/app/pages/queries/components/wrapQueryPage.jsx:8",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-de46ab0dabce",
+     "kind": "orphan_component",
+     "seam": "component QuerySource",
+     "subject": "QuerySource",
+     "confidence": "low",
+     "location": "client/app/pages/queries/QuerySource.jsx:53",
+     "label": "false",
+     "reason": "imported by name in client/app/pages/index.js"
+    },
+    {
+     "key": "f-3e2547828015",
+     "kind": "orphan_component",
+     "seam": "component QuerySourceDropdown",
+     "subject": "QuerySourceDropdown",
+     "confidence": "low",
+     "location": "client/app/pages/queries/components/QuerySourceDropdown.jsx:9",
+     "label": "false",
+     "reason": "imported by name in client/app/pages/queries/QuerySource.jsx"
+    },
+    {
+     "key": "f-990aae1314a3",
+     "kind": "orphan_component",
+     "seam": "component QuerySourceDropdownItem",
+     "subject": "QuerySourceDropdownItem",
+     "confidence": "low",
+     "location": "client/app/pages/queries/components/QuerySourceDropdownItem.jsx:6",
+     "label": "false",
+     "reason": "imported by name in client/app/pages/queries/components/QuerySourceDropdown.jsx"
+    },
+    {
+     "key": "f-9d3c1fd17b7d",
+     "kind": "orphan_component",
+     "seam": "component QueryView",
+     "subject": "QueryView",
+     "confidence": "low",
+     "location": "client/app/pages/queries/QueryView.jsx:42",
+     "label": "false",
+     "reason": "imported by name in client/app/pages/index.js"
+    },
+    {
+     "key": "f-1b5170841b10",
+     "kind": "orphan_component",
+     "seam": "component Queues",
+     "subject": "Queues",
+     "confidence": "low",
+     "location": "client/app/components/admin/StatusBlock.jsx:49",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-35d2f0eb78b3",
+     "kind": "orphan_component",
+     "seam": "component SectionTitle",
+     "subject": "SectionTitle",
+     "confidence": "medium",
+     "location": "viz-lib/src/components/visualizations/editor/Section.tsx:17",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-765b4072b4ed",
+     "kind": "orphan_component",
+     "seam": "component TickFormatSpecs",
+     "subject": "TickFormatSpecs",
+     "confidence": "low",
+     "location": "viz-lib/src/components/visualizations/editor/ContextHelp.tsx:57",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-d567d510f1d6",
+     "kind": "orphan_component",
+     "seam": "component UserSessionWrapperDynamicComponentName",
+     "subject": "UserSessionWrapperDynamicComponentName",
+     "confidence": "low",
+     "location": "client/app/components/ApplicationArea/routeWithUserSession.tsx:86",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    },
+    {
+     "key": "f-dbf02b9f0247",
+     "kind": "orphan_component",
+     "seam": "component WidgetMenu",
+     "subject": "WidgetMenu",
+     "confidence": "low",
+     "location": "client/app/components/dashboards/dashboard-widget/Widget.jsx:15",
+     "label": "true",
+     "reason": "no JSX tag and no named import anywhere in the tree"
+    }
+   ]
+  },
+  {
+   "repo": "reflex",
+   "files": 894,
+   "corpus_files": 1324,
+   "entries": [
+    {
+     "key": "f-89223f8692dd",
+     "kind": "env_unset",
+     "seam": "env BLUBB",
+     "subject": "BLUBB",
+     "confidence": "high",
+     "location": "tests/units/test_config.py:442",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-c4893d19b3a0",
+     "kind": "env_unset",
+     "seam": "env BOOLEAN",
+     "subject": "BOOLEAN",
+     "confidence": "high",
+     "location": "tests/units/test_config.py:459",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-44df01f2a5b7",
+     "kind": "env_unset",
+     "seam": "env CI",
+     "subject": "CI",
+     "confidence": "high",
+     "location": "tests/units/istate/manager/test_redis.py:645",
+     "label": "true",
+     "reason": "documented in docs/getting_started/installation.md but assigned in no config file"
+    },
+    {
+     "key": "f-6c8f9f7a1f90",
+     "kind": "env_unset",
+     "seam": "env CODESPACE_NAME",
+     "subject": "CODESPACE_NAME",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/config.py:768",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-0cf56758dcd7",
+     "kind": "env_unset",
+     "seam": "env GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN",
+     "subject": "GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/config.py:769",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-5c806c052767",
+     "kind": "env_unset",
+     "seam": "env HTTP_SEC_WEBSOCKET_PROTOCOL",
+     "subject": "HTTP_SEC_WEBSOCKET_PROTOCOL",
+     "confidence": "high",
+     "location": "reflex/app.py:1995",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-1e6770372dc6",
+     "kind": "env_unset",
+     "seam": "env LIST",
+     "subject": "LIST",
+     "confidence": "high",
+     "location": "tests/units/test_config.py:470",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-f3ef7ea693ca",
+     "kind": "env_unset",
+     "seam": "env LOCALAPPDATA",
+     "subject": "LOCALAPPDATA",
+     "confidence": "high",
+     "location": "tests/integration/lighthouse_utils.py:835",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-73aafa09b1ab",
+     "kind": "env_unset",
+     "seam": "env LOOPS_API_KEY",
+     "subject": "LOOPS_API_KEY",
+     "confidence": "high",
+     "location": "packages/reflex-site-shared/src/reflex_site_shared/backend/signup.py:52",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-506544ca998f",
+     "kind": "env_unset",
+     "seam": "env PORT",
+     "subject": "PORT",
+     "confidence": "high",
+     "location": "reflex/utils/exec.py:299",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-56f7318b0b8b",
+     "kind": "env_unset",
+     "seam": "env RCC_ENDPOINT",
+     "subject": "RCC_ENDPOINT",
+     "confidence": "high",
+     "location": "docs/app/reflex_docs/pages/docs/custom_components.py:42",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-e8e01d427c63",
+     "kind": "env_unset",
+     "seam": "env REACT_ROUTER_VERSION",
+     "subject": "REACT_ROUTER_VERSION",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/constants/installer.py:92",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-be9708e08e69",
+     "kind": "env_unset",
+     "seam": "env REACT_VERSION",
+     "subject": "REACT_VERSION",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/constants/installer.py:104",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-3afaf10850f0",
+     "kind": "env_unset",
+     "seam": "env REFLEX_BUN_PATH",
+     "subject": "REFLEX_BUN_PATH",
+     "confidence": "high",
+     "location": "tests/units/test_config.py:116",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-25ea3fe6b64a",
+     "kind": "env_unset",
+     "seam": "env REFLEX_EMBED_ORIGIN",
+     "subject": "REFLEX_EMBED_ORIGIN",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/plugins/embed.py:263",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-e5815958a873",
+     "kind": "env_unset",
+     "seam": "env REFLEX_ENV_FILE",
+     "subject": "REFLEX_ENV_FILE",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/environment.py:806",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-43717acacecf",
+     "kind": "env_unset",
+     "seam": "env REFLEX_LOGLEVEL",
+     "subject": "REFLEX_LOGLEVEL",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/config.py:347",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-150d838c7ae4",
+     "kind": "env_unset",
+     "seam": "env REFLEX_MOUNT_TARGET",
+     "subject": "REFLEX_MOUNT_TARGET",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/plugins/embed.py:260",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-b9380bcdf82f",
+     "kind": "env_unset",
+     "seam": "env REFLEX_OVERRIDE_BACKEND_URL",
+     "subject": "REFLEX_OVERRIDE_BACKEND_URL",
+     "confidence": "high",
+     "location": "packages/reflex-hosting-cli/src/reflex_cli/v2/cli.py:523",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-4f2201bb4971",
+     "kind": "env_unset",
+     "seam": "env REFLEX_OVERRIDE_FRONTEND_URL",
+     "subject": "REFLEX_OVERRIDE_FRONTEND_URL",
+     "confidence": "high",
+     "location": "packages/reflex-hosting-cli/src/reflex_cli/v2/cli.py:526",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-5f20e9b2ca09",
+     "kind": "env_unset",
+     "seam": "env REFLEX_REACT_STRICT_MODE",
+     "subject": "REFLEX_REACT_STRICT_MODE",
+     "confidence": "high",
+     "location": "tests/integration/test_event_chain.py:320",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-3bc1d010df0e",
+     "kind": "env_unset",
+     "seam": "env REPLIT_DEV_DOMAIN",
+     "subject": "REPLIT_DEV_DOMAIN",
+     "confidence": "high",
+     "location": "packages/reflex-base/src/reflex_base/config.py:773",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-a65e38470237",
+     "kind": "env_unset",
+     "seam": "env TEST_VAR",
+     "subject": "TEST_VAR",
+     "confidence": "high",
+     "location": "tests/units/test_environment.py:410",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-f61e6ed8fc2b",
+     "kind": "env_unset",
+     "seam": "env VIRTUAL_ENV",
+     "subject": "VIRTUAL_ENV",
+     "confidence": "high",
+     "location": "reflex/utils/telemetry.py:192",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-9e32a973729d",
+     "kind": "env_unset",
+     "seam": "env __INTERNAL",
+     "subject": "__INTERNAL",
+     "confidence": "high",
+     "location": "tests/units/test_config.py:450",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-1945a7d4225f",
+     "kind": "env_unset",
+     "seam": "env asgi.scope",
+     "subject": "asgi.scope",
+     "confidence": "high",
+     "location": "reflex/app.py:2111",
+     "label": "true",
+     "reason": "no assignment found anywhere in the tree"
+    },
+    {
+     "key": "f-b3ef156e41ec",
+     "kind": "orphan_endpoint",
+     "seam": "GET /api/set-counter/{}/{}",
+     "subject": "",
+     "confidence": "low",
+     "location": "tests/integration/test_linked_state.py:251",
+     "label": "true",
+     "reason": "the path string appears nowhere else in the tree"
+    }
+   ]
+  }
+ ]
+}
