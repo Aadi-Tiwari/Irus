@@ -19,6 +19,11 @@ from .scan import scan
 
 PROTOCOL_VERSION = "2025-06-18"
 
+# Versions this server is happy to speak. The handshake echoes the client's
+# choice when it appears here, so a client pinned to an older revision is not
+# handed a newer one it never agreed to.
+SUPPORTED_VERSIONS = {"2025-06-18", "2025-03-26", "2024-11-05"}
+
 TOOLS = [
     {
         "name": "status",
@@ -137,11 +142,19 @@ class Server:
         rid = request.get("id")
 
         if method == "initialize":
+            # Echo the client's protocol version when we know it, rather than
+            # always announcing ours. A client that asked for an older version
+            # and is handed a newer one is entitled to hang up.
+            asked = str((request.get("params") or {}).get("protocolVersion", ""))
             result: Any = {
-                "protocolVersion": PROTOCOL_VERSION,
-                "capabilities": {"tools": {}},
+                "protocolVersion": asked if asked in SUPPORTED_VERSIONS else PROTOCOL_VERSION,
+                "capabilities": {"tools": {"listChanged": False}},
                 "serverInfo": {"name": "irus", "version": "0.1.0"},
             }
+        elif method == "ping":
+            # Clients use ping as a keepalive. Answering -32601 to it makes a
+            # perfectly healthy server look dead.
+            result = {}
         elif method == "tools/list":
             result = {"tools": TOOLS}
         elif method == "tools/call":
@@ -187,5 +200,14 @@ def main(root: str | None = None) -> int:
     return 0
 
 
+def cli() -> int:
+    """Console-script entry point.
+
+    Takes the repository path as an optional argument and otherwise uses the
+    working directory, so a client can register it either way.
+    """
+    return main(sys.argv[1] if len(sys.argv) > 1 else None)
+
+
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1] if len(sys.argv) > 1 else None))
+    raise SystemExit(cli())

@@ -26,6 +26,10 @@ dev = ["pytest>=8"]
 
 [project.scripts]
 irus = "irus.cli:main"
+# A client registers an MCP server by command name, not by `python -m ...` with
+# a PYTHONPATH. Without its own entry point the server is only launchable from
+# a checkout, which is the opposite of working anywhere.
+irus-mcp = "irus.mcp_server:cli"
 
 [tool.setuptools]
 packages = ["irus", "irus.extract"]
