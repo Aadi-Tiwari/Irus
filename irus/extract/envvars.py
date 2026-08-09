@@ -14,7 +14,7 @@ import ast
 import re
 from pathlib import Path
 
-from ..model import EnvRead, Loc
+from ..model import EnvRead, Loc, PathRef
 
 try:  # optional; a regex fallback covers the case where PyYAML is absent
     import yaml
@@ -116,6 +116,21 @@ def reads_in(path: Path, root: Path, src: str | None = None) -> list[EnvRead]:
     if path.suffix in (".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"):
         return _js_reads(path, rel, src)
     return []
+
+
+_PATH_LITERAL = re.compile(r"""['"`](/[A-Za-z0-9_\-./{}$:]{2,120})['"`]""")
+
+
+def path_literals(src: str, rel: str) -> list[PathRef]:
+    """Every path-shaped string literal in a file, from any language.
+
+    A Python client, a test using TestClient, a generated API client and a
+    hand-written fetch all leave the same trace: the route path, in quotes.
+    """
+    out: list[PathRef] = []
+    for m in _PATH_LITERAL.finditer(src):
+        out.append(PathRef(m.group(1), rel))
+    return out
 
 
 def _yaml_names(text: str) -> set[str]:

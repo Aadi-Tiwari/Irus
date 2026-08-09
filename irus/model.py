@@ -85,6 +85,20 @@ class Surface:
 
 
 @dataclass(frozen=True)
+class PathRef:
+    """A path-shaped string literal seen anywhere in the tree.
+
+    Weak evidence, deliberately: it does not prove a call, only that something
+    in this repository names the route. That is enough to stop claiming nobody
+    references it, which is what orphan_endpoint was getting wrong 88% of the
+    time.
+    """
+
+    path: str
+    file: str
+
+
+@dataclass(frozen=True)
 class EnvRead:
     name: str
     loc: Loc

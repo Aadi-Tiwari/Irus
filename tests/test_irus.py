@@ -45,7 +45,7 @@ def test_fixture_finding_set_is_exactly_as_labelled():
             ("high", "missing_required_field", "POST /api/checkout", "amount"),
             ("high", "missing_required_field", "POST /api/checkout", "email"),
             ("medium", "orphan_component", "component Legacy", "Legacy"),
-            ("medium", "orphan_endpoint", "POST /api/admin/purge", ""),
+            ("low", "orphan_endpoint", "POST /api/admin/purge", ""),
             ("medium", "response_shape_mismatch", "POST /api/checkout", "orderId"),
             ("medium", "unexpected_field", "POST /api/checkout", "total"),
             ("medium", "unexpected_field", "POST /api/checkout", "user_email"),

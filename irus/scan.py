@@ -20,7 +20,7 @@ from pathlib import Path
 
 from .compare import compare, orphan_endpoints
 from .extract import envvars, py_fastapi, ts_components, ts_express, ts_fetch
-from .model import HIGH, LOW, MEDIUM, Component, EnvRead, Finding, Surface
+from .model import HIGH, LOW, MEDIUM, Component, EnvRead, Finding, PathRef, Surface
 
 IGNORE_DIRS = {
     ".git",
@@ -121,6 +121,7 @@ class FileExtract:
     components: tuple[Component, ...] = ()
     used: frozenset[str] = frozenset()
     env_reads: tuple[EnvRead, ...] = ()
+    path_refs: tuple[PathRef, ...] = ()
 
 
 class ScanCache:
@@ -166,6 +167,7 @@ class ScanResult:
     consumers: list[Surface] = field(default_factory=list)
     components: list[Component] = field(default_factory=list)
     env_reads: list[EnvRead] = field(default_factory=list)
+    path_refs: list[PathRef] = field(default_factory=list)
     declared_env: dict[str, str] = field(default_factory=dict)
     findings: list[Finding] = field(default_factory=list)
     files: int = 0
@@ -270,6 +272,7 @@ class ParsedPy:
     collector: object
     rel: str
     env_reads: tuple[EnvRead, ...] = ()
+    path_refs: tuple[PathRef, ...] = ()
     includes: frozenset[str] = frozenset()
     include_prefix: tuple[tuple[str, str], ...] = ()
     unresolved_prefix: frozenset[str] = frozenset()
@@ -287,6 +290,7 @@ def _parse_py(path: Path, root: Path, src: str) -> ParsedPy | None:
         collector=col,
         rel=rel,
         env_reads=reads,
+        path_refs=tuple(envvars.path_literals(src, rel)),
         includes=frozenset(col.included),
         include_prefix=tuple(sorted(col.include_prefix.items())),
         unresolved_prefix=frozenset(getattr(col, "unresolved_prefix", set())),
@@ -303,6 +307,7 @@ def _extract_ts(path: Path, root: Path, src: str) -> FileExtract:
         components=tuple(ts_components.declared(path, root, src, masked)),
         used=frozenset(ts_components.used_names(path, src)),
         env_reads=tuple(envvars.js_reads_from_source(src, rel)),
+        path_refs=tuple(envvars.path_literals(src, rel)),
     )
 
 
@@ -367,6 +372,7 @@ def scan(root: Path, cache: ScanCache | None = None) -> ScanResult:
             parsed.collector, parsed.rel, included, include_prefix
         )
         result.env_reads += list(parsed.env_reads)
+        result.path_refs += list(parsed.path_refs)
 
     used_components: set[str] = set()
     declared_components: dict[str, Component] = {}
@@ -374,6 +380,7 @@ def scan(root: Path, cache: ScanCache | None = None) -> ScanResult:
         result.producers += list(extract.producers)
         result.consumers += list(extract.consumers)
         result.env_reads += list(extract.env_reads)
+        result.path_refs += list(extract.path_refs)
         used_components |= set(extract.used)
         for comp in extract.components:
             declared_components.setdefault(comp.name, comp)
@@ -384,7 +391,7 @@ def scan(root: Path, cache: ScanCache | None = None) -> ScanResult:
 
     result.findings = (
         compare(result.producers, result.consumers)
-        + orphan_endpoints(result.producers, result.consumers)
+        + orphan_endpoints(result.producers, result.consumers, result.path_refs)
         + env_findings(result.env_reads, result.declared_env)
         + component_findings(result.components, used_components)
     )
