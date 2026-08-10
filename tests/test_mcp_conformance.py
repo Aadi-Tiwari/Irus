@@ -251,3 +251,60 @@ def test_capabilities_declare_tools_explicitly(project):
     replies, _ = speak([{"jsonrpc": "2.0", "id": 1, "method": "initialize"}], project)
     caps = replies[0]["result"]["capabilities"]
     assert caps["tools"] == {"listChanged": False}
+
+
+# ============================================ joining someone else's session
+def test_join_reads_a_room_without_a_token(tmp_path, monkeypatch):
+    """Watching a session needs nothing but the URL; only writes need the token."""
+    import threading
+    from irus import join as join_mod, web
+
+    # monkeypatch, not assignment: these are module globals and leaking them
+    # breaks every later test that serves a room.
+    monkeypatch.setattr(web, "DATA_DIR", tmp_path / "rooms")
+    monkeypatch.setattr(web, "_rooms", {})
+    monkeypatch.setattr(web, "TOKEN", "s3cret")
+    room = web.room("default")
+    room.append("surface", id="PUT /profile", side="producer")
+    room.append("finding", id="f-1", seam="PUT /profile", confidence="high",
+                detail="server requires marketing_emails", **{"class": "missing_required_field"})
+
+    httpd = web.serve(port=0, host="127.0.0.1")
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    url = f"http://127.0.0.1:{httpd.server_address[1]}"
+    try:
+        guest = join_mod.Room(url=url)               # no token at all
+        assert guest.health()["ok"] is True
+        events = guest.state()
+        summary = join_mod.summarise(events)
+        assert "1 high confidence" in summary
+        assert "PUT /profile" in summary
+
+        # A write without the token is refused with a message that says what to do.
+        with pytest.raises(join_mod.JoinError) as exc:
+            guest.send("claim", agent="codex", target="PUT /profile")
+        assert "token" in str(exc.value)
+
+        # With it, the claim lands and the host sees who holds what.
+        writer = join_mod.Room(url=url, token="s3cret")
+        writer.send("claim", agent="codex", target="PUT /profile")
+        assert "PUT /profile by codex" in join_mod.summarise(guest.state())
+    finally:
+        httpd.shutdown()
+
+
+def test_join_reports_an_unreachable_host_clearly(tmp_path):
+    from irus import join as join_mod
+
+    guest = join_mod.Room(url="http://127.0.0.1:9")
+    with pytest.raises(join_mod.JoinError) as exc:
+        guest.health()
+    assert "cannot reach" in str(exc.value)
+
+
+def test_join_accepts_a_bare_host_and_port(tmp_path):
+    """People paste `10.0.0.5:8902`, not a full URL."""
+    from irus import join as join_mod
+
+    guest = join_mod.Room(url="10.0.0.5:8902", room="team")
+    assert guest._endpoint("/state") == "http://10.0.0.5:8902/state?room=team"

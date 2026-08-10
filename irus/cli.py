@@ -15,6 +15,7 @@ from pathlib import Path
 
 from . import baseline as baseline_mod
 from . import coordinate as coordinate_mod
+from . import join as join_mod
 from . import ledger as ledger_mod
 from . import prove as prove_mod
 from . import receipts as receipts_mod
@@ -198,6 +199,99 @@ def cmd_ledger(args: argparse.Namespace) -> int:
     return EXIT_CLEAN
 
 
+def cmd_join(args: argparse.Namespace) -> int:
+    """Join a room someone else is hosting. Your code never leaves your disk."""
+    room = join_mod.Room(url=args.url, room=args.room, token=args.token or "")
+    try:
+        health = room.health()
+    except join_mod.JoinError as exc:
+        print(f"irus: {exc}", file=sys.stderr)
+        return EXIT_ERROR
+    print(f"joined {args.url} room={args.room} ({health.get('service', '?')})", flush=True)
+
+    if args.leave:
+        try:
+            room.depart(args.agent)
+        except join_mod.JoinError as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        print(f"left the room as {args.agent}", flush=True)
+        return EXIT_CLEAN
+
+    # Announcing presence is a write, so it only happens when a token was
+    # given. A read-only guest watches without appearing in the roster, which
+    # is honest: we cannot vouch for someone who never authenticated.
+    if args.token and not (args.claim or args.release):
+        try:
+            room.announce(args.agent, tool=args.tool)
+        except join_mod.JoinError:
+            pass
+
+    if args.claim:
+        try:
+            room.send("claim", agent=args.agent, target=args.claim)
+        except join_mod.JoinError as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        print(f"claimed {args.claim} as {args.agent}", flush=True)
+        return EXIT_CLEAN
+
+    if args.release:
+        try:
+            room.send("release", agent=args.agent, target=args.release)
+        except join_mod.JoinError as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        print(f"released {args.release}", flush=True)
+        return EXIT_CLEAN
+
+    try:
+        events = room.state()
+    except join_mod.JoinError as exc:
+        print(f"irus: {exc}", file=sys.stderr)
+        return EXIT_ERROR
+    print(join_mod.summarise(events), flush=True)
+
+    if not args.follow:
+        return EXIT_CLEAN
+
+    print("\nfollowing; ctrl-c to stop", flush=True)
+    seen = len(events)
+    try:
+        for index, event in enumerate(room.follow()):
+            if index < seen or event.get("kind") == "ping":
+                continue
+            kind = event.get("kind")
+            if kind == "finding":
+                mark = "!" if event.get("confidence") == "high" else "-"
+                print(f"  {mark} [{event.get('class')}] {event.get('seam')}: "
+                      f"{event.get('detail')}", flush=True)
+            elif kind in ("claim", "release"):
+                print(f"  {kind}: {event.get('target')} by {event.get('agent')}",
+                      flush=True)
+    except KeyboardInterrupt:
+        pass
+    except join_mod.JoinError as exc:
+        print(f"irus: {exc}", file=sys.stderr)
+        return EXIT_ERROR
+    return EXIT_CLEAN
+
+
+def _local_addresses() -> list[str]:
+    """Every IPv4 address a second machine might reach this one on."""
+    import socket
+
+    out: list[str] = []
+    try:
+        for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+            address = info[4][0]
+            if address not in out and not address.startswith("127."):
+                out.append(address)
+    except OSError:
+        pass
+    return out
+
+
 def _snapshot(root: Path) -> float:
     from .scan import walk
 
@@ -247,12 +341,27 @@ def cmd_watch(args: argparse.Namespace) -> int:
 
     threading.Thread(target=watcher, daemon=True).start()
 
-    httpd = web.serve(port=args.port, host="127.0.0.1")
+    # Binding past localhost puts the room on a network, so it may not be done
+    # unauthenticated. A shared room with no token is one that anyone able to
+    # reach the port can write findings into.
+    if args.host != "127.0.0.1" and not web.TOKEN:
+        print(
+            f"irus: refusing to bind {args.host} without a token. Set IRUS_TOKEN "
+            "first, and give the same value to whoever joins.",
+            file=sys.stderr,
+        )
+        return EXIT_ERROR
+
+    httpd = web.serve(port=args.port, host=args.host)
+    port = httpd.server_address[1]
     # flush: stdout is block-buffered when this is piped or redirected, and a
     # long-running server never fills the buffer, so the URL would never appear
     # to anything reading our output.
     print(f"irus watching {root}", flush=True)
-    print(f"open http://127.0.0.1:{httpd.server_address[1]}", flush=True)
+    print(f"open http://127.0.0.1:{port}", flush=True)
+    if args.host != "127.0.0.1":
+        for address in _local_addresses():
+            print(f"joinable at http://{address}:{port}", flush=True)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
@@ -304,10 +413,26 @@ def build_parser() -> argparse.ArgumentParser:
     led.add_argument("--out", default="findings")
     led.set_defaults(func=cmd_ledger)
 
+    join = sub.add_parser("join", help="join a room someone else is hosting")
+    join.add_argument("url", help="the host's address, e.g. http://10.10.8.145:8902")
+    join.add_argument("--room", default="default")
+    join.add_argument("--token", default=None, help="the host's IRUS_TOKEN; needed to write")
+    join.add_argument("--agent", default="guest", help="who you are, for claims")
+    join.add_argument("--follow", action="store_true", help="stream new events as they land")
+    join.add_argument("--claim", default=None, metavar="SEAM", help="claim a seam, then exit")
+    join.add_argument("--release", default=None, metavar="SEAM")
+    join.add_argument("--leave", action="store_true", help="announce that you are leaving")
+    join.add_argument("--tool", default="", help="which agent tool you are driving")
+    join.set_defaults(func=cmd_join)
+
     watch = sub.add_parser("watch", help="serve the live page")
     watch.add_argument("path", nargs="?", default=".")
     watch.add_argument("--port", type=int, default=0)
     watch.add_argument("--no-baseline", action="store_true")
+    watch.add_argument(
+        "--host", default="127.0.0.1",
+        help="bind address; use 0.0.0.0 to let another machine join (requires IRUS_TOKEN)",
+    )
     watch.set_defaults(func=cmd_watch)
     return p
 
