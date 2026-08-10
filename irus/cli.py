@@ -17,6 +17,7 @@ from . import baseline as baseline_mod
 from . import coordinate as coordinate_mod
 from . import join as join_mod
 from . import ledger as ledger_mod
+from . import party as party_mod
 from . import prove as prove_mod
 from . import receipts as receipts_mod
 from .eventlog import EventLog
@@ -200,14 +201,24 @@ def cmd_ledger(args: argparse.Namespace) -> int:
 
 
 def cmd_join(args: argparse.Namespace) -> int:
-    """Join a room someone else is hosting. Your code never leaves your disk."""
-    room = join_mod.Room(url=args.url, room=args.room, token=args.token or "")
+    """Join a room someone else is hosting."""
+    url, token = args.url, args.token or ""
+    # A join code carries the address and the token together, so there is one
+    # thing to paste rather than two flags to get right.
+    if not url.startswith(("http://", "https://")) or "#" in url:
+        try:
+            invite = party_mod.decode(url)
+            url, token = invite.url, invite.token or token
+        except party_mod.BadCode:
+            if not url.startswith(("http://", "https://")):
+                url = "http://" + url
+    room = join_mod.Room(url=url, room=args.room, token=token)
     try:
         health = room.health()
     except join_mod.JoinError as exc:
         print(f"irus: {exc}", file=sys.stderr)
         return EXIT_ERROR
-    print(f"joined {args.url} room={args.room} ({health.get('service', '?')})", flush=True)
+    print(f"joined {url} room={args.room} ({health.get('service', '?')})", flush=True)
 
     if args.ls:
         try:
@@ -398,7 +409,19 @@ def cmd_watch(args: argparse.Namespace) -> int:
     # to anything reading our output.
     print(f"irus watching {root}", flush=True)
     print(f"open http://127.0.0.1:{port}", flush=True)
-    if args.host != "127.0.0.1":
+    invite = getattr(args, "_invite", None)
+    if invite is not None:
+        address, token = invite
+        code = party_mod.encode(address, port, token)
+        print("", flush=True)
+        print("  send them this one line:", flush=True)
+        print(f"\n    irus join {code}\n", flush=True)
+        print(f"  (that is http://{address}:{port} plus the token)", flush=True)
+        others = [a for a in _local_addresses() if a != address]
+        if others:
+            print(f"  other addresses if that one cannot be reached: "
+                  f"{', '.join(others)}", flush=True)
+    elif args.host != "127.0.0.1":
         for address in _local_addresses():
             print(f"joinable at http://{address}:{port}", flush=True)
     try:
@@ -410,9 +433,73 @@ def cmd_watch(args: argparse.Namespace) -> int:
     return EXIT_CLEAN
 
 
+def cmd_host(args: argparse.Namespace) -> int:
+    """Start a room and print one thing to send someone."""
+    from . import web
+
+    root = Path(args.path).resolve()
+    if not root.is_dir():
+        print(f"irus: {root} is not a directory", file=sys.stderr)
+        return EXIT_ERROR
+
+    token = args.token or party_mod.new_token()
+    web.TOKEN = token
+    if not args.no_files:
+        web.SHARE_ROOT = root
+
+    address = party_mod.best_address()
+    watch_args = argparse.Namespace(
+        path=str(root), port=args.port, host="0.0.0.0",
+        no_baseline=True, share_files=not args.no_files,
+        _invite=(address, token),
+    )
+    return cmd_watch(watch_args)
+
+
+def interactive() -> int:
+    """`irus` with no arguments. A menu, because a tool people have to be
+    talked through is a tool nobody uses under time pressure."""
+    print(party_mod.MENU)
+    choice = party_mod.ask("choose", "1").lower()
+
+    if choice in ("q", "quit", "exit"):
+        return EXIT_CLEAN
+
+    if choice in ("1", "host", "h"):
+        path = party_mod.ask("project to share", ".")
+        return cmd_host(argparse.Namespace(
+            path=path, port=0, token=None, no_files=False))
+
+    if choice in ("2", "join", "j"):
+        code = party_mod.ask("paste the join code")
+        if not code:
+            print("irus: nothing pasted", file=sys.stderr)
+            return EXIT_ERROR
+        try:
+            invite = party_mod.decode(code)
+        except party_mod.BadCode as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        agent = party_mod.ask("your name", "guest")
+        return cmd_join(argparse.Namespace(
+            url=invite.url, room="default", token=invite.token, agent=agent,
+            tool="", follow=False, claim=None, release=None, leave=False,
+            ls=False, cat=None, put=None))
+
+    if choice in ("3", "check", "c"):
+        path = party_mod.ask("project to check", ".")
+        return cmd_check(argparse.Namespace(
+            path=path, json=False, all=False, no_baseline=False,
+            refresh_baseline=False, log=False, prove=False, yes=False,
+            app=None, base_url=None))
+
+    print("irus: pick 1, 2, 3 or q", file=sys.stderr)
+    return EXIT_ERROR
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="irus", description=__doc__)
-    sub = p.add_subparsers(dest="cmd", required=True)
+    sub = p.add_subparsers(dest="cmd", required=False)
 
     check = sub.add_parser("check", help="one-shot sweep; nonzero exit on a high-confidence finding")
     check.add_argument("path", nargs="?", default=".")
@@ -452,6 +539,13 @@ def build_parser() -> argparse.ArgumentParser:
     led.add_argument("--out", default="findings")
     led.set_defaults(func=cmd_ledger)
 
+    host = sub.add_parser("host", help="start a room and print one line to send")
+    host.add_argument("path", nargs="?", default=".")
+    host.add_argument("--port", type=int, default=0)
+    host.add_argument("--token", default=None, help="use this token instead of a fresh one")
+    host.add_argument("--no-files", action="store_true", help="share findings only, not files")
+    host.set_defaults(func=cmd_host)
+
     join = sub.add_parser("join", help="join a room someone else is hosting")
     join.add_argument("url", help="the host's address, e.g. http://10.10.8.145:8902")
     join.add_argument("--room", default="default")
@@ -488,6 +582,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if getattr(args, "func", None) is None:
+        return interactive()
     return int(args.func(args))
 
 
