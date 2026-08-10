@@ -489,3 +489,42 @@ def test_the_vpn_adapter_is_not_offered_when_nothing_better_exists(monkeypatch):
         (None, None, None, None, (ip, 0)) for ip in ("10.5.0.2", "10.10.8.145")
     ])
     assert party.best_address() == "10.10.8.145"
+
+
+def test_pull_then_edit_then_push_is_the_editing_workflow(shared_host, tmp_path):
+    """Editing one file at a time through --cat and --put is not how anyone
+    works. Pull the project, open it in your own editor or agent, push back."""
+    repo, guest, _ = shared_host
+    local = tmp_path / "theirs"
+
+    pulled = guest.pull(local)
+    assert "api.py" in pulled
+    assert (local / "api.py").is_file(), "the host's file is not on my disk"
+
+    (local / "api.py").write_text(
+        "from fastapi import FastAPI\napp = FastAPI(title='edited by the guest')\n",
+        encoding="utf-8",
+    )
+    sent = guest.push(local)
+
+    assert sent == ["api.py"], f"only the changed file should go back, got {sent}"
+    assert "edited by the guest" in (repo / "api.py").read_text(encoding="utf-8")
+
+
+def test_push_with_no_edits_sends_nothing(shared_host, tmp_path):
+    """A pull-then-push round trip with no changes must be a no-op, or the
+    host's log fills with writes that carry no information."""
+    _, guest, _ = shared_host
+    local = tmp_path / "theirs"
+    guest.pull(local)
+    assert guest.push(local) == []
+
+
+def test_pull_never_writes_outside_the_target_directory(shared_host, tmp_path):
+    """Every path comes from the host, so a hostile host must not be able to
+    scatter files across the guest's disk."""
+    repo, guest, _ = shared_host
+    local = tmp_path / "theirs"
+    guest.pull(local)
+    for path in local.rglob("*"):
+        assert local.resolve() in path.resolve().parents or path.resolve() == local.resolve()

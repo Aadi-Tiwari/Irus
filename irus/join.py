@@ -16,6 +16,7 @@ import json
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Iterator
 
 
@@ -110,6 +111,47 @@ class Room:
     def write_file(self, path: str, content: str) -> dict[str, Any]:
         payload = json.dumps({"path": path, "content": content}).encode()
         return json.load(self._open("/fs/write", data=payload))
+
+    # ---- whole-directory sync -------------------------------------------
+    # Editing one file at a time through --cat and --put is not how anyone
+    # actually works. Pull the host's project into a folder, open it in your
+    # own editor or agent, push back what you changed.
+    def pull(self, into: "Path") -> list[str]:
+        from pathlib import Path as _Path
+
+        into = _Path(into)
+        written: list[str] = []
+        for entry in self.files():
+            rel = entry["path"]
+            target = into / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(self.read_file(rel), encoding="utf-8")
+            written.append(rel)
+        return written
+
+    def push(self, frm: "Path", only_changed: bool = True) -> list[str]:
+        """Send local files back. By default only the ones that differ, so a
+        pull-then-push with no edits is a no-op rather than a wall of writes
+        that makes the host's log useless."""
+        from pathlib import Path as _Path
+
+        frm = _Path(frm)
+        remote = {e["path"] for e in self.files()}
+        sent: list[str] = []
+        for rel in sorted(remote):
+            local = frm / rel
+            if not local.is_file():
+                continue
+            content = local.read_text(encoding="utf-8", errors="replace")
+            if only_changed:
+                try:
+                    if self.read_file(rel) == content:
+                        continue
+                except JoinError:
+                    pass
+            self.write_file(rel, content)
+            sent.append(rel)
+        return sent
 
 
 def members(events: list[dict[str, Any]]) -> dict[str, str]:
