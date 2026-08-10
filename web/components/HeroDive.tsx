@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate } from "motion/react";
+import { asset } from "@/lib/asset";
 
 // Measured on this machine against a synthetic 500-file project. The two zeros are
 // structural rather than measured: the engine has no required dependencies and no
@@ -64,7 +65,7 @@ export default function HeroDive() {
             ref={videoRef}
             style={{ scale, filter: videoFilter }}
             className="absolute inset-0 h-full w-full object-cover"
-            src="/hero-plate.mp4"
+            src={asset("/hero-plate.mp4")}
             autoPlay
             muted
             loop

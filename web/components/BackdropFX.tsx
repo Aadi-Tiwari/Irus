@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { asset } from "@/lib/asset";
 
 /**
  * BackdropFX — the one backdrop the whole site sits on.
@@ -25,7 +26,7 @@ export default function BackdropFX() {
     const start = () => {
       if (done) return;
       done = true;
-      setSrc("/backdrop-plate.mp4");
+      setSrc(asset("/backdrop-plate.mp4"));
     };
     if (document.readyState === "complete") start();
     else window.addEventListener("load", start, { once: true });
