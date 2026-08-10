@@ -46,9 +46,19 @@ class Room:
         except urllib.error.HTTPError as exc:
             if exc.code == 401:
                 raise JoinError(
-                    "the host requires a token for writes; pass --token with the "
-                    "value they set as IRUS_TOKEN"
+                    "the host requires a token; pass --token with the value they "
+                    "set as IRUS_TOKEN"
                 ) from exc
+            if exc.code == 404 and "/fs/" in path:
+                raise JoinError(
+                    "this room is not sharing files; the host has to start it "
+                    "with --share-files"
+                ) from exc
+            if exc.code == 400:
+                try:
+                    raise JoinError(json.load(exc)["error"]) from exc
+                except (json.JSONDecodeError, KeyError):
+                    pass
             raise JoinError(f"{exc.code} from {self.url}") from exc
         except OSError as exc:
             raise JoinError(f"cannot reach {self.url}: {exc}") from exc
@@ -85,6 +95,21 @@ class Room:
 
     def depart(self, agent: str) -> dict[str, Any]:
         return self.send("leave", agent=agent)
+
+    # ---- the host's files ------------------------------------------------
+    # Only available when the host started the room with --share-files, and
+    # always token-gated, reads included. Source is not findings.
+    def files(self) -> list[dict[str, Any]]:
+        return json.load(self._open("/fs/list"))["files"]
+
+    def read_file(self, path: str) -> str:
+        from urllib.parse import quote
+
+        return json.load(self._open(f"/fs/read?path={quote(path)}"))["content"]
+
+    def write_file(self, path: str, content: str) -> dict[str, Any]:
+        payload = json.dumps({"path": path, "content": content}).encode()
+        return json.load(self._open("/fs/write", data=payload))
 
 
 def members(events: list[dict[str, Any]]) -> dict[str, str]:

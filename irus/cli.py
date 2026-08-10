@@ -209,6 +209,34 @@ def cmd_join(args: argparse.Namespace) -> int:
         return EXIT_ERROR
     print(f"joined {args.url} room={args.room} ({health.get('service', '?')})", flush=True)
 
+    if args.ls:
+        try:
+            for entry in room.files():
+                print(f"  {entry['bytes']:>8}  {entry['path']}", flush=True)
+        except join_mod.JoinError as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        return EXIT_CLEAN
+
+    if args.cat:
+        try:
+            sys.stdout.write(room.read_file(args.cat))
+        except join_mod.JoinError as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        return EXIT_CLEAN
+
+    if args.put:
+        remote, local = args.put
+        try:
+            content = Path(local).read_text(encoding="utf-8")
+            result = room.write_file(remote, content)
+        except (OSError, join_mod.JoinError) as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        print(f"wrote {result['bytes']} bytes to {remote} on the host", flush=True)
+        return EXIT_CLEAN
+
     if args.leave:
         try:
             room.depart(args.agent)
@@ -352,6 +380,17 @@ def cmd_watch(args: argparse.Namespace) -> int:
         )
         return EXIT_ERROR
 
+    if args.share_files:
+        if not web.TOKEN:
+            print(
+                "irus: --share-files needs a token. Set IRUS_TOKEN first: it is "
+                "the only thing standing between a guest and your disk.",
+                file=sys.stderr,
+            )
+            return EXIT_ERROR
+        web.SHARE_ROOT = root
+        print(f"sharing files from {root} with anyone holding the token", flush=True)
+
     httpd = web.serve(port=args.port, host=args.host)
     port = httpd.server_address[1]
     # flush: stdout is block-buffered when this is piped or redirected, and a
@@ -423,12 +462,22 @@ def build_parser() -> argparse.ArgumentParser:
     join.add_argument("--release", default=None, metavar="SEAM")
     join.add_argument("--leave", action="store_true", help="announce that you are leaving")
     join.add_argument("--tool", default="", help="which agent tool you are driving")
+    join.add_argument("--ls", action="store_true", help="list the host's project files")
+    join.add_argument("--cat", default=None, metavar="PATH", help="print one of the host's files")
+    join.add_argument(
+        "--put", nargs=2, metavar=("REMOTE", "LOCAL"),
+        help="write your local file over the host's, at REMOTE",
+    )
     join.set_defaults(func=cmd_join)
 
     watch = sub.add_parser("watch", help="serve the live page")
     watch.add_argument("path", nargs="?", default=".")
     watch.add_argument("--port", type=int, default=0)
     watch.add_argument("--no-baseline", action="store_true")
+    watch.add_argument(
+        "--share-files", action="store_true",
+        help="let guests with the token read and edit this repository's files",
+    )
     watch.add_argument(
         "--host", default="127.0.0.1",
         help="bind address; use 0.0.0.0 to let another machine join (requires IRUS_TOKEN)",
