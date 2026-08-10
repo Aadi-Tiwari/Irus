@@ -97,6 +97,33 @@ red arc with the two ends pulled apart.
   rather than the code's defect. A spread (`...rest`) suppresses missing-field
   checks for that seam instead of guessing.
 
+## Working in someone else's room
+
+A host shares a room, and guests with the token read and edit the host's project
+files from their own machine.
+
+```bash
+# host
+IRUS_TOKEN=secret irus watch <repo> --host 0.0.0.0 --share-files
+
+# guest
+irus join <url> --token secret --agent me --tool claude-code   join, see the room
+irus join <url> --token secret --ls                            list the host's files
+irus join <url> --token secret --cat src/api/profile.ts        read one
+irus join <url> --token secret --put src/api/profile.ts fixed.ts   overwrite theirs
+irus join <url> --token secret --claim "PUT /profile"          take a seam
+irus join <url> --follow                                       stream it live
+```
+
+Presence and claims come from the same append-only log as the findings, so the
+roster survives a restart for the same reason they do.
+
+File sharing is remote write access to someone's disk, so it is off unless the
+host asks for it, `--share-files` refuses to start without a token, every call
+needs that token including reads, paths are validated on the resolved path so
+`..` and absolute paths and outward symlinks are all refused, and `.env`,
+credentials, `node_modules` and `.git` are never served.
+
 ## As an MCP server
 
 Agents read the map as text, never as a picture. Register it with any MCP client:
