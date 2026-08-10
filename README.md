@@ -128,13 +128,22 @@ sharing, and prints the one line to send:
 
     irus join MTAwLjExMC4yMjcuMzh8ODk0MHxHQkROc2l2ODVHSEhJcXly
 
-  (that is http://100.110.227.38:8940 plus the token)
+  (that is http://100.110.227.38:8787 plus the token)
   other addresses if that one cannot be reached: 10.10.8.145
+
+  if they cannot connect, allow it through the firewall once:
+    netsh advfirewall firewall add rule name=irus dir=in action=allow protocol=TCP localport=8787
 ```
 
 Tailscale addresses are preferred over LAN ones, because venue and campus wifi
 routinely isolates clients from each other and a LAN address is the one that
 silently fails on demo day.
+
+The port is chosen from a short list of low ones and proven bindable before the
+code is printed. Asking the OS for any free port produced a room nobody could
+reach twice: Windows reserves blocks in the 50000s for Hyper-V and WSL and
+refuses those sockets with a bare `WinError 10013`. When a room is unreachable
+the error now names the cause and the fix instead of the winsock number.
 
 ### Joining
 
@@ -208,7 +217,7 @@ On this machine, against a synthetic 500-file project:
 | Full sweep, 500 source files | 0.28s best, 0.51s median | 2.0s |
 | Incremental re-check after one edit | 83ms best, 105ms median | 200ms |
 
-190 tests pass. Run them with `pytest`.
+198 tests pass. Run them with `pytest`.
 
 **Precision, measured against five repositories nobody here wrote** (dispatch,
 flower, full-stack-fastapi-template, redash, reflex): **72.1% over 226 judged

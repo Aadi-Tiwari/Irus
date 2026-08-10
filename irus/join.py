@@ -62,7 +62,33 @@ class Room:
                     pass
             raise JoinError(f"{exc.code} from {self.url}") from exc
         except OSError as exc:
-            raise JoinError(f"cannot reach {self.url}: {exc}") from exc
+            raise JoinError(self._explain(exc)) from exc
+
+    def _explain(self, exc: OSError) -> str:
+        """Winsock errors say nothing useful on their own, and the two that
+        actually happen here have completely different fixes."""
+        text = str(exc)
+        if "10013" in text:
+            return (
+                f"cannot reach {self.url}: Windows refused the socket (10013)."
+                "\n  That port is usually reserved by Hyper-V or WSL, or blocked"
+                " by a firewall. Ask the host to restart with a low port:"
+                "\n    irus host --port 8787"
+            )
+        if "10060" in text or "timed out" in text:
+            return (
+                f"cannot reach {self.url}: connection timed out."
+                "\n  Nothing is listening there, or you are on a different network"
+                "\n  from the host. A 10.x or 192.168.x address only works on the"
+                "\n  same wifi; across networks the host needs to share a Tailscale"
+                "\n  100.x address instead."
+            )
+        if "10061" in text or "refused" in text:
+            return (
+                f"cannot reach {self.url}: connection refused."
+                "\n  The address is reachable but no room is running on that port."
+            )
+        return f"cannot reach {self.url}: {exc}"
 
     # ---- reading ---------------------------------------------------------
     def health(self) -> dict[str, Any]:
