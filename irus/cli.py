@@ -430,7 +430,17 @@ def cmd_watch(args: argparse.Namespace) -> int:
         web.SHARE_ROOT = root
         print(f"sharing files from {root} with anyone holding the token", flush=True)
 
-    httpd = web.serve(port=args.port, host=args.host)
+    try:
+        httpd = web.serve(port=args.port, host=args.host)
+    except OSError as exc:
+        hint = ""
+        if "10013" in str(exc):
+            hint = (
+                "\n      That port is reserved by Windows, usually for Hyper-V"
+                " or WSL.\n      Try: irus host --port 8787"
+            )
+        print(f"irus: cannot start on port {args.port}: {exc}{hint}", file=sys.stderr)
+        return EXIT_ERROR
     port = httpd.server_address[1]
     # flush: stdout is block-buffered when this is piped or redirected, and a
     # long-running server never fills the buffer, so the URL would never appear
@@ -449,6 +459,13 @@ def cmd_watch(args: argparse.Namespace) -> int:
         if others:
             print(f"  other addresses if that one cannot be reached: "
                   f"{', '.join(others)}", flush=True)
+        if sys.platform == "win32":
+            print(
+                "\n  if they cannot connect, allow it through the firewall once:"
+                f"\n    netsh advfirewall firewall add rule name=irus dir=in "
+                f"action=allow protocol=TCP localport={port}",
+                flush=True,
+            )
     elif args.host != "127.0.0.1":
         for address in _local_addresses():
             print(f"joinable at http://{address}:{port}", flush=True)
@@ -484,8 +501,17 @@ def cmd_host(args: argparse.Namespace) -> int:
             "        irus host --address 100.x.x.x",
             file=sys.stderr,
         )
+    port = party_mod.pick_port(args.port)
+    if port == 0:
+        print(
+            "irus: could not bind any of the usual ports. Pass one explicitly:"
+            "\n        irus host --port 9000",
+            file=sys.stderr,
+        )
+        return EXIT_ERROR
+
     watch_args = argparse.Namespace(
-        path=str(root), port=args.port, host="0.0.0.0",
+        path=str(root), port=port, host="0.0.0.0",
         no_baseline=True, share_files=not args.no_files,
         _invite=(address, token),
     )

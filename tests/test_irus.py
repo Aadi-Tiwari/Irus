@@ -12,7 +12,11 @@ import sys
 import textwrap
 from pathlib import Path
 
+import socket
+
 import pytest
+
+from irus import join, party
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -440,3 +444,56 @@ def test_cli_json_output_is_machine_readable(repo, capsys):
     main(["check", str(repo), "--json"])
     payload = json.loads(capsys.readouterr().out)
     assert "findings" in payload and "baseline" in payload
+
+
+# --- port selection ---------------------------------------------------------
+# A room on an OS-chosen high port was unreachable twice in a row: Windows
+# reserves blocks up there for Hyper-V and WSL and refuses the socket with a
+# bare WinError 10013.
+
+def test_pick_port_prefers_a_stable_low_port():
+    assert party.pick_port(0) in party.PREFERRED_PORTS
+
+
+def test_pick_port_honours_an_explicit_request():
+    free = socket.socket()
+    free.bind(("127.0.0.1", 0))
+    wanted = free.getsockname()[1]
+    free.close()
+    assert party.pick_port(wanted) == wanted
+
+
+def test_pick_port_refuses_a_port_windows_reserves(monkeypatch):
+    monkeypatch.setattr(party, "excluded_ports", lambda: [(50000, 50999)])
+    assert party.pick_port(50637) != 50637
+
+
+def test_pick_port_skips_a_port_already_in_use():
+    taken = party.PREFERRED_PORTS[0]
+    held = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        held.bind(("0.0.0.0", taken))
+    except OSError:
+        pass  # something else already holds it, which is the same condition
+    held.listen(1)
+    try:
+        chosen = party.pick_port(0)
+        assert chosen != taken
+        assert chosen in party.PREFERRED_PORTS
+    finally:
+        held.close()
+
+
+def test_excluded_ports_returns_pairs_or_nothing():
+    for low, high in party.excluded_ports():
+        assert isinstance(low, int) and low <= high
+
+
+# --- unreachable rooms explain themselves -----------------------------------
+
+def test_winsock_errors_name_their_own_fix():
+    room = join.Room("http://10.0.0.9:50637", "t")
+    assert "reserved by Hyper-V" in room._explain(OSError("[WinError 10013] forbidden"))
+    assert "Tailscale" in room._explain(OSError("timed out"))
+    assert "no room is running" in room._explain(OSError("[WinError 10061] refused"))
+    assert "http://10.0.0.9:50637" in room._explain(OSError("something else"))

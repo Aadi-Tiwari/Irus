@@ -134,6 +134,58 @@ def best_address() -> str:
     return addresses[0] if addresses else "127.0.0.1"
 
 
+# Windows reserves blocks of high ports for Hyper-V and WSL, and a socket in a
+# reserved range fails with WinError 10013 rather than anything legible. Letting
+# the OS choose landed a teammate on 50315 and then 50637, both unreachable.
+# These are low, stable and outside every default reservation.
+PREFERRED_PORTS = (8787, 8788, 8789, 7373, 9797, 8910)
+
+
+def excluded_ports() -> list[tuple[int, int]]:
+    """Ranges Windows will refuse to bind. Empty everywhere else."""
+    import re
+    import subprocess
+
+    try:
+        out = subprocess.run(
+            ["netsh", "interface", "ipv4", "show", "excludedportrange", "protocol=tcp"],
+            capture_output=True, text=True, timeout=5,
+        ).stdout
+    except (OSError, subprocess.SubprocessError):
+        return []
+    return [
+        (int(a), int(b))
+        for a, b in re.findall(r"^\s*(\d+)\s+(\d+)", out, re.M)
+    ]
+
+
+def pick_port(preferred: int = 0) -> int:
+    """A port that actually binds, preferring stable low ones.
+
+    Returning 0 and letting the OS decide is what produced an unreachable
+    room, so a port is chosen and proven bindable before anything is announced.
+    """
+    blocked = excluded_ports()
+
+    def usable(port: int) -> bool:
+        if any(low <= port <= high for low, high in blocked):
+            return False
+        probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            probe.bind(("0.0.0.0", port))
+            return True
+        except OSError:
+            return False
+        finally:
+            probe.close()
+
+    candidates = (preferred,) + PREFERRED_PORTS if preferred else PREFERRED_PORTS
+    for port in candidates:
+        if port and usable(port):
+            return port
+    return 0  # nothing worked; fall back to whatever the OS gives us
+
+
 MENU = """
   irus
 
