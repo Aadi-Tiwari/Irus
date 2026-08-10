@@ -67,13 +67,41 @@ def new_token() -> str:
     return secrets.token_urlsafe(12)
 
 
-def best_address() -> str:
-    """The address most likely to reach another machine.
+TAILSCALE_PATHS = (
+    "tailscale",
+    r"C:\Program Files\Tailscale\tailscale.exe",
+    "/usr/bin/tailscale",
+    "/usr/local/bin/tailscale",
+    "/Applications/Tailscale.app/Contents/MacOS/Tailscale",
+)
 
-    Tailscale first: it works across networks, and venue and campus wifi
-    routinely isolates clients from each other so a LAN address is the one that
-    silently fails on demo day.
+
+def tailscale_address() -> str:
+    """Ask Tailscale for its own address rather than inferring it.
+
+    Reading adapters through the hostname does not reliably enumerate the
+    Tailscale interface on Windows: it worked on one machine here and silently
+    missed it on another, so hosting handed out a LAN address that the guest
+    could never reach. `tailscale ip -4` is authoritative and costs one
+    subprocess.
     """
+    import subprocess
+
+    for binary in TAILSCALE_PATHS:
+        try:
+            out = subprocess.run(
+                [binary, "ip", "-4"], capture_output=True, text=True, timeout=5
+            )
+        except (OSError, subprocess.SubprocessError):
+            continue
+        for line in out.stdout.splitlines():
+            candidate = line.strip()
+            if candidate.startswith("100."):
+                return candidate
+    return ""
+
+
+def local_addresses() -> list[str]:
     addresses: list[str] = []
     try:
         for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
@@ -82,8 +110,23 @@ def best_address() -> str:
                 addresses.append(address)
     except OSError:
         pass
+    return addresses
+
+
+def best_address() -> str:
+    """The address most likely to reach another machine.
+
+    Tailscale first: it works across networks, and venue and campus wifi
+    routinely isolates clients from each other, so a LAN address is the one that
+    silently fails on demo day.
+    """
+    tailnet = tailscale_address()
+    if tailnet:
+        return tailnet
+
+    addresses = local_addresses()
     for address in addresses:
-        if address.startswith("100."):        # tailscale
+        if address.startswith("100."):
             return address
     for address in addresses:
         if not address.startswith("10.5."):   # skip the vpn adapter

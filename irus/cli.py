@@ -475,7 +475,15 @@ def cmd_host(args: argparse.Namespace) -> int:
     if not args.no_files:
         web.SHARE_ROOT = root
 
-    address = party_mod.best_address()
+    address = args.address or party_mod.best_address()
+    if not args.address and not address.startswith("100."):
+        print(
+            "irus: no Tailscale address found, so this code will only work for "
+            "someone on the same network.\n"
+            "      If Tailscale is running, pass it explicitly:\n"
+            "        irus host --address 100.x.x.x",
+            file=sys.stderr,
+        )
     watch_args = argparse.Namespace(
         path=str(root), port=args.port, host="0.0.0.0",
         no_baseline=True, share_files=not args.no_files,
@@ -496,7 +504,7 @@ def interactive() -> int:
     if choice in ("1", "host", "h"):
         path = party_mod.ask("project to share", ".")
         return cmd_host(argparse.Namespace(
-            path=path, port=0, token=None, no_files=False))
+            path=path, port=0, token=None, no_files=False, address=None))
 
     if choice in ("2", "join", "j"):
         code = party_mod.ask("paste the join code")
@@ -571,6 +579,8 @@ def build_parser() -> argparse.ArgumentParser:
     host.add_argument("path", nargs="?", default=".")
     host.add_argument("--port", type=int, default=0)
     host.add_argument("--token", default=None, help="use this token instead of a fresh one")
+    host.add_argument("--address", default=None,
+                      help="the address to put in the join code, e.g. your Tailscale 100.x.x.x")
     host.add_argument("--no-files", action="store_true", help="share findings only, not files")
     host.set_defaults(func=cmd_host)
 
