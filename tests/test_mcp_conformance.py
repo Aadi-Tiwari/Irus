@@ -470,7 +470,7 @@ def test_host_prefers_an_address_that_crosses_networks(monkeypatch):
     silently fails on demo day. Tailscale wins when it is present."""
     from irus import party
 
-    monkeypatch.setattr(party, "best_address", party.best_address)
+    monkeypatch.setattr(party, "tailscale_address", lambda: "")
     import socket
 
     def fake(*_a, **_k):
@@ -485,6 +485,9 @@ def test_the_vpn_adapter_is_not_offered_when_nothing_better_exists(monkeypatch):
     from irus import party
     import socket
 
+    # Tailscale is asked first now, so the fallback path only runs when it
+    # answers with nothing.
+    monkeypatch.setattr(party, "tailscale_address", lambda: "")
     monkeypatch.setattr(socket, "getaddrinfo", lambda *a, **k: [
         (None, None, None, None, (ip, 0)) for ip in ("10.5.0.2", "10.10.8.145")
     ])
@@ -528,3 +531,33 @@ def test_pull_never_writes_outside_the_target_directory(shared_host, tmp_path):
     guest.pull(local)
     for path in local.rglob("*"):
         assert local.resolve() in path.resolve().parents or path.resolve() == local.resolve()
+
+
+def test_tailscale_address_is_asked_for_not_inferred(monkeypatch):
+    """Reading adapters through the hostname missed Tailscale on one machine
+    and found it on another, so hosting handed out an unreachable LAN address.
+    Ask Tailscale itself."""
+    import subprocess
+    from irus import party
+
+    class Result:
+        stdout = "100.72.20.26\nfd7a:115c:a1e0::1\n"
+
+    monkeypatch.setattr(subprocess, "run", lambda *a, **k: Result())
+    assert party.tailscale_address() == "100.72.20.26"
+
+    # Even when the adapter list only knows about the LAN.
+    monkeypatch.setattr(party, "local_addresses", lambda: ["10.10.11.129"])
+    assert party.best_address() == "100.72.20.26"
+
+
+def test_without_tailscale_it_falls_back_rather_than_failing(monkeypatch):
+    import subprocess
+    from irus import party
+
+    def missing(*_a, **_k):
+        raise OSError("no tailscale")
+
+    monkeypatch.setattr(subprocess, "run", missing)
+    monkeypatch.setattr(party, "local_addresses", lambda: ["10.5.0.2", "10.10.8.145"])
+    assert party.best_address() == "10.10.8.145"
