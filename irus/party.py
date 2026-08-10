@@ -197,9 +197,24 @@ MENU = """
 
 
 def ask(prompt: str, default: str = "") -> str:
+    """Never exit without saying so.
+
+    Exiting mutely on end-of-input looked exactly like a paste that worked and
+    a program that then did nothing: the prompt printed, the cursor came back,
+    and there was no output at all to tell the two apart.
+    """
     suffix = f" [{default}]" if default else ""
     try:
         answer = input(f"{prompt}{suffix}: ").strip()
-    except (EOFError, KeyboardInterrupt):
+    except KeyboardInterrupt:
+        print("\ncancelled", flush=True)
+        raise SystemExit(0)
+    except EOFError:
+        print(
+            "\nno input received, so nothing was pasted."
+            "\n  In PowerShell, paste with right-click or Ctrl+Shift+V, then press Enter."
+            "\n  Or skip the menu:  irus join <code>",
+            flush=True,
+        )
         raise SystemExit(0)
     return answer or default

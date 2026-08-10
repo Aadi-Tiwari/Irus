@@ -217,7 +217,7 @@ On this machine, against a synthetic 500-file project:
 | Full sweep, 500 source files | 0.28s best, 0.51s median | 2.0s |
 | Incremental re-check after one edit | 83ms best, 105ms median | 200ms |
 
-198 tests pass. Run them with `pytest`.
+200 tests pass. Run them with `pytest`.
 
 **Precision, measured against five repositories nobody here wrote** (dispatch,
 flower, full-stack-fastapi-template, redash, reflex): **72.1% over 226 judged

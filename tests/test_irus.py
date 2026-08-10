@@ -497,3 +497,25 @@ def test_winsock_errors_name_their_own_fix():
     assert "Tailscale" in room._explain(OSError("timed out"))
     assert "no room is running" in room._explain(OSError("[WinError 10061] refused"))
     assert "http://10.0.0.9:50637" in room._explain(OSError("something else"))
+
+
+def test_a_prompt_never_exits_silently(monkeypatch, capsys):
+    """Exiting mutely on end-of-input was indistinguishable from a paste that
+    worked and a program that then did nothing."""
+    def no_input(_prompt):
+        raise EOFError
+
+    monkeypatch.setattr("builtins.input", no_input)
+    with pytest.raises(SystemExit):
+        party.ask("paste the join code")
+    assert "nothing was pasted" in capsys.readouterr().out
+
+
+def test_ctrl_c_says_cancelled(monkeypatch, capsys):
+    def interrupted(_prompt):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr("builtins.input", interrupted)
+    with pytest.raises(SystemExit):
+        party.ask("choose", "1")
+    assert "cancelled" in capsys.readouterr().out
