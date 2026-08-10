@@ -54,3 +54,13 @@ The `part-b` `irus/` package itself, and its 702-line `tests/test_part_b.py`,
 which binds to module names that no longer exist. The requirements those tests
 cover are covered here under different names. That is a real loss of independent
 test wording, and it is recorded rather than hidden.
+
+
+## Reversed 9 Aug 2026: guests edit the host's files
+
+The decision to keep this event-only was wrong. The owner's intent was always
+that a guest works on the host's project, and narrowing that to a coordination
+feed removed the point. `irus/fileshare.py` now serves the host's repository to
+guests holding the token, behind `--share-files`, with path confinement checked
+on the resolved path and secrets and dependencies never served. Eleven tests
+cover the guards.
