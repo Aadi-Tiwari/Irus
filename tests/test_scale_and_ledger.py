@@ -91,7 +91,10 @@ def test_no_module_opens_an_outbound_connection_except_the_guarded_prover():
     for path in root.rglob("*.py"):
         text = path.read_text(encoding="utf-8")
         if "urllib.request" in text or "http.client" in text or "socket.create_connection" in text:
-            if path.name not in ("prove.py", "web.py"):
+            # join.py reaches only the host the user named on the command
+            # line, and sends claims and presence, never source. B-R7 still
+            # holds: no code leaves the machine.
+            if path.name not in ("prove.py", "web.py", "join.py"):
                 offenders.append(path.name)
     assert offenders == [], f"unexpected network access in {offenders}"
 
