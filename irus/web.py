@@ -20,6 +20,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+from . import fileshare
 from .eventlog import EventLog
 
 HERE = Path(__file__).parent
@@ -31,6 +32,11 @@ _rooms_lock = threading.Lock()
 
 DATA_DIR = Path(os.environ.get("IRUS_DATA_DIR", ".irus/rooms"))
 TOKEN = os.environ.get("IRUS_TOKEN", "")
+
+# The repository the host is sharing, and whether they agreed to share it at
+# all. None means file sharing is off, which is the default: a room must never
+# expose a filesystem because somebody merely started it.
+SHARE_ROOT: Path | None = None
 
 
 def room(name: str) -> EventLog:
@@ -90,6 +96,23 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(200, b"<h1>irus</h1><p>page.html missing</p>", "text/html")
             return
 
+        if url.path == "/fs/list":
+            if not self._file_sharing_allowed():
+                return
+            entries = fileshare.listing(SHARE_ROOT)  # type: ignore[arg-type]
+            self._json(200, {"files": [{"path": e.path, "bytes": e.bytes} for e in entries]})
+            return
+
+        if url.path == "/fs/read":
+            if not self._file_sharing_allowed():
+                return
+            rel = (query.get("path") or [""])[0]
+            try:
+                self._json(200, {"path": rel, "content": fileshare.read(SHARE_ROOT, rel)})
+            except fileshare.FileShareError as exc:
+                self._json(400, {"error": str(exc)})
+            return
+
         if url.path == "/state":
             self._json(200, {"room": name, "events": room(name).replay()})
             return
@@ -113,10 +136,42 @@ class Handler(BaseHTTPRequestHandler):
 
         self._json(404, {"error": "not found"})
 
+    def _file_sharing_allowed(self) -> bool:
+        """File sharing needs the host's opt-in and the guest's token, always.
+
+        Findings are harmless to read; source is not, so the token is required
+        for reads here even though /state does not require one.
+        """
+        if SHARE_ROOT is None:
+            self._json(404, {"error": "this room is not sharing files"})
+            return False
+        if not self._authorised():
+            self._json(401, {"error": "file access requires the room token"})
+            return False
+        return True
+
     def do_POST(self) -> None:
         url = urlparse(self.path)
         query = parse_qs(url.query)
         name = (query.get("room") or ["default"])[0]
+
+        if url.path == "/fs/write":
+            if not self._file_sharing_allowed():
+                return
+            length = int(self.headers.get("Content-Length") or 0)
+            try:
+                body = json.loads(self.rfile.read(length) or b"{}")
+                written = fileshare.write(
+                    SHARE_ROOT, str(body.get("path", "")), str(body.get("content", ""))
+                )
+            except fileshare.FileShareError as exc:
+                self._json(400, {"error": str(exc)})
+                return
+            except json.JSONDecodeError:
+                self._json(400, {"error": "invalid json"})
+                return
+            self._json(200, {"path": body.get("path"), "bytes": written})
+            return
 
         if url.path != "/ingest":
             self._json(404, {"error": "not found"})

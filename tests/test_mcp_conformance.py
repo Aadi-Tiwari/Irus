@@ -23,6 +23,8 @@ import pytest
 
 REPO = Path(__file__).resolve().parents[1]
 
+from irus.join import JoinError as JoinErrorAlias  # noqa: E402
+
 
 def write(root: Path, rel: str, body: str) -> None:
     p = root / rel
@@ -308,3 +310,114 @@ def test_join_accepts_a_bare_host_and_port(tmp_path):
 
     guest = join_mod.Room(url="10.0.0.5:8902", room="team")
     assert guest._endpoint("/state") == "http://10.0.0.5:8902/state?room=team"
+
+
+# ================================ editing the host's files, and its guards
+@pytest.fixture
+def shared_host(tmp_path, monkeypatch):
+    """A host sharing a small repo, plus a guest Room pointed at it."""
+    import threading
+    from irus import join as join_mod, web
+
+    repo = tmp_path / "host-repo"
+    write(repo, "api.py", "from fastapi import FastAPI\napp = FastAPI()\n")
+    write(repo, "client.ts", "export const x = 1;\n")
+    write(repo, ".env", "SECRET=hunter2\n")
+    (repo / "node_modules").mkdir()
+    (repo / "node_modules" / "junk.js").write_text("x", encoding="utf-8")
+    write(tmp_path, "outside.txt", "not yours\n")
+
+    monkeypatch.setattr(web, "DATA_DIR", tmp_path / "rooms")
+    monkeypatch.setattr(web, "_rooms", {})
+    monkeypatch.setattr(web, "TOKEN", "tok")
+    monkeypatch.setattr(web, "SHARE_ROOT", repo)
+
+    httpd = web.serve(port=0, host="127.0.0.1")
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    url = f"http://127.0.0.1:{httpd.server_address[1]}"
+    try:
+        yield repo, join_mod.Room(url=url, token="tok"), join_mod.Room(url=url)
+    finally:
+        httpd.shutdown()
+
+
+def test_guest_can_list_read_and_edit_the_hosts_files(shared_host):
+    """The whole point: a guest changes the host's file, on the host's disk."""
+    repo, guest, _ = shared_host
+
+    names = {f["path"] for f in guest.files()}
+    assert "api.py" in names and "client.ts" in names
+
+    assert "FastAPI" in guest.read_file("api.py")
+
+    guest.write_file("api.py", "from fastapi import FastAPI\napp = FastAPI(title='edited')\n")
+    assert "edited" in (repo / "api.py").read_text(encoding="utf-8"), "host file unchanged"
+    assert "edited" in guest.read_file("api.py")
+
+
+def test_a_guest_without_the_token_gets_nothing(shared_host):
+    """Source is not findings: reads need the token too."""
+    _, _, anonymous = shared_host
+    for call in (lambda: anonymous.files(),
+                 lambda: anonymous.read_file("api.py"),
+                 lambda: anonymous.write_file("api.py", "x")):
+        with pytest.raises(JoinErrorAlias):
+            call()
+
+
+def test_file_sharing_is_off_unless_the_host_opts_in(tmp_path, monkeypatch):
+    """A room must not expose a filesystem just because it was started."""
+    import threading
+    from irus import join as join_mod, web
+
+    monkeypatch.setattr(web, "DATA_DIR", tmp_path / "rooms")
+    monkeypatch.setattr(web, "_rooms", {})
+    monkeypatch.setattr(web, "TOKEN", "tok")
+    monkeypatch.setattr(web, "SHARE_ROOT", None)      # the default
+
+    httpd = web.serve(port=0, host="127.0.0.1")
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        guest = join_mod.Room(url=f"http://127.0.0.1:{httpd.server_address[1]}", token="tok")
+        with pytest.raises(join_mod.JoinError) as exc:
+            guest.files()
+        assert "not sharing files" in str(exc.value)
+    finally:
+        httpd.shutdown()
+
+
+@pytest.mark.parametrize("escape", [
+    "../outside.txt",
+    "../../outside.txt",
+    "subdir/../../outside.txt",
+    "C:/Windows/System32/drivers/etc/hosts",
+    "/etc/passwd",
+])
+def test_paths_cannot_escape_the_shared_repository(shared_host, escape):
+    """Traversal is checked on the resolved path, not the string."""
+    _, guest, _ = shared_host
+    with pytest.raises(JoinErrorAlias):
+        guest.read_file(escape)
+    with pytest.raises(JoinErrorAlias):
+        guest.write_file(escape, "owned")
+
+
+def test_secrets_and_dependencies_are_never_shared(shared_host):
+    """.env and node_modules are not on the menu even with a valid token."""
+    _, guest, _ = shared_host
+    names = {f["path"] for f in guest.files()}
+    assert ".env" not in names
+    assert not any(n.startswith("node_modules") for n in names)
+    with pytest.raises(JoinErrorAlias):
+        guest.read_file(".env")
+
+
+def test_the_outside_file_was_never_touched(shared_host):
+    """After every traversal attempt above, prove nothing outside changed."""
+    repo, guest, _ = shared_host
+    outside = repo.parent / "outside.txt"
+    try:
+        guest.write_file("../outside.txt", "owned")
+    except Exception:
+        pass
+    assert outside.read_text(encoding="utf-8") == "not yours\n"
