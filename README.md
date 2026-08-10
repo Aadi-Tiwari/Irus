@@ -140,12 +140,25 @@ silently fails on demo day.
 
 ```bash
 irus join <code>                              # everything is in the code
-irus join <code> --ls                         # list the host's files
-irus join <code> --cat src/api/profile.ts     # read one
-irus join <code> --put src/api/profile.ts fixed.ts   # overwrite theirs
 irus join <code> --claim "PUT /profile"       # take a seam
 irus join <code> --follow                     # stream it live
 ```
+
+### Editing their project
+
+Pull it down, work in it with whatever you normally use, push back:
+
+```bash
+irus join <code> --pull ./theirs     # their project is now a folder on your disk
+cd theirs
+claude                               # or your editor, or an agent, or anything
+irus join <code> --push ./theirs     # only the files you changed go back
+```
+
+`--push` sends only files that differ, so a pull-and-push round trip with no
+edits is a no-op rather than a wall of writes that makes the host's log useless.
+
+For one-off pokes there is also `--ls`, `--cat PATH` and `--put REMOTE LOCAL`.
 
 A plain `http://host:port#token` works too, if you prefer seeing the address.
 
@@ -195,7 +208,7 @@ On this machine, against a synthetic 500-file project:
 | Full sweep, 500 source files | 0.28s best, 0.51s median | 2.0s |
 | Incremental re-check after one edit | 83ms best, 105ms median | 200ms |
 
-187 tests pass. Run them with `pytest`.
+190 tests pass. Run them with `pytest`.
 
 **Precision, measured against five repositories nobody here wrote** (dispatch,
 flower, full-stack-fastapi-template, redash, reflex): **72.1% over 226 judged

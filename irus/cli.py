@@ -220,6 +220,34 @@ def cmd_join(args: argparse.Namespace) -> int:
         return EXIT_ERROR
     print(f"joined {url} room={args.room} ({health.get('service', '?')})", flush=True)
 
+    if args.pull:
+        target = Path(args.pull).resolve()
+        try:
+            written = room.pull(target)
+        except join_mod.JoinError as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        print(f"pulled {len(written)} file(s) into {target}", flush=True)
+        print("\n  edit them however you like, then:", flush=True)
+        print(f"    irus join {args.url} --push {target}\n", flush=True)
+        return EXIT_CLEAN
+
+    if args.push:
+        source = Path(args.push).resolve()
+        if not source.is_dir():
+            print(f"irus: {source} is not a directory", file=sys.stderr)
+            return EXIT_ERROR
+        try:
+            sent = room.push(source)
+        except join_mod.JoinError as exc:
+            print(f"irus: {exc}", file=sys.stderr)
+            return EXIT_ERROR
+        if not sent:
+            print("nothing changed", flush=True)
+        for rel in sent:
+            print(f"  pushed {rel}", flush=True)
+        return EXIT_CLEAN
+
     if args.ls:
         try:
             for entry in room.files():
@@ -484,7 +512,7 @@ def interactive() -> int:
         return cmd_join(argparse.Namespace(
             url=invite.url, room="default", token=invite.token, agent=agent,
             tool="", follow=False, claim=None, release=None, leave=False,
-            ls=False, cat=None, put=None))
+            ls=False, cat=None, put=None, pull=None, push=None))
 
     if choice in ("3", "check", "c"):
         path = party_mod.ask("project to check", ".")
@@ -557,6 +585,10 @@ def build_parser() -> argparse.ArgumentParser:
     join.add_argument("--leave", action="store_true", help="announce that you are leaving")
     join.add_argument("--tool", default="", help="which agent tool you are driving")
     join.add_argument("--ls", action="store_true", help="list the host's project files")
+    join.add_argument("--pull", default=None, metavar="DIR",
+                      help="copy the host's project into DIR so you can edit it normally")
+    join.add_argument("--push", default=None, metavar="DIR",
+                      help="send your changed files in DIR back to the host")
     join.add_argument("--cat", default=None, metavar="PATH", help="print one of the host's files")
     join.add_argument(
         "--put", nargs=2, metavar=("REMOTE", "LOCAL"),
