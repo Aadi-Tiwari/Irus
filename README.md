@@ -53,6 +53,7 @@ irus watch                       # live map at http://127.0.0.1:<port>
 irus baseline                    # recompute the merge-base baseline
 irus suppress f-1a2b3c --reason "called by the k8s probe"
 irus ledger ../repo-a ../repo-b --out findings/
+irus join <url> --token secret   # work in someone else's room
 ```
 
 ## How it works
@@ -87,7 +88,8 @@ red arc with the two ends pulled apart.
   wrong ones. A tool that publishes only its hits is not measurable, and a claim
   of perfection dies to one counterexample.
 - **A model may write a test. A model never decides whether a test passed.**
-- **Nothing leaves your machine.** No network, no telemetry, no accounts.
+- **Nothing leaves your machine unless you share it.** No network, no telemetry,
+  no accounts. A room is the one exception and it is deliberate: see below.
 - **Execution is opt-in and cannot escape.** Nothing is sent off localhost, no
   mutating method ever travels over the wire, and the local store is
   fingerprinted before and after every proof run. A change aborts loudly rather
@@ -161,7 +163,7 @@ On this machine, against a synthetic 500-file project:
 | Full sweep, 500 source files | 0.28s best, 0.51s median | 2.0s |
 | Incremental re-check after one edit | 83ms best, 105ms median | 200ms |
 
-164 tests pass. Run them with `pytest`.
+177 tests pass. Run them with `pytest`.
 
 **Precision, measured against five repositories nobody here wrote** (dispatch,
 flower, full-stack-fastapi-template, redash, reflex): **72.1% over 226 judged
