@@ -421,3 +421,71 @@ def test_the_outside_file_was_never_touched(shared_host):
     except Exception:
         pass
     assert outside.read_text(encoding="utf-8") == "not yours\n"
+
+
+# ================================================ the join code and the menu
+def test_a_join_code_round_trips():
+    from irus import party
+
+    code = party.encode("10.10.8.145", 8930, "irus-demo")
+    invite = party.decode(code)
+    assert invite.url == "http://10.10.8.145:8930"
+    assert invite.token == "irus-demo"
+
+
+def test_a_join_code_survives_being_pasted():
+    """No characters a chat client will linkify, wrap or strip."""
+    from irus import party
+
+    code = party.encode("100.110.227.38", 8940, party.new_token())
+    assert code.isascii() and " " not in code
+    assert not any(c in code for c in "/+:@#?&")
+
+
+def test_a_url_with_the_token_after_a_hash_also_works():
+    from irus import party
+
+    invite = party.decode("http://10.0.0.5:8902#tok123")
+    assert invite.url == "http://10.0.0.5:8902" and invite.token == "tok123"
+
+
+@pytest.mark.parametrize("junk", ["not-a-code", "", "http://nohost", "!!!!"])
+def test_rubbish_is_refused_rather_than_half_understood(junk):
+    from irus import party
+
+    with pytest.raises(party.BadCode):
+        party.decode(junk)
+
+
+def test_a_generated_token_is_not_guessable():
+    from irus import party
+
+    tokens = {party.new_token() for _ in range(50)}
+    assert len(tokens) == 50
+    assert all(len(t) >= 16 for t in tokens)
+
+
+def test_host_prefers_an_address_that_crosses_networks(monkeypatch):
+    """Venue and campus wifi isolate clients, so a LAN address is the one that
+    silently fails on demo day. Tailscale wins when it is present."""
+    from irus import party
+
+    monkeypatch.setattr(party, "best_address", party.best_address)
+    import socket
+
+    def fake(*_a, **_k):
+        return [(None, None, None, None, (ip, 0))
+                for ip in ("10.10.8.145", "10.5.0.2", "100.110.227.38")]
+
+    monkeypatch.setattr(socket, "getaddrinfo", fake)
+    assert party.best_address() == "100.110.227.38"
+
+
+def test_the_vpn_adapter_is_not_offered_when_nothing_better_exists(monkeypatch):
+    from irus import party
+    import socket
+
+    monkeypatch.setattr(socket, "getaddrinfo", lambda *a, **k: [
+        (None, None, None, None, (ip, 0)) for ip in ("10.5.0.2", "10.10.8.145")
+    ])
+    assert party.best_address() == "10.10.8.145"

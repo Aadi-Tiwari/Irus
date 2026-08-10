@@ -53,7 +53,9 @@ irus watch                       # live map at http://127.0.0.1:<port>
 irus baseline                    # recompute the merge-base baseline
 irus suppress f-1a2b3c --reason "called by the k8s probe"
 irus ledger ../repo-a ../repo-b --out findings/
-irus join <url> --token secret   # work in someone else's room
+irus                             # menu: host, join, or check
+irus host                        # share this project, prints one line to send
+irus join <code>                 # work in someone else's project
 ```
 
 ## How it works
@@ -101,29 +103,59 @@ red arc with the two ends pulled apart.
 
 ## Working in someone else's room
 
-A host shares a room, and guests with the token read and edit the host's project
-files from their own machine.
+Type one word:
+
+```
+$ irus
+
+  1  host a room        share this project with someone
+  2  join a room        work in someone else's project
+  3  check this project on your own
+  q  quit
+```
+
+### Hosting
 
 ```bash
-# host
-IRUS_TOKEN=secret irus watch <repo> --host 0.0.0.0 --share-files
-
-# guest
-irus join <url> --token secret --agent me --tool claude-code   join, see the room
-irus join <url> --token secret --ls                            list the host's files
-irus join <url> --token secret --cat src/api/profile.ts        read one
-irus join <url> --token secret --put src/api/profile.ts fixed.ts   overwrite theirs
-irus join <url> --token secret --claim "PUT /profile"          take a seam
-irus join <url> --follow                                       stream it live
+irus host                    # or: irus host path/to/project
 ```
+
+It picks an address other machines can actually reach, generates a token, starts
+sharing, and prints the one line to send:
+
+```
+  send them this one line:
+
+    irus join MTAwLjExMC4yMjcuMzh8ODk0MHxHQkROc2l2ODVHSEhJcXly
+
+  (that is http://100.110.227.38:8940 plus the token)
+  other addresses if that one cannot be reached: 10.10.8.145
+```
+
+Tailscale addresses are preferred over LAN ones, because venue and campus wifi
+routinely isolates clients from each other and a LAN address is the one that
+silently fails on demo day.
+
+### Joining
+
+```bash
+irus join <code>                              # everything is in the code
+irus join <code> --ls                         # list the host's files
+irus join <code> --cat src/api/profile.ts     # read one
+irus join <code> --put src/api/profile.ts fixed.ts   # overwrite theirs
+irus join <code> --claim "PUT /profile"       # take a seam
+irus join <code> --follow                     # stream it live
+```
+
+A plain `http://host:port#token` works too, if you prefer seeing the address.
 
 Presence and claims come from the same append-only log as the findings, so the
 roster survives a restart for the same reason they do.
 
 File sharing is remote write access to someone's disk, so it is off unless the
-host asks for it, `--share-files` refuses to start without a token, every call
-needs that token including reads, paths are validated on the resolved path so
-`..` and absolute paths and outward symlinks are all refused, and `.env`,
+host asks for it, hosting refuses to start without a token, every call needs
+that token including reads, paths are validated on the resolved path so `..`
+and absolute paths and outward symlinks are all refused, and `.env`,
 credentials, `node_modules` and `.git` are never served.
 
 ## As an MCP server
@@ -163,7 +195,7 @@ On this machine, against a synthetic 500-file project:
 | Full sweep, 500 source files | 0.28s best, 0.51s median | 2.0s |
 | Incremental re-check after one edit | 83ms best, 105ms median | 200ms |
 
-177 tests pass. Run them with `pytest`.
+187 tests pass. Run them with `pytest`.
 
 **Precision, measured against five repositories nobody here wrote** (dispatch,
 flower, full-stack-fastapi-template, redash, reflex): **72.1% over 226 judged
