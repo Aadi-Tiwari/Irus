@@ -419,6 +419,7 @@ def cmd_watch(args: argparse.Namespace) -> int:
         )
         return EXIT_ERROR
 
+    web.SHARE_ROOT = root if args.share_files else None
     if args.share_files:
         if not web.TOKEN:
             print(
@@ -489,8 +490,7 @@ def cmd_host(args: argparse.Namespace) -> int:
 
     token = args.token or party_mod.new_token()
     web.TOKEN = token
-    if not args.no_files:
-        web.SHARE_ROOT = root
+    web.SHARE_ROOT = root if not args.no_files else None
 
     address = args.address or party_mod.best_address()
     if not args.address and not address.startswith("100."):
@@ -529,8 +529,9 @@ def interactive() -> int:
 
     if choice in ("1", "host", "h"):
         path = party_mod.ask("project to share", ".")
+        share_files = party_mod.ask("allow guests to read and edit project files? (y/N)", "n").lower() in ("y", "yes")
         return cmd_host(argparse.Namespace(
-            path=path, port=0, token=None, no_files=False, address=None))
+            path=path, port=0, token=None, no_files=not share_files, address=None))
 
     if choice in ("2", "join", "j"):
         code = party_mod.ask("paste the join code")
@@ -607,7 +608,10 @@ def build_parser() -> argparse.ArgumentParser:
     host.add_argument("--token", default=None, help="use this token instead of a fresh one")
     host.add_argument("--address", default=None,
                       help="the address to put in the join code, e.g. your Tailscale 100.x.x.x")
-    host.add_argument("--no-files", action="store_true", help="share findings only, not files")
+    sharing = host.add_mutually_exclusive_group()
+    sharing.add_argument("--share-files", dest="no_files", action="store_false", help="allow guests to read and edit project files")
+    sharing.add_argument("--no-files", dest="no_files", action="store_true", help="share findings only (default)")
+    host.set_defaults(no_files=True)
     host.set_defaults(func=cmd_host)
 
     join = sub.add_parser("join", help="join a room someone else is hosting")
