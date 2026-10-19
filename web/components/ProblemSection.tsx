@@ -1,33 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView, animate, type Variants } from "motion/react";
-import { useReducedMotionSafe } from "@/lib/useReducedMotionSafe";
+import { useRef } from "react";
+import { motion, useInView, type Variants } from "motion/react";
 
-/**
- * ProblemSection: second beat of the page. Two agents each finish one half of a
- * feature, both report success truthfully, and every signal downstream reports
- * green while the application is broken. Four third-party figures count up on
- * scroll-into-view (once). Atmosphere is built from faint emerald radial glows +
- * drifting threads, matching the HeroDive design system (#0a0a0a, Geist,
- * feathered edges, emerald-200 accents).
- */
-
-type Stat = {
-  value: number;
-  /** Decimal places to render while counting. */
-  decimals: number;
-  prefix?: string;
-  suffix: string;
-  label: string;
-  source: string;
-};
-
-const STATS: Stat[] = [
-  { value: 58, decimals: 0, suffix: "%", label: "integration accuracy", source: "with the full spec" },
-  { value: 25, decimals: 0, suffix: "%", label: "same task, spec stripped", source: "detail lost between agents" },
-  { value: 28.6, decimals: 1, suffix: "%", label: "strict contract pass", source: "GPT-5.5, generated backends" },
-  { value: 40, decimals: 0, suffix: "%", label: "no open model above", source: "web API integration" },
+const CONTRACTS = [
+  { label: "Encoding", expected: "JSON", received: "FormData" },
+  { label: "Fields", expected: "email, amount", received: "user_email, total" },
+  { label: "Response", expected: "order_id", received: "receipt_id" },
+  { label: "Intent", expected: "Shared brief", received: "Separate assumptions" },
 ];
 
 const container: Variants = {
@@ -46,54 +26,6 @@ const rise: Variants = {
     transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
   },
 };
-
-function Counter({
-  stat,
-  start,
-}: {
-  stat: Stat;
-  start: boolean;
-}) {
-  const reduce = useReducedMotionSafe();
-  // Always mount at 0 so the server and the first client render agree. The
-  // reduced-motion jump to the final value happens in the effect below.
-  const [display, setDisplay] = useState(0);
-
-  useEffect(() => {
-    if (reduce) {
-      setDisplay(stat.value);
-      return;
-    }
-    // Reset to zero whenever the section is not in view, so it always counts
-    // up fresh (0 -> target) the next time you scroll to it.
-    if (!start) {
-      setDisplay(0);
-      return;
-    }
-    // Linear + equal duration => every stat ticks evenly (even the small ones
-    // like 25 and 40, which a front-loaded ease made look static) and they all
-    // reach their target at the same moment.
-    const controls = animate(0, stat.value, {
-      duration: 2.0,
-      ease: "linear",
-      onUpdate: (v) => setDisplay(v),
-    });
-    return () => controls.stop();
-  }, [start, stat.value, reduce]);
-
-  const formatted = display.toLocaleString("en-US", {
-    minimumFractionDigits: stat.decimals,
-    maximumFractionDigits: stat.decimals,
-  });
-
-  return (
-    <span className="tabular-nums">
-      {stat.prefix}
-      {formatted}
-      {stat.suffix}
-    </span>
-  );
-}
 
 export default function ProblemSection() {
   const ref = useRef<HTMLElement>(null);
@@ -237,7 +169,7 @@ export default function ProblemSection() {
           never runs one branch against the other.
         </motion.p>
 
-        {/* Stats */}
+        {/* Illustrative contract disagreements */}
         <motion.div
           variants={rise}
           className="relative mx-auto mt-16 grid w-full grid-cols-2 gap-px overflow-hidden rounded-[28px] border border-white/12 bg-[#0a0d0c]/80 shadow-[0_8px_50px_-12px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl md:mt-20 md:grid-cols-4"
@@ -247,9 +179,9 @@ export default function ProblemSection() {
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.05),transparent_30%,transparent_70%,rgba(52,211,153,0.04))]"
           />
-          {STATS.map((stat) => (
+          {CONTRACTS.map((contract) => (
             <div
-              key={stat.label}
+              key={contract.label}
               className="group relative flex flex-col items-center justify-center gap-3 bg-[#0a0d0c]/70 px-5 py-9 transition-colors duration-500 hover:bg-emerald-400/[0.06] md:px-6 md:py-12"
             >
               {/* Hairline top glow on hover */}
@@ -257,14 +189,14 @@ export default function ProblemSection() {
                 aria-hidden
                 className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
               />
-              <div className="bg-gradient-to-b from-white to-white/70 bg-clip-text text-4xl font-medium tracking-tight text-transparent md:text-5xl">
-                <Counter stat={stat} start={inView} />
+              <div className="bg-gradient-to-b from-white to-white/70 bg-clip-text text-xl font-medium tracking-tight text-transparent md:text-2xl">
+                {contract.label}
               </div>
               <div className="max-w-[14ch] text-[11px] font-medium uppercase leading-snug tracking-[0.14em] text-emerald-200/55">
-                {stat.label}
+                {contract.expected}
               </div>
               <div className="text-[11px] font-medium tracking-wide text-white/35">
-                {stat.source}
+                {contract.received}
               </div>
             </div>
           ))}
@@ -275,9 +207,9 @@ export default function ProblemSection() {
           variants={rise}
           className="mx-auto mt-12 max-w-2xl text-pretty text-sm leading-relaxed text-white/45 md:text-[15px]"
         >
-          Integration accuracy collapses as spec detail is lost between one agent
-          and the next. Nothing in the merge path checks that the two halves
-          agree.
+          These examples show how separately working components can disagree.
+          Irus compares supported contracts and keeps the shared brief available
+          to agents. Your application tests still need to exercise the full workflow.
         </motion.p>
 
         {/* Footnote */}
@@ -285,9 +217,8 @@ export default function ProblemSection() {
           variants={rise}
           className="mx-auto mt-6 max-w-md text-[11px] leading-relaxed tracking-wide text-white/25"
         >
-          Third-party measurements, not measurements of Irus. The Specification
-          Gap, arXiv 2603.24284. BackendForge, arXiv 2607.11042. WAPIIBench,
-          arXiv 2509.20172.
+          Illustrative examples, not benchmark results. Dynamic code and unsupported
+          patterns can escape static analysis.
         </motion.p>
       </motion.div>
     </section>

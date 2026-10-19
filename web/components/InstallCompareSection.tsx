@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView, type Variants } from "motion/react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -105,58 +105,14 @@ function CommandCard({
   );
 }
 
-/* ──────────────────────────────────────────────────────────────────────────
- * Comparison table: Irus against the tools that already exist for this bug.
- * Source of truth: the positioning section of the adaptation brief. Honest,
- * not a clean sweep. Pact genuinely catches this bug once the tests are
- * written, Schemathesis genuinely sends real requests, and tRPC genuinely
- * derives the client from the server. Irus wins on reading both sides of
- * unmerged code with no spec and no hand-written tests.
- * ────────────────────────────────────────────────────────────────────────── */
-type Mark = "yes" | "no" | "part";
-
-const COLS = ["Irus", "Pact", "Schemathesis", "tRPC"] as const;
-
-const ROWS: { label: string; marks: [Mark, Mark, Mark, Mark] }[] = [
-  { label: "Catches JSON versus multipart", marks: ["yes", "yes", "no", "part"] },
-  { label: "Reads both sides of the code", marks: ["yes", "no", "no", "yes"] },
-  { label: "No spec and no hand-written tests", marks: ["yes", "no", "no", "yes"] },
-  { label: "Works when either side is not TypeScript", marks: ["yes", "yes", "yes", "no"] },
-  { label: "No broker or CI wiring on both sides", marks: ["yes", "no", "yes", "yes"] },
-  { label: "Runs on unmerged branches, before merge", marks: ["yes", "no", "no", "no"] },
-  { label: "A hand-written fetch() cannot bypass it", marks: ["yes", "part", "no", "no"] },
-  { label: "Proves it by running the request", marks: ["yes", "yes", "yes", "no"] },
+const CAPABILITIES = [
+  { label: "Static contracts", detail: "Supported Python routes and TypeScript clients, with source locations and baseline-aware findings." },
+  { label: "Worktree composition", detail: "Explicitly selected worktrees are combined for static analysis. Conflicting edits are reported." },
+  { label: "Optional execution", detail: "Consent-based local requests add evidence. Missing dependencies are unavailable checks, not passes." },
+  { label: "Agent coordination", detail: "A shared IRUS.md brief, revision acknowledgements, advisory claims, and static completion checks." },
 ];
 
-function MarkCell({ mark, hero }: { mark: Mark; hero?: boolean }) {
-  if (mark === "yes") {
-    return (
-      <span
-        className={`inline-flex h-5 w-5 items-center justify-center rounded-full ${
-          hero
-            ? "bg-emerald-400/20 text-emerald-300"
-            : "bg-emerald-400/10 text-emerald-300/80"
-        }`}
-      >
-        <CheckIcon />
-      </span>
-    );
-  }
-  if (mark === "part") {
-    return (
-      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-300/10 font-mono text-[13px] leading-none text-amber-300/70">
-        ~
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex h-5 w-5 items-center justify-center font-mono text-[15px] leading-none text-white/20">
-      ✕
-    </span>
-  );
-}
-
-function ComparisonTable({ inView }: { inView: boolean }) {
+function Capabilities({ inView }: { inView: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.96, y: 22 }}
@@ -164,97 +120,42 @@ function ComparisonTable({ inView }: { inView: boolean }) {
       transition={{ duration: 0.9, ease, delay: 0.25 }}
       className="relative w-full"
     >
-      {/* soft emerald aura behind the card */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] bg-emerald-400/[0.05] blur-3xl"
-      />
-      <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0e0f0e] to-[#0a0b0a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-sm">
-        {/* grid: capability label + 4 product columns */}
-        <div className="grid grid-cols-[1.55fr_repeat(4,minmax(0,1fr))]">
-          {/* ── Header row ─────────────────────────────────────────────── */}
-          <div className="border-b border-white/[0.07] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.16em] text-white/35">
-            Capability
+      <dl className="overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#0e0f0e] to-[#0a0b0a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]">
+        {CAPABILITIES.map(({ label, detail }) => (
+          <div key={label} className="border-b border-white/[0.05] px-5 py-4 last:border-b-0">
+            <dt className="text-sm font-medium text-emerald-200">{label}</dt>
+            <dd className="mt-2 text-sm leading-relaxed text-white/60">{detail}</dd>
           </div>
-          {COLS.map((c, i) => (
-            <div
-              key={c}
-              className={`relative border-b px-1.5 py-3 text-center text-[10.5px] font-semibold leading-tight ${
-                i === 0
-                  ? "border-emerald-400/30 bg-emerald-400/[0.07] text-emerald-200"
-                  : "border-white/[0.07] text-white/45"
-              }`}
-            >
-              {i === 0 && (
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-0 -top-px h-[2px] bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent"
-                />
-              )}
-              {c}
-            </div>
-          ))}
-
-          {/* ── Capability rows ────────────────────────────────────────── */}
-          {ROWS.map((row, ri) => (
-            <Row key={row.label} row={row} last={ri === ROWS.length - 1} />
-          ))}
-        </div>
-      </div>
-
+        ))}
+      </dl>
       <p className="mt-4 text-center text-[11.5px] leading-relaxed text-white/35">
-        Contract tests catch this once every interaction has a hand-written test
-        and a broker. Irus reads both sides as they already are, then proves the
-        mismatch by running it.
+        Irus does not certify application correctness or automatically change your code.
+        See the README for supported patterns and execution limits.
       </p>
     </motion.div>
   );
 }
 
-function Row({
-  row,
-  last,
-}: {
-  row: { label: string; marks: [Mark, Mark, Mark, Mark] };
-  last: boolean;
-}) {
-  const border = last ? "" : "border-b border-white/[0.05]";
-  return (
-    <>
-      <div className={`px-4 py-2.5 text-[12px] leading-snug text-white/65 ${border}`}>
-        {row.label}
-      </div>
-      {row.marks.map((m, i) => (
-        <div
-          key={i}
-          className={`flex items-center justify-center px-1.5 py-2.5 ${border} ${
-            i === 0 ? "bg-emerald-400/[0.05]" : ""
-          }`}
-        >
-          <MarkCell mark={m} hero={i === 0} />
-        </div>
-      ))}
-    </>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────────────────── */
 export default function InstallCompareSection() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.3 });
 
   // which command card was most recently copied (-1 = none)
   const [copied, setCopied] = useState(-1);
+  const [copyError, setCopyError] = useState("");
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const COMMANDS = [
-    { label: "Install", command: "pip install -e ." },
-    { label: "Terminal · check", command: "irus check" },
+    { label: "Install from checkout", command: "python -m pip install ." },
+    { label: "Check your project", command: "irus check /path/to/project --no-baseline" },
   ];
 
-  const copy = (i: number) => {
-    const text = COMMANDS[i].command;
-    navigator.clipboard?.writeText(text).catch(() => {});
+  useEffect(() => () => { if (resetTimer.current) clearTimeout(resetTimer.current); }, []);
+
+  const copy = async (i: number) => {
+    setCopyError("");
+    try { await navigator.clipboard.writeText(COMMANDS[i].command); }
+    catch { setCopyError("Copy was unavailable. Select the command text and copy it manually."); return; }
     setCopied(i);
     if (resetTimer.current) clearTimeout(resetTimer.current);
     resetTimer.current = setTimeout(() => setCopied(-1), 1800);
@@ -304,7 +205,7 @@ export default function InstallCompareSection() {
             variants={rise}
             className="text-balance text-3xl font-medium leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-[2.9rem]"
           >
-            Install in one line.{" "}
+            Clone, then install.{" "}
             <span className="text-emerald-300/90">Then one command.</span>
           </motion.h2>
 
@@ -312,10 +213,10 @@ export default function InstallCompareSection() {
             variants={rise}
             className="mt-5 max-w-md text-pretty text-[14.5px] leading-relaxed text-white/60 md:text-[15px]"
           >
-            The engine has no required dependencies. Standard library only, no
-            network, no build step, nothing to install on a fresh machine. Two
-            optional extras exist: &quot;.[config]&quot; adds PyYAML, and
-            &quot;.[prove]&quot; adds starlette and httpx for execution proof.
+            Clone the linked repository and run the install command from its root using Python 3.11 or newer.
+            The static scanner uses the standard library. Optional &quot;.[config]&quot; and
+            &quot;.[prove]&quot; extras add YAML parsing and local execution support.
+            The application under test needs its own dependencies.
           </motion.p>
 
           <motion.div variants={rise} className="mt-7 flex flex-col gap-3">
@@ -330,6 +231,7 @@ export default function InstallCompareSection() {
             ))}
           </motion.div>
 
+          {copyError && <p role="status" className="mt-3 text-sm text-amber-200">{copyError}</p>}
           <motion.div variants={rise} className="mt-6 flex flex-wrap items-center gap-3">
             <a
               href={GITHUB_URL}
@@ -343,14 +245,14 @@ export default function InstallCompareSection() {
             <span className="inline-flex items-center gap-2 text-[12.5px] text-white/40">
               or
               <code className="rounded-md border border-emerald-400/20 bg-emerald-400/[0.07] px-1.5 py-0.5 font-mono text-[12px] text-emerald-200/90">
-                irus check --prove
+                irus check --prove --yes --app main:app
               </code>
               to run the suspect seams
             </span>
           </motion.div>
         </motion.div>
 
-        {/* ── RIGHT: comparison ──────────────────────────────────────────── */}
+        {/* ── RIGHT: capabilities ──────────────────────────────────────────── */}
         <div className="w-full">
           <motion.span
             initial={{ opacity: 0, y: 12 }}
@@ -359,9 +261,9 @@ export default function InstallCompareSection() {
             className="mb-4 ml-1 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-white/35"
           >
             <span className="h-px w-6 bg-gradient-to-r from-emerald-400/60 to-transparent" />
-            What this costs today
+            What you can use today
           </motion.span>
-          <ComparisonTable inView={inView} />
+          <Capabilities inView={inView} />
         </div>
       </div>
     </section>

@@ -17,9 +17,7 @@ type Tone = "cmd" | "dim" | "head" | "pass" | "fail" | "detail" | "sum" | "ok" |
 
 type Line = { t: Tone; s: string; hold?: number };
 
-// The commands are the real ones. Irus is not published to an index, so the
-// install is the editable local install the README documents, and every verdict
-// below is the recorded session's own output.
+// This terminal is an illustrative walkthrough, not browser-side execution.
 const SCRIPT: Line[] = [
   { t: "cmd", s: "$ pip install -e .", hold: 420 },
   { t: "dim", s: "Obtaining file:///work/checkout-service" },
@@ -60,7 +58,7 @@ const SCRIPT: Line[] = [
   { t: "dim", s: "1", hold: 620 },
   { t: "blank", s: "" },
 
-  { t: "cmd", s: "$ irus check --prove --app main:app", hold: 420 },
+  { t: "cmd", s: "$ irus check --prove --yes --app main:app", hold: 420 },
   { t: "ok", s: "f-1a2b3c  tier 1  request rejected before send" },
   { t: "ok", s: "f-4d5e6f  tier 2  422 Unprocessable Entity" },
   { t: "ok", s: "f-7a8b9c  tier 3  200 OK, body has no `customer` key", hold: 300 },
@@ -81,10 +79,10 @@ const TONE: Record<Tone, string> = {
 
 // What the terminal is doing, in plain language, tracked to the line on screen.
 const STEPS = [
-  { at: 0, label: "Install", note: "Standard library only. No network, no build step, nothing to configure." },
+  { at: 0, label: "Install", note: "Install from a cloned Irus repository. The static scanner itself needs no model or network." },
   { at: 5, label: "Detect", note: "Reads both worktrees and compares what each side declares. No model in this path." },
   { at: 30, label: "Gate", note: "Exits non-zero on a high-confidence finding, so it works as a merge gate." },
-  { at: 33, label: "Prove", note: "Runs the suspect seams. The verdict comes from the application, not from the checker." },
+  { at: 33, label: "Prove", note: "Runs the suspect seams. Schema evidence and actual application execution are reported separately." },
 ];
 
 const LINE_MS = 90;
@@ -145,7 +143,7 @@ export default function DemoSection() {
           />
           <div className="flex items-center gap-4">
             <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-emerald-300/80">
-              The demo
+              Illustrative walkthrough
             </span>
             <span className="h-px w-16 flex-none bg-gradient-to-r from-emerald-400/50 to-transparent" />
           </div>
@@ -153,9 +151,9 @@ export default function DemoSection() {
             Install it, run it, watch it fail the merge.
           </h2>
           <p className="mt-4 max-w-2xl text-pretty text-[14px] leading-relaxed text-white/55">
-            A recorded run against a repository where two agents just finished their halves. Irus has
-            never been run against a repository the author did not write, so its real-world
-            false-positive rate is unmeasured. This is one session, not a public total.
+            This animated walkthrough illustrates a contract mismatch. It does not execute Irus in
+            your browser, and its sample identifiers are not live results. Run the CLI against
+            your own project for evidence. Historical experiments and current limits are in the README.
           </p>
         </motion.div>
 

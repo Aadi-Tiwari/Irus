@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Irus",
   description:
-    "Irus catches the bug that happens between two AI coding agents. Both halves pass their own tests, git merges clean, and the app is broken. Irus finds the gap before the merge and proves it by running it.",
+    "Local integration checks across coding-agent worktrees, with source evidence, a shared project brief, and optional application execution checks.",
 };
 
 export default function RootLayout({

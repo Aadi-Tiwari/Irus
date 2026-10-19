@@ -4,18 +4,15 @@ import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate } from "motion/react";
 import { asset } from "@/lib/asset";
 
-// Measured on this machine against a synthetic 500-file project. The two zeros are
-// structural rather than measured: the engine has no required dependencies and no
-// model sits anywhere in the verification path.
 const BUBBLES = [
-  { value: "0.28s", label: "500-file sweep" },
-  { value: "83ms", label: "incremental re-check" },
+  { value: "Python", label: "server contracts" },
+  { value: "TypeScript", label: "client contracts" },
   { value: "0", label: "required dependencies" },
   { value: "0", label: "models in the check" },
 ];
 
 /**
- * Hero — Mercury-style inset media card. The aerial plate autoplays softly; on
+ * Hero with an inset media card. The aerial plate autoplays softly; on
  * scroll the card zooms straight down (the dive), the content lifts away, and it
  * blurs/darkens through into the surface below. Card edges are feathered so they
  * melt into the dark page like Mercury's hero.

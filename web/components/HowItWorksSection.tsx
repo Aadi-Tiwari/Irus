@@ -3,64 +3,34 @@
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 
-/**
- * How it works, in one screen.
- *
- * Three moves in the order the tool runs them, then the guarantees that hold
- * across all three. This replaces the six full-screen feature beats: the page
- * argues once and moves on.
- */
-
 const MOVES = [
   {
-    step: "01",
-    title: "Detect",
-    lead: "It reads both sides and compares what each one declares.",
-    body:
-      "Python through the standard library ast, TypeScript through a dependency-free scanner that masks strings and comments first, so a brace inside a string cannot fool it. No model sits anywhere in the verification path: same code in, same answer out, offline, in milliseconds.",
-    lines: [
-      "route path · method · request shape",
-      "response payload shape",
-      "env var read but never set",
-      "zero-caller endpoint",
-    ],
+    step: "01", title: "Detect",
+    lead: "Compare what the server expects with what the client sends.",
+    body: "Static checks read Python and TypeScript contracts, including combined changes from explicitly selected worktrees. Reports retain source locations. Unsupported expressions and ambiguous routes remain limitations to investigate.",
+    lines: ["route path · method · request shape", "response payload shape", "environment references", "baseline-aware findings"],
   },
   {
-    step: "02",
-    title: "Prove",
-    lead: "The verdict comes from the application, not from our checker.",
-    body:
-      "Three tiers, cheapest first. Build the request and validate it against the handler's declared schema without sending anything. Then drive the real handler in-process through the framework's own test client, inside a transaction that rolls back. Real HTTP is the last resort and only for safe methods.",
-    lines: [
-      "tier 1 · built, not sent",
-      "tier 2 · the app's own test client",
-      "tier 3 · GET, HEAD, OPTIONS only",
-      "producer is authoritative by default",
-    ],
+    step: "02", title: "Exercise",
+    lead: "Optional local execution adds evidence to a suspected mismatch.",
+    body: "With explicit consent, Irus can use an application's test client or a local HTTP target. Missing dependencies and failed imports are unavailable checks, not passes. Application code can have side effects: use disposable code and data. There is no automatic rollback or operating-system sandbox.",
+    lines: ["schema comparison is labeled separately", "application execution needs consent", "generated inputs have limits", "combined worktree checks remain static"],
   },
   {
-    step: "03",
-    title: "Ratchet",
-    lead: "A round that does not strictly reduce failures is reverted.",
-    body:
-      "One owner is dispatched per failing seam, the full receipt set runs again from the top, and the round is accepted only if the total failing seams strictly decreased. The loop cannot report progress while getting worse. It is a plain loop with a stopping condition, not an agent.",
-    lines: [
-      "one owner per failing seam, per round",
-      "full receipt set re-runs every round",
-      "cached against a hash of both sides",
-      "roughly thirty lines, no model",
-    ],
+    step: "03", title: "Coordinate",
+    lead: "Keep the project idea and the integration contract in view.",
+    body: "Put the shared goal, boundaries, and acceptance checks in IRUS.md. Agents acknowledge that brief's revision, claim a contract, and request completion after their repair. Completion rescans the supported static contract; runtime and business behavior still need project tests.",
+    lines: ["brief revisions prevent stale intent", "advisory claims coordinate ownership", "completion checks both sides remain present", "no automatic edits, merges, or commits"],
   },
 ];
 
-// What holds across all three moves, stated once rather than as its own beat.
 const GUARANTEES = [
-  "no model in the verification path",
-  "nothing leaves localhost",
-  "unknown is never high confidence",
-  "baseline anchored to the merge-base",
-  "status · next · claim · release",
-  "96 tests, zero required dependencies",
+  "no model needed for static checks",
+  "loopback watcher",
+  "unavailable checks stay visible",
+  "explicit worktree composition",
+  "brief · status · next · claim · complete",
+  "standard-library core",
 ];
 
 export default function HowItWorksSection() {
@@ -107,14 +77,15 @@ export default function HowItWorksSection() {
             <span className="h-px w-16 flex-none bg-gradient-to-r from-emerald-400/50 to-transparent" />
           </div>
           <h2 className="text-3xl font-medium leading-[1.1] tracking-tight text-white md:text-[3rem]">
-            One command. Three moves.
+            Detect, exercise, coordinate.
           </h2>
           <p className="max-w-2xl text-base leading-relaxed text-white/60 md:text-lg">
             <code className="rounded bg-emerald-400/[0.09] px-1.5 py-0.5 font-mono text-[13px] text-emerald-200/90">
               irus check
             </code>{" "}
-            runs all three against the union of your unmerged branches and exits non-zero on a
-            high-confidence finding, so it works as a merge gate and a CI step.
+            starts with static contract checks. Select other worktrees explicitly with
+            --with. Execution checks are a separate opt-in, and MCP tools help agents
+            coordinate against the shared project brief.
           </p>
         </motion.div>
 
