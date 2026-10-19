@@ -107,6 +107,8 @@ function apply(ev) {
   } else if (ev.kind === "release") {
     state.claims.delete(ev.target);
   } else if (ev.kind === "baseline") {
+    state.surfaces.clear();
+    state.findings.clear();
     state.baselineSeams = new Set(ev.seams || []);
   }
 }

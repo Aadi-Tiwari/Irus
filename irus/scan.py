@@ -6,8 +6,8 @@ order, which is what makes baseline subtraction and replay work at all.
 
 B-R14 and B-R15: extraction is cached per file against a digest of its contents,
 so re-checking after one edit re-reads one file rather than the tree. The cache
-key also carries a signature of the project's router mounts, because a mount
-declared in one file changes the resolved path of routes declared in another.
+collector graph resolves router mounts on every scan, including mounts changed
+in a different file from the route declaration.
 """
 
 from __future__ import annotations
@@ -156,11 +156,6 @@ class ScanCache:
         return len(self._entries)
 
 
-def _mount_signature(included: set[str], include_prefix: dict[str, str]) -> str:
-    raw = repr(sorted(included)) + repr(sorted(include_prefix.items()))
-    return hashlib.sha256(raw.encode()).hexdigest()[:16]
-
-
 # ------------------------------------------------------------------ result
 @dataclass
 class ScanResult:
@@ -275,11 +270,6 @@ class ParsedPy:
     rel: str
     env_reads: tuple[EnvRead, ...] = ()
     path_refs: tuple[PathRef, ...] = ()
-    includes: frozenset[str] = frozenset()
-    include_prefix: tuple[tuple[str, str], ...] = ()
-    unresolved_prefix: frozenset[str] = frozenset()
-    aliases: tuple[tuple[str, str], ...] = ()
-    models: tuple[tuple[str, tuple], ...] = ()
 
 
 def _parse_py(path: Path, root: Path, src: str) -> ParsedPy | None:
@@ -294,11 +284,6 @@ def _parse_py(path: Path, root: Path, src: str) -> ParsedPy | None:
         rel=rel,
         env_reads=reads,
         path_refs=tuple(envvars.path_literals(src, rel)),
-        includes=frozenset(col.included),
-        include_prefix=tuple(sorted(col.include_prefix.items())),
-        unresolved_prefix=frozenset(getattr(col, "unresolved_prefix", set())),
-        aliases=tuple(sorted(getattr(col, "aliases", {}).items())),
-        models=tuple(sorted(col.models.items())),
     )
 
 
@@ -332,11 +317,6 @@ def scan(root: Path, cache: ScanCache | None = None) -> ScanResult:
     # three times was the dominant cost.
     parsed_py: dict[Path, ParsedPy] = {}
     ts_extracts: dict[Path, FileExtract] = {}
-    included: set[str] = set()
-    include_prefix: dict[str, str] = {}
-    unresolved: set[str] = set()
-    aliases: dict[str, str] = {}
-    models: dict[str, tuple] = {}
 
     for path in files:
         digest = ScanCache.digest(path) if cache is not None else ""
@@ -362,23 +342,12 @@ def scan(root: Path, cache: ScanCache | None = None) -> ScanResult:
 
         if isinstance(value, ParsedPy):
             parsed_py[path] = value
-            included |= set(value.includes)
-            include_prefix.update(dict(value.include_prefix))
-            unresolved |= set(value.unresolved_prefix)
-            aliases.update(dict(value.aliases))
-            models.update(dict(value.models))
         elif isinstance(value, FileExtract):
             ts_extracts[path] = value
 
-    included = py_fastapi.resolve_aliases(included, aliases)
-
     # Routes are resolved only now, when every mount in the project is known.
+    result.producers += py_fastapi.project_surfaces([parsed.collector for parsed in parsed_py.values()])
     for parsed in parsed_py.values():
-        if unresolved:
-            setattr(parsed.collector, "unresolved_prefix", unresolved)
-        result.producers += py_fastapi.surfaces_from(
-            parsed.collector, parsed.rel, included, include_prefix, models
-        )
         result.env_reads += list(parsed.env_reads)
         result.path_refs += list(parsed.path_refs)
 

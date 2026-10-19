@@ -94,6 +94,9 @@ def build(
         proofs = [f for f in fs if f.kind == "execution_proof"]
         if proofs:
             lines.append(ReceiptLine("proven by execution", False, proofs[0].detail))
+        schemas = [f for f in fs if f.kind == "schema_proof"]
+        if schemas:
+            lines.append(ReceiptLine("schema comparison", False, schemas[0].detail))
 
         # A-R23: the authority decision is recorded here so a later round
         # cannot quietly flip which side is expected to change.

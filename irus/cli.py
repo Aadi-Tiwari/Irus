@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from contextlib import redirect_stdout
 from pathlib import Path
 
 from . import baseline as baseline_mod
@@ -20,6 +21,9 @@ from . import ledger as ledger_mod
 from . import party as party_mod
 from . import prove as prove_mod
 from . import receipts as receipts_mod
+from .report import check as check_project
+from .intent import load as load_brief
+from .workspace import CompositionError
 from .eventlog import EventLog
 from .model import HIGH, Finding
 from .scan import ScanCache, scan
@@ -62,21 +66,18 @@ def cmd_check(args: argparse.Namespace) -> int:
         print(f"irus: {root} is not a directory", file=sys.stderr)
         return EXIT_ERROR
 
-    result = scan(root)
-    findings = result.findings
-
-    base = baseline_mod.Baseline(sha="", how="baseline disabled", keys=set())
-    if not args.no_baseline:
-        try:
-            base = baseline_mod.compute(root, refresh=args.refresh_baseline)
-            findings = base.suppress(findings)
-        except baseline_mod.GitError as exc:
-            print(f"irus: baseline unavailable ({exc}); reporting every finding", file=sys.stderr)
-
-    silenced: list = []
-    rules = Suppressions.load(root)
-    if len(rules):
-        findings, silenced = rules.apply(findings)
+    companions = getattr(args, "worktree", [])
+    try:
+        if companions and args.prove:
+            raise CompositionError("Combined checks are static. Run execution checks separately against a disposable test application.")
+        report = check_project(root, worktrees=companions, no_baseline=args.no_baseline, refresh=args.refresh_baseline)
+    except (CompositionError, baseline_mod.GitError, OSError, ValueError) as exc:
+        if args.json:
+            print(json.dumps({"error": str(exc), "findings": [], "proofs": []}))
+        else:
+            print(f"irus: {exc}", file=sys.stderr)
+        return EXIT_ERROR
+    result, findings, base, silenced = report.result, report.findings, report.baseline, report.silenced
 
     proofs: list = []
     if args.prove:
@@ -90,10 +91,11 @@ def cmd_check(args: argparse.Namespace) -> int:
         except prove_mod.ConsentRequired as exc:
             print(f"irus: {exc}", file=sys.stderr)
             return EXIT_ERROR
-        proofs = prove_mod.prove_all(
-            root, result.producers, result.consumers, findings, args.app, args.base_url
-        )
-        findings = findings + [p.to_finding() for p in proofs if not p.passed]
+        with redirect_stdout(sys.stderr):
+            proofs = prove_mod.prove_all(
+                root, result.producers, result.consumers, findings, args.app, args.base_url
+            )
+        findings = findings + [p.to_finding() for p in proofs if p.passed is False]
 
     log = EventLog(root / ".irus" / "events.jsonl") if args.log else EventLog()
     _emit(log, result, findings, base)
@@ -102,7 +104,7 @@ def cmd_check(args: argparse.Namespace) -> int:
             "proof",
             seam=pr.seam,
             method=pr.tier,
-            result="pass" if pr.passed else "fail",
+            result=pr.result,
             status=pr.status,
             detail=pr.detail,
         )
@@ -112,25 +114,34 @@ def cmd_check(args: argparse.Namespace) -> int:
             json.dumps(
                 {
                     "root": str(root),
+                    "worktrees": report.worktrees,
+                    "brief": {"path": report.brief.path, "revision": report.brief.revision} if report.brief else None,
                     "baseline": {"sha": base.sha, "how": base.how, "suppressed": len(base.keys)},
                     "suppressed_by_rule": [
                         {"key": f.key, "reason": r.reason} for f, r in silenced
                     ],
-                    "findings": [f.to_dict() for f in findings],
+                    "findings": [{**f.to_dict(), "producer_sources": report.source_locations(f.producer_loc),
+                                  "consumer_sources": report.source_locations(f.consumer_loc)} for f in findings],
+                    "proofs": [proof.to_dict() for proof in proofs],
                 },
                 indent=2,
                 default=str,
             )
         )
     else:
+        if report.brief:
+            print(f"Project brief: {report.brief.path} | revision {report.brief.revision}")
         text = receipts_mod.render(
             receipts_mod.build(result, findings, coordinate_mod.assign(findings)),
             only_failing=not args.all,
         )
         if text.strip():
             print(text)
+        if companions:
+            for finding in findings:
+                print(f"\n{finding.key} sources: " + " | ".join(report.source_locations(finding.producer_loc) + report.source_locations(finding.consumer_loc)))
         for pr in proofs:
-            mark = "PASS" if pr.passed else "FAIL"
+            mark = pr.result.upper()
             print(f"\nproof[{pr.tier}] {pr.seam}  {mark}   {pr.detail}")
         high = [f for f in findings if f.confidence == HIGH]
         print(
@@ -144,7 +155,18 @@ def cmd_check(args: argparse.Namespace) -> int:
 
     # A-R21 and B-R17: only a high-confidence finding fails the gate, so a
     # speculative finding can be surfaced without ever blocking a merge.
+    if any(proof.passed is None for proof in proofs):
+        return EXIT_ERROR
     return EXIT_FINDINGS if any(f.confidence == HIGH for f in findings) else EXIT_CLEAN
+
+
+def cmd_brief(args: argparse.Namespace) -> int:
+    brief = load_brief(Path(args.path).resolve())
+    if brief is None:
+        print("Create IRUS.md in the project root with its goal, boundaries, and acceptance checks.")
+        return EXIT_ERROR
+    print(f"{brief.path}\nrevision {brief.revision}\n\n{brief.text}")
+    return EXIT_CLEAN
 
 
 def cmd_baseline(args: argparse.Namespace) -> int:
@@ -566,6 +588,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     check = sub.add_parser("check", help="one-shot sweep; nonzero exit on a high-confidence finding")
     check.add_argument("path", nargs="?", default=".")
+    check.add_argument("--with", dest="worktree", action="append", default=[], metavar="WORKTREE",
+                       help="check the combined working changes of another worktree; repeat for more")
     check.add_argument("--json", action="store_true", help="machine-readable output")
     check.add_argument("--all", action="store_true", help="show passing receipts too")
     check.add_argument("--no-baseline", action="store_true", help="report pre-existing findings too")
@@ -586,6 +610,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="localhost server to probe with real GET/HEAD/OPTIONS requests (tier 3)",
     )
     check.set_defaults(func=cmd_check)
+
+    brief = sub.add_parser("brief", help="read the shared project goal and its current revision")
+    brief.add_argument("path", nargs="?", default=".")
+    brief.set_defaults(func=cmd_brief)
 
     base = sub.add_parser("baseline", help="recompute and cache the merge-base baseline")
     base.add_argument("path", nargs="?", default=".")

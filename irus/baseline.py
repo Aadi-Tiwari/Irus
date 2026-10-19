@@ -13,6 +13,7 @@ run.
 from __future__ import annotations
 
 import json
+import hashlib
 import subprocess
 import tempfile
 from dataclasses import dataclass
@@ -97,10 +98,15 @@ def compute(root: Path, refresh: bool = False) -> Baseline:
         return Baseline(sha="", how="not a git repository", keys=set())
 
     sha, how = anchor(root)
+    scanner = hashlib.sha256()
+    for path in sorted(Path(__file__).parent.rglob("*.py")):
+        scanner.update(path.read_bytes())
+    signature = scanner.hexdigest()
     cache = cache_path(root, sha)
     if cache.exists() and not refresh:
         data = json.loads(cache.read_text(encoding="utf-8"))
-        return Baseline(sha=sha, how=how, keys=set(data.get("keys", [])), cached=True)
+        if data.get("scanner") == signature:
+            return Baseline(sha=sha, how=how, keys=set(data.get("keys", [])), cached=True)
 
     with tempfile.TemporaryDirectory(prefix="irus-base-") as tmp:
         checkout = Path(tmp) / "tree"
@@ -118,6 +124,6 @@ def compute(root: Path, refresh: bool = False) -> Baseline:
 
     cache.parent.mkdir(parents=True, exist_ok=True)
     cache.write_text(
-        json.dumps({"sha": sha, "keys": sorted(keys)}, indent=1), encoding="utf-8"
+        json.dumps({"sha": sha, "scanner": signature, "keys": sorted(keys)}, indent=1), encoding="utf-8"
     )
     return Baseline(sha=sha, how=how, keys=keys)

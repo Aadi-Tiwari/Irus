@@ -92,6 +92,10 @@ def _normalise_type(node: ast.AST | None) -> tuple[str, bool]:
     return name, False
 
 
+def _model_ref(node: ast.AST | None) -> str:
+    return ast.unparse(node) if isinstance(node, ast.Attribute) else _ann_name(node)
+
+
 def _call_func_name(node: ast.AST) -> str:
     if isinstance(node, ast.Call):
         return _ann_name(node.func)
@@ -114,6 +118,9 @@ class _Collector(ast.NodeVisitor):
         # 277 high-confidence false positives on Netflix/dispatch alone.
         self.aliases: dict[str, str] = {}
         self.functions: list[tuple[ast.FunctionDef | ast.AsyncFunctionDef, str]] = []
+        self.module = path.removesuffix(".py").replace("/", ".").removesuffix(".__init__")
+        self.imports: dict[str, str] = {}
+        self.mounts: list[tuple[str, str, str | None]] = []
 
     # ---- Pydantic models -------------------------------------------------
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
@@ -140,11 +147,17 @@ class _Collector(ast.NodeVisitor):
         fn = _call_func_name(node.value)
         if fn in ("FastAPI", "APIRouter"):
             prefix = ""
+            unresolved = False
             for kw in node.value.keywords:  # type: ignore[union-attr]
-                if kw.arg == "prefix" and isinstance(kw.value, ast.Constant):
-                    prefix = str(kw.value.value)
+                if kw.arg == "prefix":
+                    if isinstance(kw.value, ast.Constant) and isinstance(kw.value.value, str):
+                        prefix = kw.value.value
+                    else:
+                        unresolved = True
             for tgt in node.targets:
                 if isinstance(tgt, ast.Name):
+                    if unresolved:
+                        self.unresolved_prefix.add(tgt.id)
                     if fn == "FastAPI":
                         self.apps.add(tgt.id)
                         self.routers[tgt.id] = prefix
@@ -153,15 +166,30 @@ class _Collector(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+        module = node.module or ""
+        if node.level:
+            package = self.module if self.path.endswith("/__init__.py") else self.module.rpartition(".")[0]
+            parents = package.split(".")
+            module = ".".join(parents[:len(parents) - node.level + 1] + ([module] if module else []))
         for alias in node.names:
+            self.imports[alias.asname or alias.name] = ".".join(part for part in (module, alias.name) if part)
             if alias.asname:
                 self.aliases[alias.asname] = alias.name
         self.generic_visit(node)
+
+    def visit_Import(self, node: ast.Import) -> None:
+        for alias in node.names:
+            self.imports[alias.asname or alias.name.split(".")[0]] = alias.name if alias.asname else alias.name.split(".")[0]
 
     def visit_Call(self, node: ast.Call) -> None:
         if isinstance(node.func, ast.Attribute) and node.func.attr == "include_router":
             if node.args:
                 target = node.args[0]
+                prefix = ""
+                for kw in node.keywords:
+                    if kw.arg == "prefix":
+                        prefix = kw.value.value if isinstance(kw.value, ast.Constant) and isinstance(kw.value.value, str) else None
+                self.mounts.append((ast.unparse(node.func.value), ast.unparse(target), prefix))
                 # A router is usually mounted from another module, so the
                 # argument is `items.router`, not a bare `router`. Recording
                 # only ast.Name marked every such route unmounted, which was 23
@@ -219,8 +247,10 @@ def _body_from_signature(
 
     form_fields: list[Field] = []
     encoding = ""
+    unresolved = False
     for a in args:
         ann = _ann_name(a.annotation)
+        model = _model_ref(a.annotation)
         marker = _call_func_name(defaults.get(a.arg)) if a.arg in defaults else ""
         typ, optional = _normalise_type(a.annotation)
         required = not optional
@@ -234,14 +264,16 @@ def _body_from_signature(
             if encoding != MULTIPART:
                 encoding = URLENCODED
             form_fields.append(Field(a.arg, typ, required))
-        elif ann in models:
-            return JSON_ENC, models[ann]
+        elif model in models:
+            return JSON_ENC, models[model]
         elif marker == "Body":
             return JSON_ENC, (Field(a.arg, typ, required),)
+        elif a.annotation is not None and ann not in _SCALARS and ann not in {"Request", "Response", "BackgroundTasks", "WebSocket"} and marker not in {"Depends", "Security", "Query", "Path", "Header", "Cookie"}:
+            unresolved = True
 
     if form_fields:
         return encoding or URLENCODED, tuple(form_fields)
-    return "none", ()
+    return ("unknown" if unresolved else "none"), ()
 
 
 def collect(path: Path, root: Path, src: str | None = None) -> tuple[_Collector, str] | None:
@@ -307,6 +339,7 @@ def surfaces_from(
     included: set[str] | None = None,
     include_prefix: dict[str, str] | None = None,
     models: dict[str, tuple] | None = None,
+    mounts: dict[str, list[tuple[str, bool, bool]]] | None = None,
 ) -> list[Surface]:
     """Resolve routes from an already-parsed collector. No I/O, no parsing.
 
@@ -352,22 +385,88 @@ def surfaces_from(
             resp: tuple[Field, ...] = ()
             for kw in dec.keywords:
                 if kw.arg == "response_model":
-                    resp = col.models.get(_ann_name(kw.value), ())
+                    resp = col.models.get(_model_ref(kw.value), ())
 
             mounted = owner in col.apps or owner in col.included
             unresolved = owner in getattr(col, "unresolved_prefix", set())
 
-            surfaces.append(
-                Surface(
+            placements = mounts.get(owner, []) if mounts is not None else [(col.include_prefix.get(owner, ""), mounted, unresolved)]
+            for mount_prefix, is_mounted, is_unresolved in placements:
+                surfaces.append(Surface(
                     side=PRODUCER,
                     method=f.attr.upper(),
-                    path=full,
+                    path=normalise_path(mount_prefix + col.routers.get(owner, "") + route),
                     loc=Loc(rel, func.lineno),
                     encoding=encoding,
                     fields=fields,
                     response_fields=resp,
-                    mounted=mounted,
-                    external=unresolved,
-                )
-            )
+                    mounted=is_mounted,
+                    external=is_unresolved or unresolved,
+                ))
+    return surfaces
+
+
+def project_surfaces(collectors: list[_Collector]) -> list[Surface]:
+    modules = {col.module: col for col in collectors}
+    symbols = {(col.module, name) for col in collectors for name in (*col.routers, *col.models)}
+
+    def resolve(col, reference, seen=frozenset()):
+        head, dot, tail = reference.partition(".")
+        if not dot and (col.module, head) in symbols:
+            return col.module, head
+        qualified = col.imports.get(head, head) + (dot + tail if dot else "")
+        if qualified in seen:
+            return None
+        module, _, name = qualified.rpartition(".")
+        candidates = [key for key in modules if key == module or key.endswith("." + module)]
+        if module in modules:
+            candidates = [module]
+        if len(candidates) != 1:
+            return None
+        owner = modules[candidates[0]]
+        if (owner.module, name) in symbols:
+            return owner.module, name
+        if name in owner.imports:
+            return resolve(owner, name, seen | {qualified})
+        return None
+
+    parents: dict[tuple[str, str], list[tuple[tuple[str, str], str | None]]] = {}
+    for col in collectors:
+        for owner, child, prefix in col.mounts:
+            parent_id, child_id = resolve(col, owner), resolve(col, child)
+            if parent_id and child_id:
+                parents.setdefault(child_id, []).append((parent_id, prefix))
+
+    placements = {}
+
+    def mounts_for(key, seen=frozenset()):
+        if key in seen:
+            return [("", False, True)]
+        if key in placements:
+            return placements[key]
+        col, name = modules[key[0]], key[1]
+        incoming = parents.get(key, [])
+        values = [("", name in col.apps, False)] if not incoming else []
+        for parent, prefix in incoming:
+            parent_col = modules[parent[0]]
+            for outer, mounted, unresolved in mounts_for(parent, seen | {key}):
+                values.append((outer + parent_col.routers.get(parent[1], "") + (prefix or ""), mounted, unresolved or not mounted or prefix is None or parent[1] in parent_col.unresolved_prefix))
+        placements[key] = list(dict.fromkeys(values))
+        return placements[key]
+
+    surfaces = []
+    for col in collectors:
+        models = dict(col.models)
+        references = set(col.imports)
+        for func, _ in col.functions:
+            references.update(_model_ref(arg.annotation) for arg in [*func.args.args, *func.args.kwonlyargs])
+            for decorator in func.decorator_list:
+                if isinstance(decorator, ast.Call):
+                    references.update(_model_ref(kw.value) for kw in decorator.keywords if kw.arg == "response_model")
+        for name in references:
+            key = resolve(col, name)
+            if key and key[1] in modules[key[0]].models:
+                models[name] = modules[key[0]].models[key[1]]
+        mounts = {name: mounts_for((col.module, name)) for name in col.routers}
+        surfaces.extend(surfaces_from(col, col.path, models=models, mounts=mounts))
     return surfaces

@@ -430,7 +430,7 @@ def test_ar22_mcp_exposes_the_map_as_text(mismatch):
     server = Server(mismatch)
     assert {t["name"] for t in server.handle(
         {"jsonrpc": "2.0", "id": 1, "method": "tools/list"})["result"]["tools"]
-    } == {"status", "next", "claim", "release"}
+    } == {"brief", "status", "next", "claim", "release", "complete"}
 
     reply = server.handle({"jsonrpc": "2.0", "id": 2, "method": "tools/call",
                            "params": {"name": "status", "arguments": {}}})

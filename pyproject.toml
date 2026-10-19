@@ -22,7 +22,7 @@ dependencies = []
 config = ["PyYAML>=6.0"]
 # Stage-2 execution proof drives an ASGI app through Starlette's test client.
 prove = ["starlette>=0.37", "httpx>=0.27"]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "starlette>=0.37", "httpx>=0.27"]
 
 [project.scripts]
 irus = "irus.cli:main"

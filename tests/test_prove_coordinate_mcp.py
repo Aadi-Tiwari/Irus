@@ -349,10 +349,10 @@ def test_mcp_initialize_reports_tool_capability(mcp):
     assert "tools" in reply["result"]["capabilities"]
 
 
-def test_mcp_lists_the_four_tools(mcp):
+def test_mcp_lists_the_coordination_tools(mcp):
     reply = mcp.handle({"jsonrpc": "2.0", "id": 2, "method": "tools/list"})
     names = {t["name"] for t in reply["result"]["tools"]}
-    assert names == {"status", "next", "claim", "release"}
+    assert names == {"brief", "status", "next", "claim", "release", "complete"}
 
 
 def test_mcp_status_returns_text_not_a_picture(mcp):

@@ -1,17 +1,11 @@
 """A-R8 to A-R12: prove a suspected mismatch by executing it.
 
-Detection narrows the search; proof settles it. The verdict here comes from the
-application rather than from our checker, which is what makes it evidence.
-
-Safety is structural, not advisory (B-R8 to B-R12):
-
-  * nothing is sent anywhere unless the caller opts in explicitly
-  * no request ever leaves localhost
-  * a mutating method is never sent over the network at all; it goes through the
-    framework's in-process test client or it does not run
-  * the store is fingerprinted before and after, and a change fails loudly
-
-B-R24: a model may write a request. A model never decides whether it passed.
+Schema comparison and generated request probes are separate evidence tiers.
+An application rejecting a placeholder request does not establish the cause.
+Network probes target loopback and refuse redirects. In-process imports and
+handlers can still perform arbitrary I/O, including external requests. Store
+fingerprints detect selected local file changes after execution; they cannot
+roll them back. Use a disposable application and disposable data.
 """
 
 from __future__ import annotations
@@ -22,11 +16,11 @@ import json
 import sys
 import urllib.error
 import urllib.request
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
-from .model import HIGH, JSON_ENC, MEDIUM, MULTIPART, NONE_ENC, UNKNOWN_ENC, Finding, Surface
+from .model import HIGH, JSON_ENC, MULTIPART, NONE_ENC, UNKNOWN_ENC, Finding, Loc, Surface
 
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 MUTATING = {"POST", "PUT", "PATCH", "DELETE"}
@@ -53,17 +47,36 @@ PLACEHOLDER: dict[str, Any] = {
 class Proof:
     seam: str
     tier: str
-    passed: bool
+    passed: bool | None
     detail: str
     status: int | None = None
     errors: list[str] = field(default_factory=list)
+    producer_loc: Loc | None = None
+    consumer_loc: Loc | None = None
+
+    @property
+    def result(self) -> str:
+        return "unavailable" if self.passed is None else "pass" if self.passed else "fail"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "seam": self.seam, "tier": self.tier, "result": self.result,
+            "status": self.status, "detail": self.detail, "errors": self.errors,
+            "producer_loc": str(self.producer_loc) if self.producer_loc else None,
+            "consumer_loc": str(self.consumer_loc) if self.consumer_loc else None,
+        }
 
     def to_finding(self) -> Finding:
+        if self.passed is not False:
+            raise ValueError("Only a failed proof is a finding")
         return Finding(
-            kind="execution_proof",
+            kind="schema_proof" if self.tier == TIER_SCHEMA else "execution_proof",
             seam=self.seam,
             detail=self.detail,
-            confidence=HIGH if not self.passed else MEDIUM,
+            confidence=HIGH,
+            producer_loc=self.producer_loc,
+            consumer_loc=self.consumer_loc,
+            subject=self.tier,
         )
 
 
@@ -210,20 +223,26 @@ def prove_schema(producer: Surface, consumer: Surface) -> Proof:
     """A-R8: construct the request, validate it, never send it."""
     encoding, payload = synthesise(consumer)
     errors = validate_against(producer, encoding, payload)
+    if consumer.method != producer.method:
+        errors.insert(0, f"client method {consumer.method} differs from handler method {producer.method}")
     if errors:
         return Proof(
-            seam=producer.seam,
+            seam=consumer.seam,
             tier=TIER_SCHEMA,
             passed=False,
             detail="the request this client builds is rejected by the handler's schema: "
             + "; ".join(errors),
             errors=errors,
+            producer_loc=producer.loc,
+            consumer_loc=consumer.loc,
         )
     return Proof(
-        seam=producer.seam,
+        seam=consumer.seam,
         tier=TIER_SCHEMA,
         passed=True,
         detail="the request this client builds satisfies the handler's schema",
+        producer_loc=producer.loc,
+        consumer_loc=consumer.loc,
     )
 
 
@@ -277,8 +296,10 @@ def prove_test_client(
             return Proof(
                 seam=producer.seam,
                 tier=TIER_TEST_CLIENT,
-                passed=True,
+                passed=None,
                 detail=f"test client unavailable, proof skipped ({exc})",
+                producer_loc=producer.loc,
+                consumer_loc=consumer.loc,
             )
 
     encoding, payload = synthesise(consumer)
@@ -288,23 +309,28 @@ def prove_test_client(
     # app's lifespan startup, and startup handlers routinely open connections,
     # run migrations and warm caches. Those are exactly the side effects proof
     # must not cause, so the handler is called without them.
-    client = TestClient(app, raise_server_exceptions=False)
-    path = producer.path.replace("{}", "1")
+    path = consumer.path.replace("{}", "1")
+    client = None
+    response = None
+    failure = None
     try:
+        client = TestClient(app, raise_server_exceptions=False, follow_redirects=False)
         if encoding == MULTIPART:
-            files = {k: (k, str(v)) for k, v in payload.items()}
+            types = {f.name: f.type for f in consumer.fields}
+            files = {k: (k if types.get(k) == "file" else None, str(v)) for k, v in payload.items()}
             response = client.request(consumer.method, path, files=files or None)
         elif encoding == JSON_ENC:
             response = client.request(consumer.method, path, json=payload or None)
         else:
             response = client.request(consumer.method, path, data=payload or None)
     except Exception as exc:
-        return Proof(
-            seam=producer.seam,
-            tier=TIER_TEST_CLIENT,
-            passed=True,
-            detail=f"could not drive the app in-process, proof skipped ({exc})",
-        )
+        failure = str(exc)
+    finally:
+        if client is not None:
+            try:
+                client.close()
+            except Exception as exc:
+                failure = str(exc)
 
     after = _store_fingerprint(root)
     if before != after:
@@ -312,48 +338,75 @@ def prove_test_client(
             seam=producer.seam,
             tier=TIER_TEST_CLIENT,
             passed=False,
-            status=response.status_code,
+            status=response.status_code if response is not None else None,
             detail=(
                 "ABORTED: the local store changed during proof. The handler is not "
                 "transactional under the test client, so execution proof is unsafe here"
             ),
+            producer_loc=producer.loc,
+            consumer_loc=consumer.loc,
         )
 
-    ok = response.status_code < 400
+    if failure is not None:
+        return Proof(
+            seam=producer.seam,
+            tier=TIER_TEST_CLIENT,
+            passed=None,
+            detail=f"could not drive the app in-process, proof skipped ({failure})",
+            producer_loc=producer.loc,
+            consumer_loc=consumer.loc,
+        )
+    ok = None if 300 <= response.status_code < 400 else 200 <= response.status_code < 300
     return Proof(
         seam=producer.seam,
         tier=TIER_TEST_CLIENT,
         passed=ok,
         status=response.status_code,
         detail=(
+            f"handler redirected ({response.status_code}); execution check did not follow it"
+            if ok is None else
             f"handler answered {response.status_code} to the request this client builds"
             if not ok
             else f"handler accepted the request ({response.status_code})"
         ),
+        producer_loc=producer.loc,
+        consumer_loc=consumer.loc,
     )
 
 
 # -------------------------------------------------------------- tier 3: http
+class NoRedirects(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise UnsafeRequest("Execution checks do not follow HTTP redirects")
+
+
 def prove_http(base_url: str, producer: Surface) -> Proof:
     """A-R12: real HTTP, and only for methods that cannot change anything."""
     assert_local(base_url)
-    if producer.method not in SAFE_METHODS:
-        assert_not_mutating_over_network(producer.method)
+    assert_transport(producer.method, "wire")
     url = base_url.rstrip("/") + producer.path.replace("{}", "1")
+    from urllib.parse import urlsplit
+    parsed = urlsplit(url)
+    if parsed.scheme not in {"http", "https"} or parsed.username or parsed.password:
+        raise UnsafeRequest("Execution checks require a local HTTP URL without credentials")
+    if parsed.hostname == "localhost":
+        url = parsed._replace(netloc="127.0.0.1" + (f":{parsed.port}" if parsed.port else "")).geturl()
     request = urllib.request.Request(url, method=producer.method)
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirects())
     try:
-        with urllib.request.urlopen(request, timeout=5) as response:
+        with opener.open(request, timeout=5) as response:
             status = response.status
     except urllib.error.HTTPError as exc:
         status = exc.code
-    except OSError as exc:
-        return Proof(producer.seam, TIER_HTTP, True, f"server not reachable, skipped ({exc})")
+    except (OSError, UnsafeRequest) as exc:
+        return Proof(producer.seam, TIER_HTTP, None, f"server not reachable or redirect refused ({exc})", producer_loc=producer.loc)
     return Proof(
         seam=producer.seam,
         tier=TIER_HTTP,
-        passed=status < 400,
+        passed=None if 300 <= status < 400 else 200 <= status < 300,
         status=status,
         detail=f"{producer.method} {producer.path} answered {status}",
+        producer_loc=producer.loc,
     )
 
 
@@ -372,30 +425,45 @@ def prove_all(
     caller is already running. It is restricted to GET, HEAD and OPTIONS, so a
     seam whose method can change state is never proven this way.
     """
-    suspect = {f.seam for f in findings if f.confidence == HIGH}
-    by_seam = {p.seam: p for p in producers}
-    consumer_by_seam = {c.seam: c for c in consumers}
-
     app = None
+    proofs: list[Proof] = []
     if app_spec:
         try:
             app = load_app(root, app_spec)
         except Exception as exc:
-            app = None
-            print(f"irus: could not import {app_spec} ({exc}); schema tier only", flush=True)
+            proofs.append(Proof(app_spec, TIER_TEST_CLIENT, None, f"could not import the application ({exc})"))
 
     if base_url:
         assert_local(base_url)  # fail before any request is built, not after
 
-    proofs: list[Proof] = []
-    for seam in sorted(suspect):
-        producer, consumer = by_seam.get(seam), consumer_by_seam.get(seam)
-        if not producer:
+    checked = set()
+    for finding in findings:
+        if finding.confidence != HIGH or finding.seam.split(" ", 1)[0] not in SAFE_METHODS | MUTATING:
+            continue
+        callers = [c for c in consumers if c.seam == finding.seam and
+                   (finding.consumer_loc is None or c.loc == finding.consumer_loc)]
+        consumer = callers[0] if len(callers) == 1 else None
+        handlers = [p for p in producers if p.loc == finding.producer_loc and
+                    (consumer is None or p.path == consumer.path)]
+        if not handlers:
+            handlers = [p for p in producers if p.seam == finding.seam]
+        producer = handlers[0] if len(handlers) == 1 else None
+        pair = (finding.seam, producer, consumer)
+        if pair in checked:
+            continue
+        checked.add(pair)
+        if producer is None or (consumer is None and not base_url):
+            proofs.append(Proof(finding.seam, TIER_SCHEMA, None,
+                                "could not identify one producer and the flagged caller for this check",
+                                producer_loc=finding.producer_loc, consumer_loc=finding.consumer_loc))
             continue
         if consumer is not None:
             proofs.append(prove_schema(producer, consumer))
             if app is not None:
-                proofs.append(prove_test_client(root, app, producer, consumer))
-        if base_url and producer.method in SAFE_METHODS:
-            proofs.append(prove_http(base_url, producer))
+                proof = prove_test_client(root, app, producer, consumer)
+                proof.seam = consumer.seam
+                proofs.append(proof)
+        request = replace(producer, method=consumer.method, path=consumer.path) if consumer else producer
+        if base_url and request.method in SAFE_METHODS:
+            proofs.append(prove_http(base_url, request))
     return proofs

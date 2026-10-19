@@ -113,7 +113,7 @@ def test_full_handshake_then_list_then_call(project):
     # The notification must not draw a reply; three requests, three replies.
     assert [r["id"] for r in replies] == [1, 2, 3]
     tools = replies[1]["result"]["tools"]
-    assert {t["name"] for t in tools} == {"status", "next", "claim", "release"}
+    assert {t["name"] for t in tools} == {"brief", "status", "next", "claim", "release", "complete"}
     for t in tools:
         assert t["description"], f"{t['name']} has no description"
         assert t["inputSchema"]["type"] == "object", f"{t['name']} schema is not an object"

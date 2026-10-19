@@ -75,7 +75,13 @@ def _has_spread(surface: Surface) -> bool:
 
 
 def compare(producers: list[Surface], consumers: list[Surface]) -> list[Finding]:
-    findings: list[Finding] = []
+    findings = [Finding(
+        kind="unresolved_route", seam=p.seam, confidence=MEDIUM,
+        producer_loc=p.loc,
+        detail="route mount or prefix could not be resolved; this endpoint's contract was not checked",
+    ) for p in producers if p.external]
+    producers = [p for p in producers if not p.external]
+    consumers = [c for c in consumers if not c.external]
 
     by_seam: dict[str, list[Surface]] = defaultdict(list)
     for p in producers:
@@ -130,8 +136,14 @@ def compare(producers: list[Surface], consumers: list[Surface]) -> list[Finding]
                 )
             continue
 
-        p = matches[0]
-        findings.extend(_compare_pair(p, c))
+        if len(matches) == 1:
+            findings.extend(_compare_pair(matches[0], c))
+        else:
+            findings.append(Finding(
+                kind="ambiguous_endpoint", seam=c.seam, confidence=MEDIUM,
+                producer_loc=matches[0].loc, consumer_loc=c.loc,
+                detail="multiple server declarations match this call; the request contract was not checked",
+            ))
 
     return findings
 

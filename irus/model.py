@@ -157,7 +157,8 @@ class Finding:
         two findings of the same kind on the same seam, such as two different
         missing fields.
         """
-        raw = f"{self.kind}\x00{self.seam}\x00{self.subject}"
+        sites = (self.producer_loc.file if self.producer_loc else "", self.consumer_loc.file if self.consumer_loc else "")
+        raw = "\x00".join((self.kind, self.seam, self.subject, *sites))
         return "f-" + hashlib.sha1(raw.encode()).hexdigest()[:12]
 
     def to_dict(self) -> dict[str, Any]:

@@ -1,3 +1,5 @@
+> Historical hackathon plan. The current product direction is in [IRUS.md](IRUS.md), and supported commands and limitations are in [README.md](README.md). This document is not a completion checklist.
+
 # Irus PRD, Part A: Problem, Users, and Product Definition
 
 Part B covers requirements, measurement, delivery, and the decision log.
